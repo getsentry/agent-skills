@@ -7,6 +7,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | Skill | Description |
 |-------|-------------|
 | `sentry-code-review` | Analyze and resolve Sentry comments on GitHub Pull Requests |
+| `sentry-nextjs-wizard` | Setup Sentry in Next.js projects using the Sentry Wizard CLI |
 | `sentry-setup-ai-monitoring` | Setup Sentry AI Agent Monitoring for OpenAI, Anthropic, LangChain, etc. |
 | `sentry-setup-logging` | Setup Sentry Logging for JavaScript, Python, and Ruby projects |
 | `sentry-setup-metrics` | Setup Sentry Metrics (counters, gauges, distributions) |
@@ -243,8 +244,9 @@ sentry-setup-tracing/
 
 Once installed, your AI assistant will automatically discover the skills. Simply ask it to:
 
+- "Set up Sentry in my Next.js app" (uses the wizard)
 - "Set up Sentry tracing in my project"
-- "Add Sentry logging to my Next.js app"
+- "Add Sentry logging to my app"
 - "Configure Sentry AI monitoring for my OpenAI integration"
 - "Set up Sentry metrics"
 - "Review the Sentry comments on PR #123"
