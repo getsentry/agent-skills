@@ -1,17 +1,25 @@
 # Sentry Agent Skills
 
-Official agent skills for integrating Sentry into your projects. These skills provide AI coding assistants with the knowledge to set up and configure Sentry's error tracking, performance monitoring, logging, metrics, and AI agent monitoring.
+Official agent skills for integrating Sentry into your projects. These skills provide AI coding assistants with the knowledge to set up Sentry, debug production issues, and leverage Sentry's full observability platform.
 
 ## Available Skills
 
-| Skill | Description |
-|-------|-------------|
-| `sentry-code-review` | Analyze and resolve Sentry comments on GitHub Pull Requests |
-| `sentry-nextjs-wizard` | Setup Sentry in Next.js projects using the Sentry Wizard CLI |
-| `sentry-setup-ai-monitoring` | Setup Sentry AI Agent Monitoring for OpenAI, Anthropic, LangChain, etc. |
-| `sentry-setup-logging` | Setup Sentry Logging for JavaScript, Python, and Ruby projects |
-| `sentry-setup-metrics` | Setup Sentry Metrics (counters, gauges, distributions) |
-| `sentry-setup-tracing` | Setup Sentry Tracing and Performance Monitoring |
+### Setup Skills
+
+| Skill | Description | Platforms |
+|-------|-------------|-----------|
+| `sentry-nextjs-wizard` | Setup Sentry in Next.js using the wizard CLI | Next.js |
+| `sentry-setup-tracing` | Setup tracing, transactions, spans, and performance monitoring | JS, Python, Ruby |
+| `sentry-setup-logging` | Setup structured logging and integrate Pino/Winston/Loguru | JS, Python, Ruby |
+| `sentry-setup-metrics` | Setup custom metrics (counters, gauges, distributions) | JS, Python |
+| `sentry-setup-ai-monitoring` | Setup AI/LLM monitoring for OpenAI, Anthropic, LangChain, etc. | JS, Python |
+
+### Workflow Skills
+
+| Skill | Description | Requirements |
+|-------|-------------|--------------|
+| `sentry-fix-issues` | Find and fix production issues using Sentry MCP | Sentry MCP |
+| `sentry-code-review` | Analyze and resolve Sentry Seer comments on GitHub PRs | GitHub CLI |
 
 ## Installation
 
@@ -240,18 +248,53 @@ sentry-setup-tracing/
 
 ---
 
+## Prerequisites
+
+### For `sentry-fix-issues` Skill
+
+The fix-issues skill requires the **Sentry MCP server** to query your Sentry project for issues, events, traces, and replays.
+
+**Install Sentry MCP:**
+```bash
+# Claude Code
+claude mcp add sentry -- npx -y @sentry/mcp-server
+
+# Or add to your MCP config manually
+```
+
+See [Sentry MCP documentation](https://docs.sentry.io/product/integrations/mcp/) for setup details.
+
+### For `sentry-code-review` Skill
+
+Requires **GitHub CLI** (`gh`) authenticated with access to the repository.
+
+---
+
 ## Usage
 
-Once installed, your AI assistant will automatically discover the skills. Simply ask it to:
+Once installed, your AI assistant will automatically discover the skills. Simply ask:
 
-- "Set up Sentry in my Next.js app" (uses the wizard)
-- "Set up Sentry tracing in my project"
-- "Add Sentry logging to my app"
-- "Configure Sentry AI monitoring for my OpenAI integration"
-- "Set up Sentry metrics"
-- "Review the Sentry comments on PR #123"
+### Setup
 
-The assistant will load the appropriate skill and guide you through the setup.
+| What to Say | Skill Used |
+|-------------|------------|
+| "Set up Sentry in my Next.js app" | `sentry-nextjs-wizard` |
+| "Add performance monitoring to my app" | `sentry-setup-tracing` |
+| "Enable Sentry logging" | `sentry-setup-logging` |
+| "Track custom metrics with Sentry" | `sentry-setup-metrics` |
+| "Monitor my OpenAI/LangChain calls" | `sentry-setup-ai-monitoring` |
+
+### Debugging & Workflow
+
+| What to Say | Skill Used |
+|-------------|------------|
+| "Fix the recent Sentry errors" | `sentry-fix-issues` |
+| "Debug the production TypeError" | `sentry-fix-issues` |
+| "Work through my Sentry backlog" | `sentry-fix-issues` |
+| "Review Sentry comments on PR #123" | `sentry-code-review` |
+| "Fix the issues Sentry found in my PR" | `sentry-code-review` |
+
+The assistant will load the appropriate skill and guide you through the process.
 
 ---
 
@@ -285,7 +328,17 @@ Contributions are welcome! Please ensure any new skills:
 1. Follow the [Agent Skills specification](https://agentskills.io/specification)
 2. Have a valid `name` (lowercase, hyphens, 1-64 chars)
 3. Include a clear `description` (1-1024 chars)
-4. Provide comprehensive instructions in the markdown body
+4. **Keep skills concise** - use tables over prose, avoid obvious information
+5. Include an "Invoke This Skill When" section with trigger phrases
+6. Verify technical details against [Sentry docs](https://docs.sentry.io/)
+
+### Style Guidelines
+
+- Prefer tables over paragraphs for reference information
+- Use phases/steps for multi-stage workflows
+- Include version requirements where applicable
+- Add troubleshooting tables for common issues
+- Target ~100-200 lines per skill to minimize token usage
 
 ---
 
