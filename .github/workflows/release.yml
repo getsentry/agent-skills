@@ -1,0 +1,52 @@
+name: Release Skills Package
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create skills tarball
+        run: |
+          cd skills
+          tar -czvf ../sentry-agent-skills.tar.gz .
+
+      - name: Update latest release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Skills
+          files: sentry-agent-skills.tar.gz
+          prerelease: false
+          make_latest: true
+          body: |
+            Automatically updated Sentry agent skills package.
+
+            ## Installation
+
+            Download and extract to your editor's skills directory:
+
+            ```bash
+            # Example for Claude Code (project-level)
+            mkdir -p .claude/skills
+            curl -L https://github.com/getsentry/sentry-agent-skills/releases/download/latest/sentry-agent-skills.tar.gz | tar -xz -C .claude/skills
+
+            # Or use sentry-wizard
+            npx @sentry/wizard@latest --skills
+            ```
+
+            ## Included Skills
+
+            - `sentry-code-review` - Analyze and resolve Sentry comments on GitHub PRs
+            - `sentry-nextjs-wizard` - Setup Sentry in Next.js projects
+            - `sentry-setup-ai-monitoring` - Setup Sentry AI Agent Monitoring
+            - `sentry-setup-logging` - Setup Sentry Logging
+            - `sentry-setup-metrics` - Setup Sentry Metrics
+            - `sentry-setup-tracing` - Setup Sentry Tracing and Performance Monitoring
