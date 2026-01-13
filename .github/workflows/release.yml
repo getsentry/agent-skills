@@ -18,7 +18,15 @@ jobs:
           cd skills
           tar -czvf ../sentry-agent-skills.tar.gz .
 
-      - name: Update latest release
+      - name: Delete existing latest release
+        run: gh release delete latest --yes || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete latest tag
+        run: git push origin :refs/tags/latest || true
+
+      - name: Create latest release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
