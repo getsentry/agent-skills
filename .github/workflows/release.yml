@@ -44,9 +44,13 @@ jobs:
 
             ## Included Skills
 
-            - `sentry-code-review` - Analyze and resolve Sentry comments on GitHub PRs
+            **Setup:**
             - `sentry-nextjs-wizard` - Setup Sentry in Next.js projects
-            - `sentry-setup-ai-monitoring` - Setup Sentry AI Agent Monitoring
+            - `sentry-setup-tracing` - Setup Sentry Tracing and Performance Monitoring
             - `sentry-setup-logging` - Setup Sentry Logging
             - `sentry-setup-metrics` - Setup Sentry Metrics
-            - `sentry-setup-tracing` - Setup Sentry Tracing and Performance Monitoring
+            - `sentry-setup-ai-monitoring` - Setup Sentry AI Agent Monitoring
+
+            **Workflow:**
+            - `sentry-fix-issues` - Find and fix production issues using Sentry MCP
+            - `sentry-code-review` - Analyze and resolve Sentry comments on GitHub PRs
