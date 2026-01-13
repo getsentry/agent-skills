@@ -6,20 +6,20 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 
 ### Setup Skills
 
-| Skill | Description | Platforms |
-|-------|-------------|-----------|
-| `sentry-nextjs-wizard` | Setup Sentry in Next.js using the wizard CLI | Next.js |
-| `sentry-setup-tracing` | Setup tracing, transactions, spans, and performance monitoring | JS, Python, Ruby |
-| `sentry-setup-logging` | Setup structured logging and integrate Pino/Winston/Loguru | JS, Python, Ruby |
-| `sentry-setup-metrics` | Setup custom metrics (counters, gauges, distributions) | JS, Python |
-| `sentry-setup-ai-monitoring` | Setup AI/LLM monitoring for OpenAI, Anthropic, LangChain, etc. | JS, Python |
+| Skill | Description | Platforms | Docs |
+|-------|-------------|-----------|------|
+| `sentry-nextjs-wizard` | Setup Sentry in Next.js using the wizard CLI | Next.js | [Next.js Guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/) |
+| `sentry-setup-tracing` | Setup tracing, transactions, spans, and performance monitoring | JS, Python, Ruby | [Tracing](https://docs.sentry.io/platforms/javascript/tracing/) |
+| `sentry-setup-logging` | Setup structured logging and integrate Pino/Winston/Loguru | JS, Python, Ruby | [Logs](https://docs.sentry.io/platforms/javascript/logs/) |
+| `sentry-setup-metrics` | Setup custom metrics (counters, gauges, distributions) | JS, Python | [Metrics](https://docs.sentry.io/platforms/javascript/metrics/) |
+| `sentry-setup-ai-monitoring` | Setup AI/LLM monitoring for OpenAI, Anthropic, LangChain, etc. | JS, Python | [AI Agents](https://docs.sentry.io/platforms/javascript/guides/nextjs/tracing/instrumentation/ai-agents-module/) |
 
 ### Workflow Skills
 
-| Skill | Description | Requirements |
-|-------|-------------|--------------|
-| `sentry-fix-issues` | Find and fix production issues using Sentry MCP | Sentry MCP |
-| `sentry-code-review` | Analyze and resolve Sentry Seer comments on GitHub PRs | GitHub CLI |
+| Skill | Description | Requirements | Docs |
+|-------|-------------|--------------|------|
+| `sentry-fix-issues` | Find and fix production issues using Sentry MCP | Sentry MCP | [Issues](https://docs.sentry.io/product/issues/) |
+| `sentry-code-review` | Analyze and resolve Sentry Seer comments on GitHub PRs | GitHub CLI | [Seer](https://docs.sentry.io/product/ai-in-sentry/seer/) |
 
 ## Installation
 
