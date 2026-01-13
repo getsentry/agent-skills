@@ -97,3 +97,42 @@ npm run dev    # Start dev server
 | Package install hangs | Add `--force-install` |
 | Git dirty warning | Add `--ignore-git-changes` |
 | Source maps not uploading | Verify `SENTRY_AUTH_TOKEN` is set |
+
+## Post-Setup: Project Configuration via MCP
+
+After wizard completes, check if Sentry MCP can auto-configure the project:
+
+```
+mcp: sentry_list_projects
+```
+
+**If MCP has create_project capability:**
+```
+mcp: sentry_create_project
+  name: "[project-name]"
+  platform: "javascript-nextjs"
+```
+
+Then update configuration files with the returned DSN automatically.
+
+**If MCP lacks create_project capability**, advise the user:
+
+> Your Sentry MCP connection doesn't have project creation permissions. You can either:
+> 1. **Re-authenticate MCP** with expanded scopes to enable automatic project creation
+> 2. **Manually create the project** at sentry.io and update the configuration files below
+
+### Files Requiring DSN/Project Configuration
+
+| File | What to Update |
+|------|----------------|
+| `.env.local` | Set `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` |
+| `sentry.server.config.ts` | Verify `dsn` if hardcoded (prefer env var) |
+| `sentry.edge.config.ts` | Verify `dsn` if hardcoded (prefer env var) |
+| `instrumentation-client.ts` | Verify `dsn` if hardcoded (prefer env var) |
+
+### Manual Project Creation Steps
+
+1. Go to **sentry.io > Create Project**
+2. Select **Next.js** platform
+3. Copy the DSN from project settings
+4. Create `.env.local` with credentials (see Environment Variables above)

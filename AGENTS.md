@@ -218,14 +218,14 @@ Use Sentry to accomplish tasks (debugging, code review). Pattern:
 
 ## Technical Accuracy
 
-**Always verify against official Sentry docs** before publishing:
+**Always verify against official Sentry docs** before publishing. Examples of Sentry docs are below:
 - https://docs.sentry.io/platforms/javascript/
 - https://docs.sentry.io/platforms/python/
 - https://docs.sentry.io/platforms/ruby/
 
 Common things to verify:
 - Minimum SDK versions for features
-- Correct API names and signatures
+- Correct API names, methods, and signatures
 - Auto-enabled vs explicit integrations
 - Platform-specific requirements (e.g., Next.js needs `instrumentOpenAiClient()` wrapper)
 
