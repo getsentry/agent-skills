@@ -248,28 +248,6 @@ sentry-setup-tracing/
 
 ---
 
-## Prerequisites
-
-### For `sentry-fix-issues` Skill
-
-The fix-issues skill requires the **Sentry MCP server** to query your Sentry project for issues, events, traces, and replays.
-
-**Install Sentry MCP:**
-```bash
-# Claude Code
-claude mcp add sentry -- npx -y @sentry/mcp-server
-
-# Or add to your MCP config manually
-```
-
-See [Sentry MCP documentation](https://docs.sentry.io/product/integrations/mcp/) for setup details.
-
-### For `sentry-code-review` Skill
-
-Requires **GitHub CLI** (`gh`) authenticated with access to the repository.
-
----
-
 ## Usage
 
 Once installed, your AI assistant will automatically discover the skills. Simply ask:
