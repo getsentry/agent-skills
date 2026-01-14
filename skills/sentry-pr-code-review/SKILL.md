@@ -1,5 +1,5 @@
 ---
-name: sentry-code-review
+name: sentry-pr-code-review
 description: Analyze and resolve Sentry Seer review comments on GitHub PRs. Use when asked to review or fix issues identified by Sentry in PR comments, or to find recent PRs with Sentry feedback.
 ---
 
