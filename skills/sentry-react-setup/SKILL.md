@@ -1,5 +1,5 @@
 ---
-name: sentry-react-wizard
+name: sentry-react-setup
 description: Setup Sentry in React apps. Use when asked to add Sentry to React, install @sentry/react, or configure error monitoring for React applications.
 ---
 

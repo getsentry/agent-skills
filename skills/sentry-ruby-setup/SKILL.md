@@ -1,5 +1,5 @@
 ---
-name: sentry-ruby-wizard
+name: sentry-ruby-setup
 description: Setup Sentry in Ruby apps. Use when asked to add Sentry to Ruby, install sentry-ruby gem, or configure error monitoring for Ruby applications or Rails.
 ---
 

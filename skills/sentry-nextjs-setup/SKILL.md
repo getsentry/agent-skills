@@ -1,9 +1,9 @@
 ---
-name: sentry-nextjs-wizard
+name: sentry-nextjs-setup
 description: Setup Sentry in Next.js using the wizard CLI. Use when asked to add Sentry to Next.js, install @sentry/nextjs, or configure error monitoring for Next.js apps.
 ---
 
-# Sentry Next.js Wizard
+# Sentry Next.js Setup
 
 Install and configure Sentry in Next.js projects using the official wizard CLI.
 

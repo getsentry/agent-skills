@@ -1,9 +1,9 @@
 ---
-name: sentry-react-native-wizard
+name: sentry-react-native-setup
 description: Setup Sentry in React Native using the wizard CLI. Use when asked to add Sentry to React Native, install @sentry/react-native, or configure error monitoring for React Native or Expo apps.
 ---
 
-# Sentry React Native Wizard
+# Sentry React Native Setup
 
 Install and configure Sentry in React Native projects using the official wizard CLI.
 
