@@ -53,7 +53,11 @@ jobs:
             ## Included Skills
 
             **Setup:**
-            - `sentry-nextjs-wizard` - Setup Sentry in Next.js projects
+            - `sentry-nextjs-setup` - Setup Sentry in Next.js projects
+            - `sentry-react-setup` - Setup Sentry in React apps
+            - `sentry-react-native-setup` - Setup Sentry in React Native/Expo apps
+            - `sentry-python-setup` - Setup Sentry in Python apps (Django, Flask, FastAPI)
+            - `sentry-ruby-setup` - Setup Sentry in Ruby/Rails apps
             - `sentry-setup-tracing` - Setup Sentry Tracing and Performance Monitoring
             - `sentry-setup-logging` - Setup Sentry Logging
             - `sentry-setup-metrics` - Setup Sentry Metrics
@@ -61,4 +65,4 @@ jobs:
 
             **Workflow:**
             - `sentry-fix-issues` - Find and fix production issues using Sentry MCP
-            - `sentry-code-review` - Analyze and resolve Sentry comments on GitHub PRs
+            - `sentry-pr-code-review` - Analyze and resolve Sentry comments on GitHub PRs
