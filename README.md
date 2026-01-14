@@ -9,6 +9,10 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | Skill | Description | Platforms | Docs |
 |-------|-------------|-----------|------|
 | `sentry-nextjs-wizard` | Setup Sentry in Next.js using the wizard CLI | Next.js | [Next.js Guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/) |
+| `sentry-react-wizard` | Setup Sentry in React apps | React | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
+| `sentry-react-native-wizard` | Setup Sentry in React Native using the wizard CLI | React Native, Expo | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
+| `sentry-python-wizard` | Setup Sentry in Python apps (Django, Flask, FastAPI) | Python | [Python Guide](https://docs.sentry.io/platforms/python/) |
+| `sentry-ruby-wizard` | Setup Sentry in Ruby apps (Rails) | Ruby | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
 | `sentry-setup-tracing` | Setup tracing, transactions, spans, and performance monitoring | JS, Python, Ruby | [Tracing](https://docs.sentry.io/platforms/javascript/tracing/) |
 | `sentry-setup-logging` | Setup structured logging and integrate Pino/Winston/Loguru | JS, Python, Ruby | [Logs](https://docs.sentry.io/platforms/javascript/logs/) |
 | `sentry-setup-metrics` | Setup custom metrics (counters, gauges, distributions) | JS, Python | [Metrics](https://docs.sentry.io/platforms/javascript/metrics/) |
@@ -257,6 +261,10 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | What to Say | Skill Used |
 |-------------|------------|
 | "Set up Sentry in my Next.js app" | `sentry-nextjs-wizard` |
+| "Add Sentry to my React app" | `sentry-react-wizard` |
+| "Set up Sentry in React Native" | `sentry-react-native-wizard` |
+| "Add Sentry to my Python/Django/Flask app" | `sentry-python-wizard` |
+| "Set up Sentry in my Ruby/Rails app" | `sentry-ruby-wizard` |
 | "Add performance monitoring to my app" | `sentry-setup-tracing` |
 | "Enable Sentry logging" | `sentry-setup-logging` |
 | "Track custom metrics with Sentry" | `sentry-setup-metrics` |
