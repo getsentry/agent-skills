@@ -8,7 +8,6 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 
 | Skill | Description | Platforms | Docs |
 |-------|-------------|-----------|------|
-| `sentry-nextjs-setup` | Setup Sentry in Next.js using the wizard CLI | Next.js | [Next.js Guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/) |
 | `sentry-react-setup` | Setup Sentry in React apps | React | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
 | `sentry-react-native-setup` | Setup Sentry in React Native using the wizard CLI | React Native, Expo | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
 | `sentry-python-setup` | Setup Sentry in Python apps | Python (Django, Flask, FastAPI) | [Python Guide](https://docs.sentry.io/platforms/python/) |
@@ -260,7 +259,6 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 
 | What to Say | Skill Used |
 |-------------|------------|
-| "Set up Sentry in my Next.js app" | `sentry-nextjs-setup` |
 | "Add Sentry to my React app" | `sentry-react-setup` |
 | "Set up Sentry in React Native" | `sentry-react-native-setup` |
 | "Add Sentry to my Python/Django/Flask app" | `sentry-python-setup` |
