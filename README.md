@@ -11,19 +11,19 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-nextjs-setup` | Setup Sentry in Next.js using the wizard CLI | Next.js | [Next.js Guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/) |
 | `sentry-react-setup` | Setup Sentry in React apps | React | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
 | `sentry-react-native-setup` | Setup Sentry in React Native using the wizard CLI | React Native, Expo | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
-| `sentry-python-setup` | Setup Sentry in Python apps (Django, Flask, FastAPI) | Python | [Python Guide](https://docs.sentry.io/platforms/python/) |
-| `sentry-ruby-setup` | Setup Sentry in Ruby apps (Rails) | Ruby | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
-| `sentry-setup-tracing` | Setup tracing, transactions, spans, and performance monitoring | JS, Python, Ruby | [Tracing](https://docs.sentry.io/platforms/javascript/tracing/) |
-| `sentry-setup-logging` | Setup structured logging and integrate Pino/Winston/Loguru | JS, Python, Ruby | [Logs](https://docs.sentry.io/platforms/javascript/logs/) |
-| `sentry-setup-metrics` | Setup custom metrics (counters, gauges, distributions) | JS, Python | [Metrics](https://docs.sentry.io/platforms/javascript/metrics/) |
-| `sentry-setup-ai-monitoring` | Setup AI/LLM monitoring for OpenAI, Anthropic, LangChain, etc. | JS, Python | [AI Agents](https://docs.sentry.io/platforms/javascript/guides/nextjs/tracing/instrumentation/ai-agents-module/) |
+| `sentry-python-setup` | Setup Sentry in Python apps | Python (Django, Flask, FastAPI) | [Python Guide](https://docs.sentry.io/platforms/python/) |
+| `sentry-ruby-setup` | Setup Sentry in Ruby apps | Ruby (Rails) | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
+| `sentry-setup-tracing` | Setup Sentry Tracing (Performance Monitoring) | JS, Python, Ruby | [Tracing](https://docs.sentry.io/platforms/javascript/tracing/) |
+| `sentry-setup-logging` | Setup Sentry Logging | JS, Python, Ruby | [Logs](https://docs.sentry.io/platforms/javascript/logs/) |
+| `sentry-setup-metrics` | Setup Sentry Metrics | JS, Python | [Metrics](https://docs.sentry.io/platforms/javascript/metrics/) |
+| `sentry-setup-ai-monitoring` | Setup Sentry AI Agent Monitoring | JS, Python | [AI Agents](https://docs.sentry.io/platforms/javascript/guides/nextjs/tracing/instrumentation/ai-agents-module/) |
 
 ### Workflow Skills
 
 | Skill | Description | Requirements | Docs |
 |-------|-------------|--------------|------|
-| `sentry-fix-issues` | Find and fix production issues using Sentry MCP | Sentry MCP | [Issues](https://docs.sentry.io/product/issues/) |
-| `sentry-pr-code-review` | Analyze and resolve Sentry Seer comments on GitHub PRs | GitHub CLI | [Seer](https://docs.sentry.io/product/ai-in-sentry/seer/) |
+| `sentry-fix-issues` | Find and fix issues from Sentry using MCP | Sentry MCP | [Issues](https://docs.sentry.io/product/issues/) |
+| `sentry-pr-code-review` | Review a project's PRs to check for issues detected in code review by Seer Bug Prediction | GitHub CLI | [Seer](https://docs.sentry.io/product/ai-in-sentry/seer/) |
 
 ## Installation
 

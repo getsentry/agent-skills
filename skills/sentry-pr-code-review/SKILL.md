@@ -1,6 +1,6 @@
 ---
 name: sentry-pr-code-review
-description: Analyze and resolve Sentry Seer review comments on GitHub PRs. Use when asked to review or fix issues identified by Sentry in PR comments, or to find recent PRs with Sentry feedback.
+description: Review a project's PRs to check for issues detected in code review by Seer Bug Prediction. Use when asked to review or fix issues identified by Sentry in PR comments, or to find recent PRs with Sentry feedback.
 ---
 
 # Sentry Code Review
