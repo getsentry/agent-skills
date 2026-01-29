@@ -184,6 +184,59 @@ SentrySDK.start { options in
 }
 ```
 
+## Size Analysis (Fastlane)
+
+Track app bundle size with Sentry using the Fastlane plugin.
+
+### Install Plugin
+
+```ruby
+# fastlane/Pluginfile
+gem 'fastlane-plugin-sentry'
+```
+
+Then run `bundle install`.
+
+### Configure Authentication
+
+```bash
+# Environment variable (recommended for CI)
+export SENTRY_AUTH_TOKEN=your_token_here
+```
+
+Or create `.sentryclirc` (add to `.gitignore`):
+
+```ini
+[auth]
+token=YOUR_SENTRY_AUTH_TOKEN
+```
+
+### Fastfile Lane
+
+```ruby
+lane :sentry_size do
+  build_app(
+    scheme: "YourApp",
+    configuration: "Release",
+    export_method: "app-store"
+  )
+
+  sentry_upload_build(
+    org_slug: "your-org",
+    project_slug: "your-project",
+    build_configuration: "Release"
+  )
+end
+```
+
+### Run Size Analysis
+
+```bash
+bundle exec fastlane sentry_size
+```
+
+View results in Sentry: **Settings > Size Analysis**
+
 ## Troubleshooting
 
 | Issue | Solution |
@@ -193,3 +246,4 @@ SentrySDK.start { options in
 | No replays | Set `sessionSampleRate` > 0, check SDK 8.0+ |
 | No logs | Set `enableLogs = true`, check SDK 8.55+ |
 | CocoaPods fails | Run `pod repo update`, check iOS 13+ target |
+| Size upload fails | Check `SENTRY_AUTH_TOKEN`, verify org/project slugs |
