@@ -16,6 +16,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-setup-logging` | Setup Sentry Logging | JS, Python, Ruby | [Logs](https://docs.sentry.io/platforms/javascript/logs/) |
 | `sentry-setup-metrics` | Setup Sentry Metrics | JS, Python | [Metrics](https://docs.sentry.io/platforms/javascript/metrics/) |
 | `sentry-setup-ai-monitoring` | Setup Sentry AI Agent Monitoring | JS, Python | [AI Agents](https://docs.sentry.io/platforms/javascript/guides/nextjs/tracing/instrumentation/ai-agents-module/) |
+| `sentry-otel-exporter-setup` | Setup OTel Collector with Sentry Exporter | OTel Collector | [OTel](https://docs.sentry.io/platforms/opentelemetry/) |
 
 ### Workflow Skills
 
@@ -288,6 +289,7 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Enable Sentry logging" | `sentry-setup-logging` |
 | "Track custom metrics with Sentry" | `sentry-setup-metrics` |
 | "Monitor my OpenAI/LangChain calls" | `sentry-setup-ai-monitoring` |
+| "Set up OTel Collector with Sentry" | `sentry-otel-exporter-setup` |
 
 ### Debugging & Workflow
 
