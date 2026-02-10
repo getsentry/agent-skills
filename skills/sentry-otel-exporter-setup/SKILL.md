@@ -1,61 +1,78 @@
 ---
 name: sentry-otel-exporter-setup
-description: Configure the OpenTelemetry Collector with Sentry Exporter for multi-project routing. Use when setting up OTel with Sentry, configuring collector pipelines for traces/logs, or routing telemetry from multiple services to separate Sentry projects.
+description: Configure the OpenTelemetry Collector with Sentry Exporter for multi-project routing and automatic project creation. Use when setting up OTel with Sentry, configuring collector pipelines for traces and logs, or routing telemetry from multiple services to Sentry projects.
 ---
 
 # Sentry OTel Exporter Setup
 
-Configure the OpenTelemetry Collector to send traces and logs to Sentry using the native Sentry Exporter.
+**Terminology**: Always capitalize "Sentry Exporter" when referring to the exporter component.
 
-## Invoke This Skill When
+Configure the OpenTelemetry Collector to send traces and logs to Sentry using the Sentry Exporter.
 
-- User asks to "set up OTel with Sentry" or "configure OpenTelemetry for Sentry"
-- User wants to route telemetry from multiple services to different Sentry projects
-- User asks about `otelcol-contrib`, collector config, or Sentry exporter
-- User wants to replace DSN-based routing with org-level authentication
+## Step 1: Choose Installation Method
 
-## When to Use `sentry` vs `otlphttp`
+Ask the user how they want to run the collector:
 
-| Scenario                                    | Exporter                             |
-| ------------------------------------------- | ------------------------------------ |
-| Single project, all services share one DSN  | `otlphttp`                           |
-| Multiple projects, per-service routing      | `sentry`                             |
-| Dynamic environments with auto-provisioning | `sentry` with `auto_create_projects` |
+```
+Question: "How do you want to run the OpenTelemetry Collector?"
+Header: "Collector"
+Options:
+  - label: "Binary"
+    description: "Download from GitHub releases. No Docker required."
+  - label: "Docker"
+    description: "Run as a container. Requires Docker installed."
+```
 
-## Prerequisites
+### Binary Installation
 
-- **otelcol-contrib** — The Sentry exporter is included in [otelcol-contrib](https://github.com/open-telemetry/opentelemetry-collector-releases/tree/main/distributions/otelcol-contrib)
-- Sentry organization with admin access to create Custom Integrations
+The Sentry exporter is included in **otelcol-contrib** v0.145.0+.
 
-## Phase 1: Create Sentry Auth Token
+Detect the user's platform and download the binary for them:
 
-Guide user to create Internal Integration:
+1. Run `uname -s` and `uname -m` to detect OS and architecture
+2. Map to release values:
+   - Darwin + arm64 → `darwin_arm64`
+   - Darwin + x86_64 → `darwin_amd64`
+   - Linux + x86_64 → `linux_amd64`
+   - Linux + aarch64 → `linux_arm64`
+3. Download and extract:
+```bash
+curl -LO https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.145.0/otelcol-contrib_0.145.0_<os>_<arch>.tar.gz
+tar -xzf otelcol-contrib_0.145.0_<os>_<arch>.tar.gz
+chmod +x otelcol-contrib
+```
 
-1. Navigate to **Settings → Developer Settings → Custom Integrations**
-2. Click **Create New Integration** → Choose **Internal Integration**
-3. Set permissions:
-   - **Project: Read** — required
-   - **Project: Write** — required for `auto_create_projects`
-   - **Team: Read** — required for auto-creation (finds team to assign projects)
-4. Save, then **Create New Token** and copy it
+Perform these steps for the user—do not just show them the commands.
 
-Get org slug from: **Settings → General Settings** or URL `https://sentry.io/organizations/{org-slug}/`
+### Docker Installation
 
-## Phase 2: Configure Collector
+1. Verify Docker is installed by running `docker --version`
+2. Pull the image for the user:
+```bash
+docker pull otel/opentelemetry-collector-contrib:0.145.0
+```
 
-### Configuration Options
+The `docker run` command comes later in Step 5 after the config is created.
 
-| Parameter                              | Required | Default        | Description                                   |
-| -------------------------------------- | -------- | -------------- | --------------------------------------------- |
-| `url`                                  | Yes      | -              | Base URL (`https://sentry.io` or self-hosted) |
-| `org_slug`                             | Yes      | -              | Organization slug                             |
-| `auth_token`                           | Yes      | -              | Internal Integration token                    |
-| `auto_create_projects`                 | No       | `false`        | Create missing projects automatically         |
-| `routing.project_from_attribute`       | No       | `service.name` | Resource attribute for routing                |
-| `routing.attribute_to_project_mapping` | No       | -              | Map attribute values to project slugs         |
-| `timeout`                              | No       | `30s`          | Exporter timeout                              |
+## Step 2: Configure Project Creation
 
-### Basic Config
+Ask the user whether to enable automatic project creation. Do not recommend either option:
+
+```
+Question: "Do you want Sentry to automatically create projects when telemetry arrives?"
+Header: "Auto-create"
+Options:
+  - label: "Yes"
+    description: "Projects created from service.name. Requires at least one team in your Sentry org. All new projects are assigned to the first team found. Initial data may be dropped during creation."
+  - label: "No"
+    description: "Projects must exist in Sentry before telemetry arrives."
+```
+
+**If user chooses Yes**: Warn them that the exporter will scan all projects and use the first team it finds. All auto-created projects will be assigned to that team. If they don't have any teams yet, they should create one in Sentry first.
+
+## Step 3: Write Collector Config
+
+Create `collector-config.yaml` with the Sentry exporter:
 
 ```yaml
 receivers:
@@ -87,167 +104,82 @@ service:
       exporters: [sentry]
 ```
 
-### Environment Variables
+If user chose auto-create in Step 2, add `auto_create_projects: true` to the sentry exporter.
+
+### Add Debug Exporter (Recommended)
+
+For troubleshooting during setup, add the debug exporter to see telemetry in collector logs:
+
+```yaml
+exporters:
+  sentry:
+    # ... existing config
+  debug:
+    verbosity: detailed
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [sentry, debug]  # Add debug here
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [sentry, debug]  # Add debug here
+```
+
+This logs all telemetry to console. Remove `debug` from exporters list once setup is verified.
+
+### Routing (Optional)
+
+To map service names to different project slugs, add `routing.attribute_to_project_mapping` to the sentry exporter. Services not in the mapping fall back to `service.name` as project slug.
+
+## Step 4: Set Up Credentials
+
+Create an Internal Integration in Sentry to get an auth token:
+
+1. Go to **Settings → Developer Settings → Custom Integrations**
+2. Click **Create New Integration** → Choose **Internal Integration**
+3. Set permissions:
+   - **Organization: Read** — required
+   - **Project: Read** — required
+   - **Project: Write** — required for `auto_create_projects`
+4. Save, then click **Create New Token** and copy it
+
+Create `.env` (or add to existing) with placeholder values. Say something like: "I'll add the environment variable keys with placeholder values for you to fill in."
 
 ```bash
-export SENTRY_ORG_SLUG=YOUR_SLUG_HERE
-export SENTRY_AUTH_TOKEN=YOUR_TOKEN_HERE
+SENTRY_ORG_SLUG=your-org-slug
+SENTRY_AUTH_TOKEN=your-token-here
 ```
 
-## Routing Options
+Tell the user to replace the placeholder values:
+- **Org slug**: Found in URL `sentry.io/organizations/{slug}/`
+- **Auth token**: The token from step 4
 
-### Automatic Project Creation
+Ensure `.env` is in `.gitignore`.
 
-Enable when services spin up dynamically (Kubernetes, serverless):
+## Step 5: Run the Collector
 
-```yaml
-exporters:
-  sentry:
-    # ... required fields
-    auto_create_projects: true
-```
+Provide run instructions based on the installation method chosen in Step 1.
 
-**Warning:** Project creation is asynchronous. First batch of data for a new project may be dropped while provisioning completes.
-
-### Custom Project Mapping
-
-Map service names to different project slugs:
-
-```yaml
-exporters:
-  sentry:
-    # ... required fields
-    routing:
-      attribute_to_project_mapping:
-        orders-service: ecommerce-orders
-        products-service: ecommerce-products
-```
-
-Services not in the mapping fall back to using `service.name` as project slug.
-
-### Route by Different Attributes
-
-Route by environment, team, or any resource attribute:
-
-```yaml
-exporters:
-  sentry:
-    # ... required fields
-    routing:
-      project_from_attribute: deployment.environment
-      attribute_to_project_mapping:
-        production: prod-monitoring
-        staging: staging-monitoring
-```
-
-## Self-Hosted Sentry
-
-For self-hosted installations:
-
-```yaml
-exporters:
-  sentry:
-    url: https://sentry.example.com
-    org_slug: ${env:SENTRY_ORG_SLUG}
-    auth_token: ${env:SENTRY_AUTH_TOKEN}
-    http:
-      tls:
-        ca_file: /path/to/ca.crt # Your CA certificate
-```
-
-**Warning:** Avoid `insecure_skip_verify: true` in production — it disables TLS verification.
-
-## Configure Apps
-
-Apps must set the routing attribute (default: `service.name`). This becomes the Sentry project slug.
-
-### Node.js
-
-```javascript
-const { Resource } = require("@opentelemetry/resources");
-const { ATTR_SERVICE_NAME } = require("@opentelemetry/semantic-conventions");
-
-const resource = new Resource({
-  [ATTR_SERVICE_NAME]: "api-gateway",
-});
-```
-
-### Python
-
-```python
-from opentelemetry.sdk.resources import Resource
-
-resource = Resource.create({"service.name": "api-gateway"})
-```
-
-### Environment Variable (Any Language)
+### Binary
 
 ```bash
-OTEL_SERVICE_NAME=api-gateway
-OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+./otelcol-contrib --config collector-config.yaml
 ```
 
-## Project Slug Requirements
-
-| Requirement                         | Example             |
-| ----------------------------------- | ------------------- |
-| Lowercase letters, numbers, hyphens | `api-gateway` ✅    |
-| No underscores                      | `orders_service` ❌ |
-| No uppercase                        | `OrdersService` ❌  |
-| Max 50 characters                   | -                   |
-
-**Important:** If routing attribute is missing or empty, data is dropped with a warning.
-
-## Verification
-
-1. Start collector and services
-2. Send test requests
-3. Check Sentry for projects matching service names
-4. Navigate to **Explore → Traces** to see distributed traces
-
-## Troubleshooting
-
-| Issue                     | Cause                              | Solution                                                   |
-| ------------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| 403 errors                | Missing permissions                | Verify token has Project:Read, Project:Write, Team:Read    |
-| Projects not created      | Invalid names or Team:Read missing | Use lowercase+hyphens, add Team:Read                       |
-| First batch dropped       | Async project creation             | Pre-create projects or send warmup requests                |
-| Data missing after delete | Collector cache                    | Restart collector to evict cache                           |
-| Partial batch failures    | Multi-project routing              | Retries not possible; some projects may receive duplicates |
-
-### Check Collector Logs
+### Docker
 
 ```bash
-docker logs otelcol-contrib 2>&1 | grep -i sentry
+docker run -d \
+  --name otel-collector \
+  -p 4317:4317 \
+  -p 4318:4318 \
+  -p 13133:13133 \
+  -v $(pwd)/collector-config.yaml:/etc/otelcol-contrib/config.yaml \
+  --env-file .env \
+  otel/opentelemetry-collector-contrib:0.145.0
 ```
 
-## Rate Limiting
-
-The exporter respects Sentry rate limits automatically:
-
-- Parses `X-Sentry-Rate-Limits` headers
-- Tracks per-project, per-category limits
-- Returns throttle errors to queue for retry
-- Falls back to 60s backoff on HTTP 429
-
-## Limitations
-
-| Limitation                                    | Workaround                                    |
-| --------------------------------------------- | --------------------------------------------- |
-| Missing routing attribute drops data          | Ensure `service.name` is set on all resources |
-| First batch for new projects may drop         | Pre-create projects or send warmup requests   |
-| Deleted projects cause 403 until cache evicts | Avoid deleting projects while collector runs  |
-| Single org per exporter                       | Deploy multiple exporters for multi-org       |
-| No metrics support                            | Use separate exporter for metrics             |
-| Partial failures can't retry cleanly          | Some projects may receive duplicates on retry |
-
-## Quick Reference
-
-| Component                 | Value                         |
-| ------------------------- | ----------------------------- |
-| Exporter                  | `sentry` (in otelcol-contrib) |
-| OTLP gRPC port            | `4317`                        |
-| OTLP HTTP port            | `4318`                        |
-| Default routing attribute | `service.name`                |
-| Auto-create default       | `false`                       |
-| Stability                 | Alpha (traces, logs)          |
