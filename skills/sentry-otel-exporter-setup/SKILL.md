@@ -147,7 +147,19 @@ Create an Internal Integration in Sentry to get an auth token:
    - **Project: Write** — required for `auto_create_projects`
 4. Save, then click **Create New Token** and copy it
 
-Create `.env` (or add to existing) with placeholder values. Say something like: "I'll add the environment variable keys with placeholder values for you to fill in."
+Search for existing `.env` files in the project using glob `**/.env`. If any are found, ask the user which one to add the credentials to:
+
+```
+Question: "Where should I add the Sentry credentials?"
+Header: "Env file"
+Options:
+  - label: "<path/to/.env>"  # One option per discovered .env file
+    description: "Add to existing file"
+  - label: "Create new at root"
+    description: "Create .env in project root"
+```
+
+Add these environment variables (with placeholder values) to the chosen file:
 
 ```bash
 SENTRY_ORG_SLUG=your-org-slug
@@ -158,7 +170,7 @@ Tell the user to replace the placeholder values:
 - **Org slug**: Found in URL `sentry.io/organizations/{slug}/`
 - **Auth token**: The token from step 4
 
-Ensure `.env` is in `.gitignore`.
+Ensure the chosen `.env` file is in `.gitignore`.
 
 ## Step 5: Run the Collector
 
