@@ -110,9 +110,19 @@ For troubleshooting during setup, add a `debug` exporter with `verbosity: detail
 
 ## Step 5: Add Environment Variable Placeholders
 
-The Sentry Exporter requires two environment variables. In this step, you'll add placeholder values that the user will fill in themselves.
+The Sentry Exporter requires two environment variables. You will add placeholder values that the user fills in themselves—never actual credentials.
 
-**Important**: Never ask the user to paste credentials into the chat. Only add placeholder values to files—the user replaces them manually.
+**Language constraint**: NEVER say "add credentials", "add environment variables", or "add the token" without explicitly stating these are **placeholders**. Always clarify the user fills them in later.
+
+DO NOT say:
+- "Let me add the environment variables"
+- "I'll add the credentials to your .env"
+- "Adding the Sentry auth token"
+
+SAY INSTEAD:
+- "I'll add placeholder environment variables for you to fill in"
+- "Adding placeholder values—you'll replace these with your actual credentials"
+- "I'll set up the env var keys with placeholder values"
 
 Search for existing `.env` files in the project using glob `**/.env`. If any are found, ask the user which file to add the placeholders to:
 
