@@ -26,6 +26,26 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 
 ## Installation
 
+### Quick Install (Recommended)
+
+Install all skills using the [skills CLI](https://skills.sh):
+
+```bash
+npx skills add https://github.com/getsentry/sentry-agent-skills
+```
+
+Or install a specific skill:
+
+```bash
+npx skills add https://github.com/getsentry/sentry-agent-skills --skill sentry-fix-issues
+```
+
+Browse available skills at [skills.sh/getsentry/sentry-agent-skills](https://skills.sh/getsentry/sentry-agent-skills).
+
+---
+
+### Manual Installation
+
 Choose your AI coding assistant below and run the appropriate command.
 
 ---
