@@ -145,7 +145,7 @@ SENTRY_AUTH_TOKEN=your-token-here
 
 After adding the placeholders, tell the user how to get their real values:
 
-1. **Org slug**: Found in your Sentry URL at `sentry.io/organizations/{slug}/`
+1. **Org slug**: Go to **Settings → Organization Settings → Organization Slug**. This is also your subdomain (e.g., `myorg` in `https://myorg.sentry.io`)
 2. **Auth token**: Create an Internal Integration in Sentry:
    - Go to **Settings → Developer Settings → Custom Integrations**
    - Click **Create New Integration** → Choose **Internal Integration**
