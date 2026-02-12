@@ -108,22 +108,16 @@ If user chose auto-create in Step 3, add `auto_create_projects: true` to the sen
 
 For troubleshooting during setup, add a `debug` exporter with `verbosity: detailed` to the pipelines. This logs all telemetry to console. Remove it once setup is verified.
 
-## Step 5: Set Up Credentials
+## Step 5: Add Environment Variable Placeholders
 
-Create an Internal Integration in Sentry to get an auth token:
+The Sentry Exporter requires two environment variables. In this step, you'll add placeholder values that the user will fill in themselves.
 
-1. Go to **Settings → Developer Settings → Custom Integrations**
-2. Click **Create New Integration** → Choose **Internal Integration**
-3. Set permissions:
-   - **Organization: Read** — required
-   - **Project: Read** — required
-   - **Project: Write** — required for `auto_create_projects`
-4. Save, then click **Create New Token** and copy it
+**Important**: Never ask the user to paste credentials into the chat. Only add placeholder values to files—the user replaces them manually.
 
-Search for existing `.env` files in the project using glob `**/.env`. If any are found, ask the user which one to add the credentials to:
+Search for existing `.env` files in the project using glob `**/.env`. If any are found, ask the user which file to add the placeholders to:
 
 ```
-Question: "Where should I add the Sentry credentials?"
+Question: "Where should I add the environment variable placeholders?"
 Header: "Env file"
 Options:
   - label: "<path/to/.env>"  # One option per discovered .env file
@@ -132,16 +126,26 @@ Options:
     description: "Create .env in project root"
 ```
 
-Add these environment variables (with placeholder values) to the chosen file:
+Add these placeholder values to the chosen file:
 
 ```bash
 SENTRY_ORG_SLUG=your-org-slug
 SENTRY_AUTH_TOKEN=your-token-here
 ```
 
-Tell the user to replace the placeholder values:
-- **Org slug**: Found in URL `sentry.io/organizations/{slug}/`
-- **Auth token**: The token created above
+After adding the placeholders, tell the user how to get their real values:
+
+1. **Org slug**: Found in your Sentry URL at `sentry.io/organizations/{slug}/`
+2. **Auth token**: Create an Internal Integration in Sentry:
+   - Go to **Settings → Developer Settings → Custom Integrations**
+   - Click **Create New Integration** → Choose **Internal Integration**
+   - Set permissions:
+     - **Organization: Read** — required
+     - **Project: Read** — required
+     - **Project: Write** — required only if using `auto_create_projects`
+   - Save, then click **Create New Token** and copy it
+
+Remind the user to replace the placeholder values in their `.env` file before running the collector.
 
 Ensure the chosen `.env` file is in `.gitignore`.
 
