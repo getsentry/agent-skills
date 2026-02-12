@@ -6,23 +6,24 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 
 ### Setup Skills
 
-| Skill | Description | Platforms | Docs |
-|-------|-------------|-----------|------|
-| `sentry-react-setup` | Setup Sentry in React apps | React | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
-| `sentry-react-native-setup` | Setup Sentry in React Native using the wizard CLI | React Native, Expo | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
-| `sentry-python-setup` | Setup Sentry in Python apps | Python (Django, Flask, FastAPI) | [Python Guide](https://docs.sentry.io/platforms/python/) |
-| `sentry-ruby-setup` | Setup Sentry in Ruby apps | Ruby (Rails) | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
-| `sentry-setup-tracing` | Setup Sentry Tracing (Performance Monitoring) | JS, Python, Ruby | [Tracing](https://docs.sentry.io/platforms/javascript/tracing/) |
-| `sentry-setup-logging` | Setup Sentry Logging | JS, Python, Ruby | [Logs](https://docs.sentry.io/platforms/javascript/logs/) |
-| `sentry-setup-metrics` | Setup Sentry Metrics | JS, Python | [Metrics](https://docs.sentry.io/platforms/javascript/metrics/) |
-| `sentry-setup-ai-monitoring` | Setup Sentry AI Agent Monitoring | JS, Python | [AI Agents](https://docs.sentry.io/platforms/javascript/guides/nextjs/tracing/instrumentation/ai-agents-module/) |
+| Skill                        | Description                                       | Platforms                       | Docs                                                                                                             |
+| ---------------------------- | ------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `sentry-react-setup`         | Setup Sentry in React apps                        | React                           | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/)                                         |
+| `sentry-react-native-setup`  | Setup Sentry in React Native using the wizard CLI | React Native, Expo              | [React Native Guide](https://docs.sentry.io/platforms/react-native/)                                             |
+| `sentry-python-setup`        | Setup Sentry in Python apps                       | Python (Django, Flask, FastAPI) | [Python Guide](https://docs.sentry.io/platforms/python/)                                                         |
+| `sentry-ruby-setup`          | Setup Sentry in Ruby apps                         | Ruby (Rails)                    | [Ruby Guide](https://docs.sentry.io/platforms/ruby/)                                                             |
+| `sentry-setup-tracing`       | Setup Sentry Tracing (Performance Monitoring)     | JS, Python, Ruby                | [Tracing](https://docs.sentry.io/platforms/javascript/tracing/)                                                  |
+| `sentry-setup-logging`       | Setup Sentry Logging                              | JS, Python, Ruby                | [Logs](https://docs.sentry.io/platforms/javascript/logs/)                                                        |
+| `sentry-setup-metrics`       | Setup Sentry Metrics                              | JS, Python                      | [Metrics](https://docs.sentry.io/platforms/javascript/metrics/)                                                  |
+| `sentry-setup-ai-monitoring` | Setup Sentry AI Agent Monitoring                  | JS, Python                      | [AI Agents](https://docs.sentry.io/platforms/javascript/guides/nextjs/tracing/instrumentation/ai-agents-module/) |
+| `sentry-otel-exporter-setup` | Setup OTel Collector with Sentry Exporter         | OTel Collector                  | [OTel](https://docs.sentry.io/platforms/opentelemetry/)                                                          |
 
 ### Workflow Skills
 
-| Skill | Description | Requirements | Docs |
-|-------|-------------|--------------|------|
-| `sentry-fix-issues` | Find and fix issues from Sentry using MCP | Sentry MCP | [Issues](https://docs.sentry.io/product/issues/) |
-| `sentry-pr-code-review` | Review a project's PRs to check for issues detected in code review by Seer Bug Prediction | GitHub CLI | [Seer](https://docs.sentry.io/product/ai-in-sentry/seer/) |
+| Skill                   | Description                                                                               | Requirements | Docs                                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------- | ------------ | --------------------------------------------------------- |
+| `sentry-fix-issues`     | Find and fix issues from Sentry using MCP                                                 | Sentry MCP   | [Issues](https://docs.sentry.io/product/issues/)          |
+| `sentry-pr-code-review` | Review a project's PRs to check for issues detected in code review by Seer Bug Prediction | GitHub CLI   | [Seer](https://docs.sentry.io/product/ai-in-sentry/seer/) |
 
 ## Installation
 
@@ -53,6 +54,7 @@ Choose your AI coding assistant below and run the appropriate command.
 ### Claude Code
 
 **User-level (applies to all projects):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p ~/.claude/skills && \
@@ -61,6 +63,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 ```
 
 **Project-level (single repository):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p .claude/skills && \
@@ -79,6 +82,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 sentry-setup-tracing/
   SKILL.md
 ```
+
 </details>
 
 ---
@@ -86,6 +90,7 @@ sentry-setup-tracing/
 ### OpenAI Codex
 
 **User-level (applies to all projects):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p ~/.codex/skills && \
@@ -94,6 +99,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 ```
 
 **Project-level (single repository):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p .codex/skills && \
@@ -112,6 +118,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 sentry-setup-tracing/
   SKILL.md
 ```
+
 </details>
 
 ---
@@ -119,6 +126,7 @@ sentry-setup-tracing/
 ### GitHub Copilot
 
 **User-level (applies to all projects):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p ~/.copilot/skills && \
@@ -127,6 +135,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 ```
 
 **Project-level (single repository):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p .github/skills && \
@@ -145,6 +154,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 sentry-setup-tracing/
   SKILL.md
 ```
+
 </details>
 
 ---
@@ -154,6 +164,7 @@ sentry-setup-tracing/
 > **Note:** Agent skills require Cursor Nightly. Enable via: `Cursor Settings > Rules > Import Settings > Agent Skills`
 
 **User-level (applies to all projects):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p ~/.cursor/skills && \
@@ -162,6 +173,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 ```
 
 **Project-level (single repository):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p .cursor/skills && \
@@ -180,6 +192,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 sentry-setup-tracing/
   SKILL.md
 ```
+
 </details>
 
 ---
@@ -187,6 +200,7 @@ sentry-setup-tracing/
 ### OpenCode
 
 **User-level (applies to all projects):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p ~/.config/opencode/skill && \
@@ -195,6 +209,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 ```
 
 **Project-level (single repository):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p .opencode/skill && \
@@ -217,6 +232,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 sentry-setup-tracing/
   SKILL.md
 ```
+
 </details>
 
 ---
@@ -224,6 +240,7 @@ sentry-setup-tracing/
 ### AmpCode (Sourcegraph Amp)
 
 **User-level (applies to all projects):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p ~/.config/agents/skills && \
@@ -232,6 +249,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 ```
 
 **Project-level (single repository):**
+
 ```bash
 git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skills && \
   mkdir -p .agents/skills && \
@@ -254,20 +272,21 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 sentry-setup-tracing/
   SKILL.md
 ```
+
 </details>
 
 ---
 
 ## Quick Reference
 
-| Client | User-Level Path | Project-Level Path |
-|--------|-----------------|-------------------|
-| **Claude Code** | `~/.claude/skills/` | `.claude/skills/` |
-| **Codex** | `~/.codex/skills/` | `.codex/skills/` |
-| **Copilot** | `~/.copilot/skills/` | `.github/skills/` |
-| **Cursor** | `~/.cursor/skills/` | `.cursor/skills/` |
-| **OpenCode** | `~/.config/opencode/skill/` | `.opencode/skill/` |
-| **AmpCode** | `~/.config/agents/skills/` | `.agents/skills/` |
+| Client          | User-Level Path             | Project-Level Path |
+| --------------- | --------------------------- | ------------------ |
+| **Claude Code** | `~/.claude/skills/`         | `.claude/skills/`  |
+| **Codex**       | `~/.codex/skills/`          | `.codex/skills/`   |
+| **Copilot**     | `~/.copilot/skills/`        | `.github/skills/`  |
+| **Cursor**      | `~/.cursor/skills/`         | `.cursor/skills/`  |
+| **OpenCode**    | `~/.config/opencode/skill/` | `.opencode/skill/` |
+| **AmpCode**     | `~/.config/agents/skills/`  | `.agents/skills/`  |
 
 ---
 
@@ -277,25 +296,26 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 
 ### Setup
 
-| What to Say | Skill Used |
-|-------------|------------|
-| "Add Sentry to my React app" | `sentry-react-setup` |
-| "Set up Sentry in React Native" | `sentry-react-native-setup` |
-| "Add Sentry to my Python/Django/Flask app" | `sentry-python-setup` |
-| "Set up Sentry in my Ruby/Rails app" | `sentry-ruby-setup` |
-| "Add performance monitoring to my app" | `sentry-setup-tracing` |
-| "Enable Sentry logging" | `sentry-setup-logging` |
-| "Track custom metrics with Sentry" | `sentry-setup-metrics` |
-| "Monitor my OpenAI/LangChain calls" | `sentry-setup-ai-monitoring` |
+| What to Say                                | Skill Used                   |
+| ------------------------------------------ | ---------------------------- |
+| "Add Sentry to my React app"               | `sentry-react-setup`         |
+| "Set up Sentry in React Native"            | `sentry-react-native-setup`  |
+| "Add Sentry to my Python/Django/Flask app" | `sentry-python-setup`        |
+| "Set up Sentry in my Ruby/Rails app"       | `sentry-ruby-setup`          |
+| "Add performance monitoring to my app"     | `sentry-setup-tracing`       |
+| "Enable Sentry logging"                    | `sentry-setup-logging`       |
+| "Track custom metrics with Sentry"         | `sentry-setup-metrics`       |
+| "Monitor my OpenAI/LangChain calls"        | `sentry-setup-ai-monitoring` |
+| "Set up OTel Collector with Sentry"        | `sentry-otel-exporter-setup` |
 
 ### Debugging & Workflow
 
-| What to Say | Skill Used |
-|-------------|------------|
-| "Fix the recent Sentry errors" | `sentry-fix-issues` |
-| "Debug the production TypeError" | `sentry-fix-issues` |
-| "Work through my Sentry backlog" | `sentry-fix-issues` |
-| "Review Sentry comments on PR #123" | `sentry-pr-code-review` |
+| What to Say                            | Skill Used              |
+| -------------------------------------- | ----------------------- |
+| "Fix the recent Sentry errors"         | `sentry-fix-issues`     |
+| "Debug the production TypeError"       | `sentry-fix-issues`     |
+| "Work through my Sentry backlog"       | `sentry-fix-issues`     |
+| "Review Sentry comments on PR #123"    | `sentry-pr-code-review` |
 | "Fix the issues Sentry found in my PR" | `sentry-pr-code-review` |
 
 The assistant will load the appropriate skill and guide you through the process.
@@ -312,6 +332,7 @@ skill-name/
 ```
 
 **SKILL.md structure:**
+
 ```markdown
 ---
 name: skill-name
