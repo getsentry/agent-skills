@@ -9,7 +9,22 @@ description: Configure the OpenTelemetry Collector with Sentry Exporter for mult
 
 Configure the OpenTelemetry Collector to send traces and logs to Sentry using the Sentry Exporter.
 
-## Step 1: Choose Installation Method
+## Step 1: Check for Existing Configuration
+
+Before creating anything, search for existing OpenTelemetry Collector configs:
+
+```bash
+# Search for common collector config file patterns
+find . -name "*.yaml" -o -name "*.yml" | xargs grep -l "receivers:" 2>/dev/null
+```
+
+Also check for files named `otel-collector-config.*`, `collector-config.*`, or `otelcol.*`.
+
+**If an existing config is found**: Ask the user if they want to modify it to add the Sentry exporter, or create a separate config file. Prefer editing the existing file to avoid duplicates.
+
+**If no config exists**: Proceed to create a new `collector-config.yaml`.
+
+## Step 2: Choose Installation Method
 
 Ask the user how they want to run the collector:
 
@@ -52,9 +67,9 @@ Perform these steps for the user—do not just show them the commands.
 docker pull otel/opentelemetry-collector-contrib:0.145.0
 ```
 
-The `docker run` command comes later in Step 5 after the config is created.
+The `docker run` command comes later in Step 6 after the config is created.
 
-## Step 2: Configure Project Creation
+## Step 3: Configure Project Creation
 
 Ask the user whether to enable automatic project creation. Do not recommend either option:
 
@@ -70,72 +85,30 @@ Options:
 
 **If user chooses Yes**: Warn them that the exporter will scan all projects and use the first team it finds. All auto-created projects will be assigned to that team. If they don't have any teams yet, they should create one in Sentry first.
 
-## Step 3: Write Collector Config
+## Step 4: Write Collector Config
 
-Create `collector-config.yaml` with the Sentry exporter:
+Fetch the latest configuration from the Sentry Exporter documentation:
 
-```yaml
-receivers:
-  otlp:
-    protocols:
-      grpc:
-        endpoint: 0.0.0.0:4317
-      http:
-        endpoint: 0.0.0.0:4318
+- **Example config** (use as template): `https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/exporter/sentryexporter/docs/example-config.yaml`
+- **Full spec** (all available options): `https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/exporter/sentryexporter/docs/spec.md`
 
-exporters:
-  sentry:
-    url: https://sentry.io
-    org_slug: ${env:SENTRY_ORG_SLUG}
-    auth_token: ${env:SENTRY_AUTH_TOKEN}
+Use WebFetch to retrieve the example config as a starting template. Reference the spec if the user needs advanced options not shown in the example.
 
-processors:
-  batch:
+### If editing an existing config
 
-service:
-  pipelines:
-    traces:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [sentry]
-    logs:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [sentry]
-```
+Add the `sentry` exporter to the `exporters:` section and include it in the appropriate pipelines (`traces`, `logs`). Do not remove or modify other exporters unless the user requests it.
 
-If user chose auto-create in Step 2, add `auto_create_projects: true` to the sentry exporter.
+### If creating a new config
+
+Create `collector-config.yaml` based on the fetched example. Ensure credentials use environment variable references (`${env:SENTRY_ORG_SLUG}`, `${env:SENTRY_AUTH_TOKEN}`).
+
+If user chose auto-create in Step 3, add `auto_create_projects: true` to the sentry exporter.
 
 ### Add Debug Exporter (Recommended)
 
-For troubleshooting during setup, add the debug exporter to see telemetry in collector logs:
+For troubleshooting during setup, add a `debug` exporter with `verbosity: detailed` to the pipelines. This logs all telemetry to console. Remove it once setup is verified.
 
-```yaml
-exporters:
-  sentry:
-    # ... existing config
-  debug:
-    verbosity: detailed
-
-service:
-  pipelines:
-    traces:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [sentry, debug]  # Add debug here
-    logs:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [sentry, debug]  # Add debug here
-```
-
-This logs all telemetry to console. Remove `debug` from exporters list once setup is verified.
-
-### Routing (Optional)
-
-To map service names to different project slugs, add `routing.attribute_to_project_mapping` to the sentry exporter. Services not in the mapping fall back to `service.name` as project slug.
-
-## Step 4: Set Up Credentials
+## Step 5: Set Up Credentials
 
 Create an Internal Integration in Sentry to get an auth token:
 
@@ -168,13 +141,13 @@ SENTRY_AUTH_TOKEN=your-token-here
 
 Tell the user to replace the placeholder values:
 - **Org slug**: Found in URL `sentry.io/organizations/{slug}/`
-- **Auth token**: The token from step 4
+- **Auth token**: The token created above
 
 Ensure the chosen `.env` file is in `.gitignore`.
 
-## Step 5: Run the Collector
+## Step 6: Run the Collector
 
-Provide run instructions based on the installation method chosen in Step 1.
+Provide run instructions based on the installation method chosen in Step 2.
 
 ### Binary
 
