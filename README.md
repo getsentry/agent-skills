@@ -23,6 +23,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 |-------|-------------|--------------|------|
 | `sentry-fix-issues` | Find and fix issues from Sentry using MCP | Sentry MCP | [Issues](https://docs.sentry.io/product/issues/) |
 | `sentry-pr-code-review` | Review a project's PRs to check for issues detected in code review by Seer Bug Prediction | GitHub CLI | [Seer](https://docs.sentry.io/product/ai-in-sentry/seer/) |
+| `sentry-create-alert` | Create Sentry alerts using the workflow engine API | `curl`, auth token | [Alerts](https://docs.sentry.io/product/alerts/) |
 
 ## Installation
 
@@ -297,6 +298,9 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Work through my Sentry backlog" | `sentry-fix-issues` |
 | "Review Sentry comments on PR #123" | `sentry-pr-code-review` |
 | "Fix the issues Sentry found in my PR" | `sentry-pr-code-review` |
+| "Create an alert that emails me when a high priority issue de-escalates" | `sentry-create-alert` |
+| "Set up a Slack notification for new Sentry issues" | `sentry-create-alert` |
+| `/sentry-create-alert` | `sentry-create-alert` |
 
 The assistant will load the appropriate skill and guide you through the process.
 
