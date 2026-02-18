@@ -11,14 +11,7 @@ Configure the OpenTelemetry Collector to send traces and logs to Sentry using th
 
 ## Step 1: Check for Existing Configuration
 
-Before creating anything, search for existing OpenTelemetry Collector configs:
-
-```bash
-# Search for common collector config file patterns
-find . -name "*.yaml" -o -name "*.yml" | xargs grep -l "receivers:" 2>/dev/null
-```
-
-Also check for files named `otel-collector-config.*`, `collector-config.*`, or `otelcol.*`.
+Search for existing OpenTelemetry Collector configs by looking for YAML files containing `receivers:`. Also check for files named `otel-collector-config.*`, `collector-config.*`, or `otelcol.*`.
 
 **If an existing config is found**: Ask the user if they want to modify it to add the Sentry exporter, or create a separate config file. Prefer editing the existing file to avoid duplicates.
 
@@ -40,9 +33,9 @@ Options:
 
 ### Binary Installation
 
-The Sentry exporter is included in **otelcol-contrib** v0.145.0+.
+Use **otelcol-contrib** v0.145.0+ (includes the Sentry Exporter).
 
-Detect the user's platform and download the binary for them:
+Detect the user's platform and download the binary:
 
 1. Run `uname -s` and `uname -m` to detect OS and architecture
 2. Map to release values:
@@ -182,3 +175,24 @@ docker run -d \
   otel/opentelemetry-collector-contrib:0.145.0
 ```
 
+## Step 7: Verify Setup
+
+1. Check collector logs for successful startup (no errors about invalid config or failed connections)
+2. Look for log messages indicating connection to Sentry
+3. Send test telemetry from an instrumented service and verify it appears in Sentry
+
+**Success criteria:**
+- Collector starts without errors
+- Traces and/or logs appear in Sentry within 60 seconds of sending
+
+If using Docker, check logs with `docker logs otel-collector`.
+
+## Troubleshooting
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| "failed to create project" | Missing Project:Write permission | Update Internal Integration permissions in Sentry |
+| "no team found" | No teams in org | Create a team in Sentry before enabling auto-create |
+| "invalid auth token" | Wrong token type or expired | Use Internal Integration token, not user auth token |
+| "connection refused" on 4317/4318 | Collector not running or port conflict | Check collector logs and ensure ports are available |
+| Config validation errors | Invalid YAML or missing required fields | Validate config with `./otelcol-contrib validate --config collector-config.yaml` |
