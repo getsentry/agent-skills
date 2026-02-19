@@ -17,7 +17,22 @@ Search for existing OpenTelemetry Collector configs by looking for YAML files co
 
 **If no config exists**: Proceed to create a new `collector-config.yaml`.
 
-## Step 2: Choose Installation Method
+## Step 2: Check Collector Version
+
+The Sentry Exporter requires **otelcol-contrib v0.145.0 or later**.
+
+### Check for existing collector
+
+1. Run `which otelcol-contrib` or check for `./otelcol-contrib` in the project
+2. If found, run `otelcol-contrib --version` and parse the version number
+
+| Existing Version | Action |
+|------------------|--------|
+| ≥ 0.145.0 | Skip to Step 3 — existing collector is compatible |
+| < 0.145.0 | Proceed with installation below |
+| Not installed | Proceed with installation below |
+
+### Installation
 
 Ask the user how they want to run the collector:
 
@@ -33,7 +48,10 @@ Options:
 
 ### Binary Installation
 
-Use **otelcol-contrib** v0.145.0+ (includes the Sentry Exporter).
+Fetch the latest release version from GitHub:
+```bash
+curl -s https://api.github.com/repos/open-telemetry/opentelemetry-collector-releases/releases/latest | grep '"tag_name"' | cut -d'"' -f4
+```
 
 Detect the user's platform and download the binary:
 
@@ -43,10 +61,10 @@ Detect the user's platform and download the binary:
    - Darwin + x86_64 → `darwin_amd64`
    - Linux + x86_64 → `linux_amd64`
    - Linux + aarch64 → `linux_arm64`
-3. Download and extract:
+3. Download and extract using the latest version:
 ```bash
-curl -LO https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.145.0/otelcol-contrib_0.145.0_<os>_<arch>.tar.gz
-tar -xzf otelcol-contrib_0.145.0_<os>_<arch>.tar.gz
+curl -LO https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/<version>/otelcol-contrib_<version>_<os>_<arch>.tar.gz
+tar -xzf otelcol-contrib_<version>_<os>_<arch>.tar.gz
 chmod +x otelcol-contrib
 ```
 
@@ -55,9 +73,10 @@ Perform these steps for the user—do not just show them the commands.
 ### Docker Installation
 
 1. Verify Docker is installed by running `docker --version`
-2. Pull the image for the user:
+2. Fetch the latest release tag from GitHub (same as above)
+3. Pull the image using the latest version:
 ```bash
-docker pull otel/opentelemetry-collector-contrib:0.145.0
+docker pull otel/opentelemetry-collector-contrib:<version>
 ```
 
 The `docker run` command comes later in Step 6 after the config is created.
@@ -172,8 +191,10 @@ docker run -d \
   -p 13133:13133 \
   -v $(pwd)/collector-config.yaml:/etc/otelcol-contrib/config.yaml \
   --env-file .env \
-  otel/opentelemetry-collector-contrib:0.145.0
+  otel/opentelemetry-collector-contrib:<version>
 ```
+
+Use the same version that was pulled in Step 2.
 
 ## Step 7: Verify Setup
 
