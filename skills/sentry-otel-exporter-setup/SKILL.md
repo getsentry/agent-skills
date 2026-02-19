@@ -167,9 +167,33 @@ After adding the placeholders, tell the user how to get their real values:
      - **Project: Write** — required only if using `auto_create_projects`
    - Save, then click **Create New Token** and copy it
 
-Remind the user to replace the placeholder values in their `.env` file before running the collector.
-
 Ensure the chosen `.env` file is in `.gitignore`.
+
+### Wait for user to set credentials
+
+After explaining how to get the values, ask the user to confirm when they've updated the `.env` file:
+
+```
+Question: "Have you updated the .env file with your real Sentry credentials?"
+Header: "Ready"
+Options:
+  - label: "Yes, credentials are set"
+    description: "Proceed to validate and run the collector"
+  - label: "Not yet"
+    description: "I'll wait while you update the .env file"
+```
+
+If user selects "Not yet", wait and ask again. Do not proceed to Step 6 until credentials are confirmed.
+
+### Validate config
+
+Once credentials are set, validate the config before running:
+
+```bash
+./otelcol-contrib validate --config collector-config.yaml
+```
+
+If validation fails, fix the issues before proceeding.
 
 ## Step 6: Run the Collector
 
@@ -216,4 +240,4 @@ If using Docker, check logs with `docker logs otel-collector`.
 | "no team found" | No teams in org | Create a team in Sentry before enabling auto-create |
 | "invalid auth token" | Wrong token type or expired | Use Internal Integration token, not user auth token |
 | "connection refused" on 4317/4318 | Collector not running or port conflict | Check collector logs and ensure ports are available |
-| Config validation errors | Invalid YAML or missing required fields | Validate config with `./otelcol-contrib validate --config collector-config.yaml` |
+| Validation fails with env var errors | .env file not loaded or placeholders not replaced | Ensure real credentials are in .env and the file is sourced |
