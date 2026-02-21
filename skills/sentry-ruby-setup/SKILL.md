@@ -13,6 +13,8 @@ Install and configure Sentry in Ruby projects.
 - User wants error monitoring, logging, or tracing in Ruby
 - User mentions "sentry-ruby" gem or Ruby on Rails
 
+**Important:** The configuration options and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and defaults may have changed.
+
 ## Requirements
 
 - Ruby 2.4+ or recent JRuby versions

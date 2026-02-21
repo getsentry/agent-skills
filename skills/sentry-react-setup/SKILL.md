@@ -13,6 +13,8 @@ Install and configure Sentry in React projects.
 - User wants error monitoring, logging, or tracing in React
 - User mentions "@sentry/react" or React error boundaries
 
+**Important:** The configuration options and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and defaults may have changed.
+
 ## Install
 
 ```bash

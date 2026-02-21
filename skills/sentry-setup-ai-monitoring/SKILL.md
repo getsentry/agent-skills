@@ -13,6 +13,8 @@ Configure Sentry to track LLM calls, agent executions, tool usage, and token con
 - User wants "AI observability" or "agent monitoring"
 - User asks about token usage, model latency, or AI costs
 
+**Important:** The SDK versions, API names, and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and minimum versions may have changed.
+
 ## Prerequisites
 
 AI monitoring requires **tracing enabled** (`tracesSampleRate > 0`).

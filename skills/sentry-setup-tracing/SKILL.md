@@ -13,6 +13,8 @@ Configure Sentry's performance monitoring to track transactions and spans.
 - User wants to track API response times, page loads, or latency
 - User asks about `tracesSampleRate` or custom spans
 
+**Important:** The SDK versions, API names, and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and minimum versions may have changed.
+
 ## Quick Reference
 
 | Platform | Enable | Custom Span |

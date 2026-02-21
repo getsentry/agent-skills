@@ -13,6 +13,8 @@ Configure Sentry's structured logging feature.
 - User wants to integrate logging libraries (Pino, Winston, Loguru) with Sentry
 - User asks about `Sentry.logger` or `sentry_sdk.logger`
 
+**Important:** The SDK versions, API names, and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and minimum versions may have changed.
+
 ## Quick Reference
 
 | Platform | Min SDK | Enable Flag | Logger API |

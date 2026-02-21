@@ -13,6 +13,8 @@ Install and configure Sentry in Python projects.
 - User wants error monitoring, logging, or tracing in Python
 - User mentions "sentry-sdk" or Python frameworks (Django, Flask, FastAPI)
 
+**Important:** The configuration options and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and defaults may have changed.
+
 ## Install
 
 ```bash

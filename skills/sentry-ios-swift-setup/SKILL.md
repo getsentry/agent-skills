@@ -13,6 +13,8 @@ Install and configure Sentry in iOS projects using Swift and SwiftUI.
 - User wants error monitoring, tracing, or session replay in iOS
 - User mentions "sentry-cocoa" or iOS crash reporting
 
+**Important:** The configuration options and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and defaults may have changed.
+
 ## Requirements
 
 - iOS 11.0+

@@ -13,6 +13,8 @@ Install and configure Sentry in React Native projects using the official wizard 
 - User wants error monitoring, logging, or tracing in React Native or Expo
 - User mentions "@sentry/react-native" or mobile error tracking
 
+**Important:** The configuration options and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and defaults may have changed.
+
 ## Wizard Setup (Recommended)
 
 ```bash
