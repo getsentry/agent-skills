@@ -17,6 +17,16 @@ Configure Sentry to track LLM calls, agent executions, tool usage, and token con
 
 AI monitoring requires **tracing enabled** (`tracesSampleRate > 0`).
 
+## Data Capture Warning
+
+**Prompt and output recording captures user content that is likely PII.** Before enabling `recordInputs`/`recordOutputs` (JS) or `include_prompts`/`send_default_pii` (Python), confirm:
+
+- The application's privacy policy permits capturing user prompts and model responses
+- Captured data complies with applicable regulations (GDPR, CCPA, etc.)
+- Sentry data retention settings are appropriate for the sensitivity of the data
+
+**Ask the user** whether they want prompt/output capture enabled. Do not enable it by default — configure it only when explicitly requested or confirmed. Use `tracesSampleRate: 1.0` only in development; in production, use a lower value or a `tracesSampler` function.
+
 ## Detection First
 
 **Always detect installed AI SDKs before configuring:**
@@ -57,14 +67,18 @@ grep -E '(openai|anthropic|langchain|huggingface)' requirements.txt pyproject.to
 
 ### Auto-enabled integrations (OpenAI, Anthropic, Google GenAI, LangChain)
 
-Just ensure tracing is enabled. To capture prompts/outputs:
+Just ensure tracing is enabled. Prompt/output capture is opt-in (see Data Capture Warning):
 
 ```javascript
 Sentry.init({
   dsn: "YOUR_DSN",
-  tracesSampleRate: 1.0,
+  tracesSampleRate: 1.0, // Lower in production (e.g., 0.1)
   integrations: [
-    Sentry.openAIIntegration({ recordInputs: true, recordOutputs: true }),
+    Sentry.openAIIntegration({
+      // Optional — captures prompt/response content (contains user PII)
+      // recordInputs: true,
+      // recordOutputs: true,
+    }),
   ],
 });
 ```
@@ -85,8 +99,14 @@ const openai = Sentry.instrumentOpenAiClient(new OpenAI());
 
 ```javascript
 integrations: [
-  Sentry.langChainIntegration({ recordInputs: true, recordOutputs: true }),
-  Sentry.langGraphIntegration({ recordInputs: true, recordOutputs: true }),
+  Sentry.langChainIntegration({
+    // recordInputs: true,  // Opt-in: captures prompt content (PII)
+    // recordOutputs: true, // Opt-in: captures response content (PII)
+  }),
+  Sentry.langGraphIntegration({
+    // recordInputs: true,
+    // recordOutputs: true,
+  }),
 ],
 ```
 
@@ -102,7 +122,11 @@ Enable telemetry per-call:
 await generateText({
   model: openai("gpt-4o"),
   prompt: "Hello",
-  experimental_telemetry: { isEnabled: true, recordInputs: true, recordOutputs: true },
+  experimental_telemetry: {
+    isEnabled: true,
+    // recordInputs: true,  // Opt-in: captures prompt content (PII)
+    // recordOutputs: true, // Opt-in: captures response content (PII)
+  },
 });
 ```
 
@@ -114,9 +138,13 @@ from sentry_sdk.integrations.openai import OpenAIIntegration  # or anthropic, la
 
 sentry_sdk.init(
     dsn="YOUR_DSN",
-    traces_sample_rate=1.0,
-    send_default_pii=True,  # Required for prompt capture
-    integrations=[OpenAIIntegration(include_prompts=True)],
+    traces_sample_rate=1.0,  # Lower in production (e.g., 0.1)
+    # send_default_pii=True,  # Opt-in: required for prompt capture (sends user PII)
+    integrations=[
+        OpenAIIntegration(
+            # include_prompts=True,  # Opt-in: captures prompt/response content (PII)
+        ),
+    ],
 )
 ```
 
@@ -162,9 +190,12 @@ await Sentry.startSpan({
 
 ## PII Considerations
 
-Prompts/outputs are PII. To capture:
+Prompts and model outputs contain user-generated content and are classified as PII. Capture is **disabled by default** and must be explicitly opted into:
+
 - **JS**: `recordInputs: true, recordOutputs: true` per-integration
 - **Python**: `include_prompts=True` + `send_default_pii=True`
+
+Only enable these after confirming with the user that prompt capture is desired and compliant with their data handling requirements.
 
 ## Troubleshooting
 
