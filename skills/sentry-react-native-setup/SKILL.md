@@ -29,7 +29,7 @@ npx @sentry/wizard@latest -i reactNative
 | Android setup | Enables Gradle build step for source maps |
 | iOS setup | Wraps Xcode build phase, adds debug symbol upload |
 | Pod install | Runs `pod install` for iOS |
-| Credentials | Stores in `ios/sentry.properties`, `android/sentry.properties`, `.env.local` |
+| Credentials | Stores in `ios/sentry.properties`, `android/sentry.properties`, `env.local` |
 | Init code | Configures Sentry in `App.tsx` or `_layout.tsx` |
 
 ## Manual Configuration
@@ -96,7 +96,7 @@ Works for both managed and bare Expo projects.
 | `app.json` | Expo config (if Expo) |
 | `ios/sentry.properties` | iOS build credentials |
 | `android/sentry.properties` | Android build credentials |
-| `.env.local` | Environment variables |
+| `env.local` | Environment variables |
 
 ## Environment Variables
 

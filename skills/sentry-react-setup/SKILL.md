@@ -21,7 +21,7 @@ npm install @sentry/react --save
 
 ## Configure
 
-Create `src/instrument.js` (must be imported first in your app):
+Create `instrument.js` in your project root (must be imported first in your app):
 
 ```javascript
 import * as Sentry from "@sentry/react";
@@ -30,13 +30,13 @@ Sentry.init({
   dsn: "YOUR_SENTRY_DSN",
   sendDefaultPii: true,
   
-  // Tracing
-  integrations: [Sentry.browserTracingIntegration()],
+  // Tracing + Session Replay
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration(),
+  ],
   tracesSampleRate: 1.0,
   tracePropagationTargets: [/^\//, /^https:\/\/yourserver\.io\/api/],
-  
-  // Session Replay
-  integrations: [Sentry.replayIntegration()],
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
   
@@ -92,7 +92,8 @@ import * as Sentry from "@sentry/react";
 |---------------|-------------|
 | v7 (non-framework) | `Sentry.reactRouterV7BrowserTracingIntegration` |
 | v6 | `Sentry.reactRouterV6BrowserTracingIntegration` |
-| v4/v5 | `Sentry.reactRouterV5BrowserTracingIntegration` |
+| v5 | `Sentry.reactRouterV5BrowserTracingIntegration` |
+| v4 | `Sentry.reactRouterV4BrowserTracingIntegration` |
 
 ## Redux Integration (Optional)
 
@@ -118,11 +119,13 @@ npx @sentry/wizard@latest -i sourcemaps
 ## Environment Variables
 
 ```bash
-REACT_APP_SENTRY_DSN=https://xxx@o123.ingest.sentry.io/456
-SENTRY_AUTH_TOKEN=sntrys_xxx
-SENTRY_ORG=my-org
-SENTRY_PROJECT=my-project
+SENTRY_DSN=https://xxx@o123.ingest.sentry.io/456
+SENTRY_AUTH_TOKEN=sntrys_xxx  # Used by sentry-cli / source maps, not the SDK
+SENTRY_ORG=my-org              # Used by sentry-cli, not the SDK
+SENTRY_PROJECT=my-project      # Used by sentry-cli, not the SDK
 ```
+
+**Note:** The SDK reads `SENTRY_DSN` automatically. If using Create React App, prefix with `REACT_APP_`; for Vite, use `VITE_`. `SENTRY_AUTH_TOKEN`/`ORG`/`PROJECT` are used by `sentry-cli` for source map uploads, not by the browser SDK.
 
 ## Verification
 

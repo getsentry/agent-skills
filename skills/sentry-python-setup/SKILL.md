@@ -114,24 +114,33 @@ app = FastAPI()
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `dsn` | Sentry DSN | Required |
-| `send_default_pii` | Include user data | `False` |
-| `traces_sample_rate` | % of transactions traced | `0` |
-| `profile_session_sample_rate` | % of sessions profiled | `0` |
+| `dsn` | Sentry DSN | `None` (SDK no-ops without it) |
+| `send_default_pii` | Include user data | `None` |
+| `traces_sample_rate` | % of transactions traced | `None` (tracing disabled) |
+| `profile_session_sample_rate` | % of sessions profiled | `None` (profiling disabled) |
 | `enable_logs` | Send logs to Sentry | `False` |
-| `environment` | Environment name | Auto-detected |
+| `environment` | Environment name | `production` (or `SENTRY_ENVIRONMENT` env var) |
 | `release` | Release version | Auto-detected |
 
 ## Environment Variables
 
+The SDK auto-reads these:
+
 ```bash
 SENTRY_DSN=https://xxx@o123.ingest.sentry.io/456
+SENTRY_ENVIRONMENT=production
+SENTRY_RELEASE=1.0.0
+```
+
+For `sentry-cli` (source maps, releases), also set:
+
+```bash
 SENTRY_AUTH_TOKEN=sntrys_xxx
 SENTRY_ORG=my-org
 SENTRY_PROJECT=my-project
 ```
 
-Or use in code:
+Or pass DSN in code:
 
 ```python
 import os

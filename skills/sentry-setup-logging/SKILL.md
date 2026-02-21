@@ -57,7 +57,7 @@ Sentry.logger.info(Sentry.logger.fmt`User ${userId} purchased ${productName}`);
 | Library | Integration | Min SDK |
 |---------|-------------|---------|
 | Pino | `Sentry.pinoIntegration()` | 10.18.0+ |
-| Winston | `Sentry.createSentryWinstonTransport()` | 9.13.0+ |
+| Winston | `Sentry.createSentryWinstonTransport()` | 9.13.0+ (undocumented) |
 | Consola | `Sentry.createConsolaReporter()` | 10.12.0+ |
 
 ## Python Setup
@@ -78,7 +78,7 @@ sentry_sdk.init(
 ### 3. Stdlib logging capture (optional)
 ```python
 from sentry_sdk.integrations.logging import LoggingIntegration
-integrations=[LoggingIntegration(sentry_logs_level=logging.WARNING)]
+integrations=[LoggingIntegration(sentry_logs_level=logging.INFO)]
 ```
 
 ### 4. Use structured logging
@@ -92,7 +92,7 @@ sentry_logger.error("Payment failed", order_id="456", amount=99.99)
 ### Loguru integration
 ```python
 from sentry_sdk.integrations.loguru import LoguruIntegration
-integrations=[LoguruIntegration(sentry_logs_level=LoggingLevels.WARNING.value)]
+integrations=[LoguruIntegration(sentry_logs_level=LoggingLevels.INFO.value)]
 ```
 
 ## Ruby Setup
@@ -107,7 +107,7 @@ bundle show sentry-ruby
 Sentry.init do |config|
   config.dsn = "YOUR_DSN"
   config.enable_logs = true
-  config.enabled_patches = [:logger]  # Optional: capture stdlib Logger
+  config.enabled_patches << :logger  # Optional: capture stdlib Logger
 end
 ```
 

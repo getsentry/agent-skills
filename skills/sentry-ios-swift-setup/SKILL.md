@@ -15,23 +15,21 @@ Install and configure Sentry in iOS projects using Swift and SwiftUI.
 
 ## Requirements
 
-- iOS 13.0+
-- Xcode 15.0+
-- Swift 5.0+
+- iOS 11.0+
 
 ## Install
 
 ### Swift Package Manager (Recommended)
 
 1. File > Add Package Dependencies
-2. Enter: `https://github.com/getsentry/sentry-cocoa`
-3. Select version rule: "Up to Next Major" from `9.0.0`
+2. Enter: `https://github.com/getsentry/sentry-cocoa.git`
+3. Select version rule: "Up to Next Major" from `9.5.0`
 
 ### CocoaPods
 
 ```ruby
 # Podfile
-pod 'Sentry', '~> 9.0'
+pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '9.5.0'
 ```
 
 Then run `pod install`.
@@ -118,10 +116,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 |---------|-----------------|
 | App Launches | Cold/warm start times |
 | Network | URLSession requests |
-| UI | Screen loads, transitions |
+| UI | UIViewController loads, user interactions |
 | File I/O | Read/write operations |
 | Core Data | Fetch/save operations |
-| App Hangs | Main thread blocking |
+| Frames | Slow and frozen frame detection |
 
 ## Logging
 
@@ -167,8 +165,12 @@ SentrySDK.setUser(nil)
 // Test error capture
 SentrySDK.capture(message: "Test from iOS")
 
-// Test crash (dev only)
-SentrySDK.crash()
+// Or trigger a test error
+do {
+    try someFailingFunction()
+} catch {
+    SentrySDK.capture(error: error)
+}
 ```
 
 ## Production Settings
@@ -190,12 +192,9 @@ Track app bundle size with Sentry using the Fastlane plugin.
 
 ### Install Plugin
 
-```ruby
-# fastlane/Pluginfile
-gem 'fastlane-plugin-sentry'
+```bash
+bundle exec fastlane add_plugin fastlane-plugin-sentry
 ```
-
-Then run `bundle install`.
 
 ### Configure Authentication
 
@@ -235,7 +234,7 @@ end
 bundle exec fastlane sentry_size
 ```
 
-View results in Sentry: **Settings > Size Analysis**
+View results in the Sentry UI after the upload completes.
 
 ## Troubleshooting
 
@@ -243,7 +242,7 @@ View results in Sentry: **Settings > Size Analysis**
 |-------|----------|
 | Events not appearing | Check DSN, enable `debug = true` |
 | No traces | Set `tracesSampleRate` > 0 |
-| No replays | Set `sessionSampleRate` > 0, check SDK 8.0+ |
-| No logs | Set `enableLogs = true`, check SDK 8.55+ |
-| CocoaPods fails | Run `pod repo update`, check iOS 13+ target |
+| No replays | Set `sessionSampleRate` > 0, check SDK 8.31.1+ |
+| No logs | Set `enableLogs = true`, check SDK 8.55.0+ |
+| CocoaPods fails | Run `pod repo update`, check iOS 11+ target |
 | Size upload fails | Check `SENTRY_AUTH_TOKEN`, verify org/project slugs |

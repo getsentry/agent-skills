@@ -35,23 +35,25 @@ grep -E '(openai|anthropic|langchain|huggingface)' requirements.txt pyproject.to
 
 | Package | Integration | Min Sentry SDK | Auto? |
 |---------|-------------|----------------|-------|
-| `openai` | `openAIIntegration()` | 10.2.0 | Yes |
-| `@anthropic-ai/sdk` | `anthropicAIIntegration()` | 10.12.0 | Yes |
-| `ai` (Vercel) | `vercelAIIntegration()` | 10.6.0 | Node only* |
-| `@langchain/*` | `langChainIntegration()` | 10.22.0 | Yes |
-| `@langchain/langgraph` | `langGraphIntegration()` | 10.25.0 | Yes |
-| `@google/genai` | `googleGenAIIntegration()` | 10.14.0 | Yes |
+| `openai` | `openAIIntegration()` | 10.28.0 | Yes |
+| `@anthropic-ai/sdk` | `anthropicAIIntegration()` | 10.28.0 | Yes |
+| `ai` (Vercel) | `vercelAIIntegration()` | 10.6.0 | Yes* |
+| `@langchain/*` | `langChainIntegration()` | 10.28.0 | Yes |
+| `@langchain/langgraph` | `langGraphIntegration()` | 10.28.0 | Yes |
+| `@google/genai` | `googleGenAIIntegration()` | 10.28.0 | Yes |
 
-*Vercel AI requires explicit setup for Edge runtime and `experimental_telemetry` per-call.
+*Vercel AI: 10.6.0+ for Node.js, Cloudflare Workers, Vercel Edge Functions, Bun. 10.12.0+ for Deno. Requires `experimental_telemetry` per-call.
 
 ### Python
 
-| Package | Install | Min SDK |
-|---------|---------|---------|
-| `openai` | `pip install "sentry-sdk[openai]"` | 2.41.0 |
-| `anthropic` | `pip install "sentry-sdk[anthropic]"` | 2.x |
-| `langchain` | `pip install "sentry-sdk[langchain]"` | 2.x |
-| `huggingface_hub` | `pip install "sentry-sdk[huggingface_hub]"` | 2.x |
+Integrations auto-enable when the AI package is installed — no extras needed:
+
+| Package | Install | Auto? |
+|---------|---------|-------|
+| `openai` | `pip install sentry-sdk` | Yes |
+| `anthropic` | `pip install sentry-sdk` | Yes |
+| `langchain` | `pip install sentry-sdk` | Yes |
+| `huggingface_hub` | `pip install sentry-sdk` | Yes |
 
 ## JavaScript Configuration
 
@@ -81,7 +83,7 @@ const openai = Sentry.instrumentOpenAiClient(new OpenAI());
 // Use 'openai' client as normal
 ```
 
-### LangChain / LangGraph (explicit)
+### LangChain / LangGraph (auto-enabled)
 
 ```javascript
 integrations: [
