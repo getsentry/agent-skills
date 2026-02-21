@@ -17,7 +17,7 @@ Install and configure Sentry in iOS projects using Swift and SwiftUI.
 
 ## Requirements
 
-- iOS 11.0+
+- iOS 15.0+
 
 ## Install
 
@@ -246,5 +246,5 @@ View results in the Sentry UI after the upload completes.
 | No traces | Set `tracesSampleRate` > 0 |
 | No replays | Set `sessionSampleRate` > 0, check SDK 8.31.1+ |
 | No logs | Set `enableLogs = true`, check SDK 8.55.0+ |
-| CocoaPods fails | Run `pod repo update`, check iOS 11+ target |
+| CocoaPods fails | Run `pod repo update`, check iOS 15+ target |
 | Size upload fails | Check `SENTRY_AUTH_TOKEN`, verify org/project slugs |
