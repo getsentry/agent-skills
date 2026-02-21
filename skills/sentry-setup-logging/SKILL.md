@@ -1,6 +1,7 @@
 ---
 name: sentry-setup-logging
-description: Setup Sentry Logging in any project. Use when asked to add Sentry logs, enable structured logging, capture console logs, or integrate logging libraries (Pino, Winston, Loguru) with Sentry. Supports JavaScript, Python, and Ruby.
+description: Setup Sentry Logging in any project. Use when asked to add Sentry logs, enable structured logging, capture console logs, or integrate logging libraries (Consola, Loguru) with Sentry. Supports JavaScript, Python, and Ruby.
+license: Apache-2.0
 ---
 
 # Setup Sentry Logging
@@ -58,9 +59,8 @@ Sentry.logger.info(Sentry.logger.fmt`User ${userId} purchased ${productName}`);
 
 | Library | Integration | Min SDK |
 |---------|-------------|---------|
-| Pino | `Sentry.pinoIntegration()` | 10.18.0+ |
-| Winston | `Sentry.createSentryWinstonTransport()` | 9.13.0+ (undocumented) |
 | Consola | `Sentry.createConsolaReporter()` | 10.12.0+ |
+| Console capture | `Sentry.consoleLoggingIntegration()` | 10.13.0+ |
 
 ## Python Setup
 
@@ -130,6 +130,14 @@ beforeSendLog: (log) => log.level === "info" ? null : log,
 ```python
 def before_send_log(log, hint):
     return None if log["severity_text"] == "info" else log
+```
+
+## Verification
+
+After enabling logs, emit a test log and check the Sentry Logs dashboard (Explore > Logs):
+
+```javascript
+Sentry.logger.info("Sentry logging test");
 ```
 
 ## Troubleshooting

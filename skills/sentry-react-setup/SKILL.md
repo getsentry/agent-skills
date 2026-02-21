@@ -1,6 +1,7 @@
 ---
 name: sentry-react-setup
-description: Setup Sentry in React apps. Use when asked to add Sentry to React, install @sentry/react, or configure error monitoring for React applications.
+description: Setup Sentry in React apps. Use when asked to add Sentry to React, install @sentry/react, or configure error monitoring, error boundaries, session replay, or browser tracing for React applications.
+license: Apache-2.0
 ---
 
 # Sentry React Setup
@@ -88,14 +89,14 @@ import * as Sentry from "@sentry/react";
 </Sentry.ErrorBoundary>
 ```
 
-## React Router Integration
+## Router Integration
 
-| Router Version | Integration |
-|---------------|-------------|
-| v7 (non-framework) | `Sentry.reactRouterV7BrowserTracingIntegration` |
-| v6 | `Sentry.reactRouterV6BrowserTracingIntegration` |
-| v5 | `Sentry.reactRouterV5BrowserTracingIntegration` |
-| v4 | `Sentry.reactRouterV4BrowserTracingIntegration` |
+| Router | Integration |
+|--------|-------------|
+| React Router v7 | `Sentry.reactRouterV7BrowserTracingIntegration` |
+| React Router v6 | `Sentry.reactRouterV6BrowserTracingIntegration` |
+| React Router v4/v5 | `Sentry.reactRouterV5BrowserTracingIntegration` (shared for both) |
+| TanStack Router | See [TanStack Router docs](https://docs.sentry.io/platforms/javascript/guides/react/features/tanstack-router/) |
 
 ## Redux Integration (Optional)
 
