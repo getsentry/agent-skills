@@ -13,6 +13,8 @@ Install and configure Sentry in React Native projects using the official wizard 
 - User wants error monitoring, logging, or tracing in React Native or Expo
 - User mentions "@sentry/react-native" or mobile error tracking
 
+**Important:** The configuration options and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and defaults may have changed.
+
 ## Wizard Setup (Recommended)
 
 ```bash
@@ -29,7 +31,7 @@ npx @sentry/wizard@latest -i reactNative
 | Android setup | Enables Gradle build step for source maps |
 | iOS setup | Wraps Xcode build phase, adds debug symbol upload |
 | Pod install | Runs `pod install` for iOS |
-| Credentials | Stores in `ios/sentry.properties`, `android/sentry.properties`, `.env.local` |
+| Credentials | Stores in `ios/sentry.properties`, `android/sentry.properties`, `env.local` |
 | Init code | Configures Sentry in `App.tsx` or `_layout.tsx` |
 
 ## Manual Configuration
@@ -96,7 +98,7 @@ Works for both managed and bare Expo projects.
 | `app.json` | Expo config (if Expo) |
 | `ios/sentry.properties` | iOS build credentials |
 | `android/sentry.properties` | Android build credentials |
-| `.env.local` | Environment variables |
+| `env.local` | Environment variables |
 
 ## Environment Variables
 

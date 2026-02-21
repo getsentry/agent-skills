@@ -13,15 +13,17 @@ Configure Sentry's performance monitoring to track transactions and spans.
 - User wants to track API response times, page loads, or latency
 - User asks about `tracesSampleRate` or custom spans
 
+**Important:** The SDK versions, API names, and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and minimum versions may have changed.
+
 ## Quick Reference
 
 | Platform | Enable | Custom Span |
 |----------|--------|-------------|
 | JS/Browser | `tracesSampleRate` + `browserTracingIntegration()` | `Sentry.startSpan()` |
-| Next.js | `tracesSampleRate` (auto-integrated) | `Sentry.startSpan()` |
+| Next.js | `tracesSampleRate` in each runtime config file | `Sentry.startSpan()` |
 | Node.js | `tracesSampleRate` | `Sentry.startSpan()` |
 | Python | `traces_sample_rate` | `@sentry_sdk.trace` or `start_span()` |
-| Ruby | `traces_sample_rate` | `start_span()` |
+| Ruby | `traces_sample_rate` | `Sentry.with_child_span()` |
 
 ## JavaScript Setup
 
@@ -54,11 +56,10 @@ await Sentry.startSpan({ name: "checkout", op: "transaction" }, async () => {
 
 ### Dynamic sampling
 ```javascript
-tracesSampler: ({ name, parentSampled }) => {
+tracesSampler: ({ name, inheritOrSampleWith }) => {
   if (name.includes("healthcheck")) return 0;
   if (name.includes("checkout")) return 1.0;
-  if (parentSampled !== undefined) return parentSampled;
-  return 0.1;
+  return inheritOrSampleWith(0.1);  // Respects parent sampling decision, falls back to 0.1
 },
 ```
 
@@ -87,10 +88,12 @@ with sentry_sdk.start_span(name="process-order", op="task") as span:
 
 ### Dynamic sampling
 ```python
-def traces_sampler(ctx):
-    name = ctx.get("transaction_context", {}).get("name", "")
+def traces_sampler(sampling_context):
+    name = sampling_context.get("transaction_context", {}).get("name", "")
+    parent_sampled = sampling_context.get("parent_sampled")
     if "healthcheck" in name: return 0
     if "checkout" in name: return 1.0
+    if parent_sampled is not None: return parent_sampled  # Respect parent decision
     return 0.1
 
 sentry_sdk.init(dsn="YOUR_DSN", traces_sampler=traces_sampler)
@@ -113,7 +116,7 @@ end
 | `http.server` | Incoming HTTP |
 | `db` / `db.query` | Database |
 | `cache` | Cache operations |
-| `task` | Background jobs |
+| `queue.task` | Background jobs |
 | `function` | Function calls |
 
 ## Sampling Recommendations
@@ -132,9 +135,9 @@ Configure `tracePropagationTargets` to send trace headers to your APIs:
 tracePropagationTargets: ["localhost", "https://api.yourapp.com"],
 ```
 
-For Next.js 14+ App Router, add to root layout:
+For Next.js 14 App Router, add to root layout (not needed in Next.js 15+):
 ```typescript
-export async function generateMetadata() {
+export function generateMetadata(): Metadata {
   return { other: { ...Sentry.getTraceData() } };
 }
 ```

@@ -73,6 +73,7 @@ Pick which issue events fire the workflow. Use `logicType: "any-short"` (trigger
 | `first_seen_event` | New issue created |
 | `regression_event` | Resolved issue recurs |
 | `reappeared_event` | Archived issue reappears |
+| `issue_resolved_trigger` | Issue is resolved |
 
 ### Filter Conditions
 
@@ -80,14 +81,14 @@ Conditions that must pass before actions execute. Use `logicType: "all"`, `"any-
 
 | Type | comparison | Description |
 |------|-----------|-------------|
-| `issue_priority_greater_or_equal` | `25` / `50` / `75` / `100` | Priority >= Low/Medium/High/Critical |
+| `issue_priority_greater_or_equal` | `25` / `50` / `75` | Priority >= Low/Medium/High |
 | `issue_priority_deescalating` | `true` | Priority dropped below peak |
 | `event_frequency_count` | `<number>` | Event count exceeds threshold |
 | `event_unique_user_frequency_count` | `<number>` | Affected users exceed threshold |
 | `tagged_event` | `"key:value"` | Event has specific tag |
 | `assigned_to` | `"<user_or_team_id>"` | Issue assigned to target |
 
-Priority scale: Low=25, Medium=50, High=75, Critical=100.
+Priority scale: Low=25, Medium=50, High=75.
 
 Set `conditionResult` to `false` to invert (fire when condition is NOT met).
 
@@ -95,9 +96,9 @@ Set `conditionResult` to `false` to invert (fire when condition is NOT met).
 
 | Type | Key Config |
 |------|-----------|
-| `email` | `targetType`: `"user"` / `"team"` / `"issue_owners"`, `targetIdentifier`: `<id>` |
-| `slack` | `integrationId`: `<id>`, `channel`: `"#name"`, `channel_id`: `<id>` |
-| `pagerduty` | `integrationId`: `<id>`, `service`: `<id>`, `severity`: `"critical"` |
+| `email` | `config.targetType`: `"user"` / `"team"` / `"issue_owners"`, `config.targetIdentifier`: `<id>` |
+| `slack` | `integrationId`: `<id>`, `config.targetDisplay`: `"#channel-name"`, `config.targetIdentifier`: `<channel_id>` |
+| `pagerduty` | `integrationId`: `<id>`, `config.targetDisplay`: `<service_name>`, `config.targetIdentifier`: `<service_id>`, `data.priority`: `"critical"` |
 
 ### Full Payload Structure
 
@@ -168,6 +169,9 @@ curl -s "$API/workflows/" -H "$AUTH"
 
 # Get one workflow
 curl -s "$API/workflows/{id}/" -H "$AUTH"
+
+# Update a workflow
+curl -s -X PUT "$API/workflows/{id}/" -H "$AUTH" -H "Content-Type: application/json" -d '{payload}'
 
 # Delete a workflow
 curl -s -X DELETE "$API/workflows/{id}/" -H "$AUTH"

@@ -13,6 +13,8 @@ Configure Sentry's custom metrics for tracking counters, gauges, and distributio
 - User wants counters, gauges, or distributions
 - User asks about `Sentry.metrics` or `sentry_sdk.metrics`
 
+**Important:** The SDK versions, API names, and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and minimum versions may have changed.
+
 ## Quick Reference
 
 Check [Sentry Metrics Getting Started](https://docs.sentry.io/product/explore/metrics/getting-started/) for the full list of supported SDKs and minimum versions. Examples below use JavaScript and Python:
