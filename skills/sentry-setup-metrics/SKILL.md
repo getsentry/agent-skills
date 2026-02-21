@@ -15,12 +15,12 @@ Configure Sentry's custom metrics for tracking counters, gauges, and distributio
 
 ## Quick Reference
 
+Check [Sentry Metrics Getting Started](https://docs.sentry.io/product/explore/metrics/getting-started/) for the full list of supported SDKs and minimum versions. Examples below use JavaScript and Python:
+
 | Platform | Min SDK | API |
 |----------|---------|-----|
 | JavaScript | 10.25.0+ | `Sentry.metrics.*` |
 | Python | 2.44.0+ | `sentry_sdk.metrics.*` |
-
-**Note:** Ruby also supports metrics — see [Sentry Ruby Metrics docs](https://docs.sentry.io/platforms/ruby/metrics/).
 
 ## Metric Types
 
