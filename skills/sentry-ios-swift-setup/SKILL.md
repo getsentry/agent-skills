@@ -1,6 +1,7 @@
 ---
 name: sentry-ios-swift-setup
 description: Setup Sentry in iOS/Swift apps. Use when asked to add Sentry to iOS, install sentry-cocoa SDK, or configure error monitoring for iOS applications using Swift and SwiftUI.
+license: Apache-2.0
 ---
 
 # Sentry iOS Swift Setup
@@ -17,7 +18,7 @@ Install and configure Sentry in iOS projects using Swift and SwiftUI.
 
 ## Requirements
 
-- iOS 15.0+
+- iOS 15.0+, macOS 12.0+, tvOS 15.0+, watchOS 8.0+
 
 ## Install
 
@@ -26,6 +27,15 @@ Install and configure Sentry in iOS projects using Swift and SwiftUI.
 1. File > Add Package Dependencies
 2. Enter: `https://github.com/getsentry/sentry-cocoa.git`
 3. Select version rule: "Up to Next Major" from `9.5.0`
+
+**SPM Products:** Choose based on your needs:
+
+| Product | Use Case |
+|---------|----------|
+| `Sentry` | Default (static linking) |
+| `Sentry-Dynamic` | Dynamic framework |
+| `SentrySwiftUI` | SwiftUI view performance tracking |
+| `Sentry-WithoutUIKitOrAppKit` | App extensions or CLI tools |
 
 ### CocoaPods
 
@@ -64,7 +74,7 @@ struct YourApp: App {
             options.sessionReplay.sessionSampleRate = 1.0
             options.sessionReplay.onErrorSampleRate = 1.0
             
-            // Logs
+            // Logs (SDK 9.0.0+; for 8.55.0-8.x use options.experimental.enableLogs)
             options.enableLogs = true
             
             // Error context
@@ -136,17 +146,16 @@ logger.info("User action", attributes: [
 // Log levels: trace, debug, info, warn, error, fatal
 ```
 
-## Session Replay Masking
+## Session Replay
+
+**iOS 26+ / Xcode 26+ caveat:** SDK 8.57.0+ automatically disables Session Replay on iOS 26.0+ when built with Xcode 26.0+ due to Apple's Liquid Glass rendering breaking masking reliability. Replay still works on iOS < 26 or Xcode < 26. To force-enable (use with caution): `options.experimental.enableSessionReplayInUnreliableEnvironment = true`.
+
+### Masking
 
 ```swift
 // SwiftUI modifiers
 Text("Safe content").sentryReplayUnmask()
 Text(user.email).sentryReplayMask()
-
-// Debug masking in development
-#if DEBUG
-SentrySDK.replay.showMaskPreview()
-#endif
 ```
 
 ## User Context
@@ -244,7 +253,7 @@ View results in the Sentry UI after the upload completes.
 |-------|----------|
 | Events not appearing | Check DSN, enable `debug = true` |
 | No traces | Set `tracesSampleRate` > 0 |
-| No replays | Set `sessionSampleRate` > 0, check SDK 8.31.1+ |
-| No logs | Set `enableLogs = true`, check SDK 8.55.0+ |
+| No replays | Set `sessionSampleRate` > 0, check SDK 8.31.1+. On iOS 26+/Xcode 26+ see Liquid Glass caveat above |
+| No logs | Set `enableLogs = true` (SDK 9.0.0+) or `experimental.enableLogs = true` (SDK 8.55.0-8.x) |
 | CocoaPods fails | Run `pod repo update`, check iOS 15+ target |
 | Size upload fails | Check `SENTRY_AUTH_TOKEN`, verify org/project slugs |

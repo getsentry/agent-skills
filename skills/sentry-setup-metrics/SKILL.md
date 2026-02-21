@@ -1,6 +1,7 @@
 ---
 name: sentry-setup-metrics
-description: Setup Sentry Metrics in any project. Use when asked to add custom metrics, track counters/gauges/distributions, or instrument application performance. Supports JavaScript and Python.
+description: Setup Sentry Metrics in any project. Use when asked to add custom metrics, track counters/gauges/distributions, or instrument application performance. Supports JavaScript, Python, and Ruby.
+license: Apache-2.0
 ---
 
 # Setup Sentry Metrics
@@ -19,10 +20,11 @@ Configure Sentry's custom metrics for tracking counters, gauges, and distributio
 
 Check [Sentry Metrics Getting Started](https://docs.sentry.io/product/explore/metrics/getting-started/) for the full list of supported SDKs and minimum versions. Examples below use JavaScript and Python:
 
-| Platform | Min SDK | API |
-|----------|---------|-----|
-| JavaScript | 10.25.0+ | `Sentry.metrics.*` |
-| Python | 2.44.0+ | `sentry_sdk.metrics.*` |
+| Platform | Min SDK | API | Status |
+|----------|---------|-----|--------|
+| JavaScript | 10.25.0+ | `Sentry.metrics.*` | Open Beta |
+| Python | 2.44.0+ | `sentry_sdk.metrics.*` | Open Beta |
+| Ruby | 6.3.0+ | `Sentry.metrics.*` | Open Beta |
 
 ## Metric Types
 
@@ -144,11 +146,34 @@ def track_duration(name, **attrs):
     return decorator
 ```
 
+## Ruby Setup
+
+Metrics are **enabled by default** in SDK 6.3.0+.
+
+### Counter
+```ruby
+Sentry.metrics.count("api_call", 1, attributes: { endpoint: "/api/users" })
+```
+
+### Gauge
+```ruby
+Sentry.metrics.gauge("queue_depth", 42, attributes: { queue: "jobs" })
+```
+
+### Distribution
+```ruby
+Sentry.metrics.distribution("response_time", 187.5, unit: "millisecond", attributes: { endpoint: "/api/products" })
+```
+
 ## Best Practices
 
 - **Stay under 2KB per metric**: Each metric event has a 2KB size limit — keep attribute sets concise
 - **Namespaced names**: `api.request.duration`, not `duration`
 - **Flush on exit**: Call `Sentry.flush()` before process exit
+
+## Verification
+
+After adding a metric, trigger the code path that emits it and check the Sentry Metrics dashboard (Explore > Metrics). Metrics may take a few minutes to appear due to buffer flushing.
 
 ## Troubleshooting
 

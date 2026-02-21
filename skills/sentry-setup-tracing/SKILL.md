@@ -1,6 +1,7 @@
 ---
 name: sentry-setup-tracing
 description: Setup Sentry Tracing (Performance Monitoring) in any project. Use when asked to enable tracing, track transactions/spans, measure latency, or add performance monitoring. Supports JavaScript, Python, and Ruby.
+license: Apache-2.0
 ---
 
 # Setup Sentry Tracing
@@ -17,13 +18,13 @@ Configure Sentry's performance monitoring to track transactions and spans.
 
 ## Quick Reference
 
-| Platform | Enable | Custom Span |
-|----------|--------|-------------|
-| JS/Browser | `tracesSampleRate` + `browserTracingIntegration()` | `Sentry.startSpan()` |
-| Next.js | `tracesSampleRate` in each runtime config file | `Sentry.startSpan()` |
-| Node.js | `tracesSampleRate` | `Sentry.startSpan()` |
-| Python | `traces_sample_rate` | `@sentry_sdk.trace` or `start_span()` |
-| Ruby | `traces_sample_rate` | `Sentry.with_child_span()` |
+| Platform | Min SDK | Enable | Custom Span |
+|----------|---------|--------|-------------|
+| JS/Browser | 9.0.0+ | `tracesSampleRate` + `browserTracingIntegration()` | `Sentry.startSpan()` |
+| Next.js | 9.0.0+ | `tracesSampleRate` in each runtime config file | `Sentry.startSpan()` |
+| Node.js | 9.0.0+ | `tracesSampleRate` | `Sentry.startSpan()` |
+| Python | 0.11.2+ | `traces_sample_rate` | `@sentry_sdk.trace` or `start_span()` |
+| Ruby | 5.0.0+ | `traces_sample_rate` | `Sentry.with_child_span()` |
 
 ## JavaScript Setup
 
@@ -88,12 +89,14 @@ with sentry_sdk.start_span(name="process-order", op="task") as span:
 
 ### Dynamic sampling
 ```python
-def traces_sampler(sampling_context):
+from sentry_sdk.types import SamplingContext
+
+def traces_sampler(sampling_context: SamplingContext) -> float:
     name = sampling_context.get("transaction_context", {}).get("name", "")
     parent_sampled = sampling_context.get("parent_sampled")
     if "healthcheck" in name: return 0
     if "checkout" in name: return 1.0
-    if parent_sampled is not None: return parent_sampled  # Respect parent decision
+    if parent_sampled is not None: return float(parent_sampled)  # Respect parent decision
     return 0.1
 
 sentry_sdk.init(dsn="YOUR_DSN", traces_sampler=traces_sampler)
@@ -141,6 +144,10 @@ export function generateMetadata(): Metadata {
   return { other: { ...Sentry.getTraceData() } };
 }
 ```
+
+## Verification
+
+After enabling tracing, trigger a traced operation (e.g., an HTTP request) and check the Sentry Performance dashboard for transactions. Custom spans should appear nested under the parent transaction.
 
 ## Troubleshooting
 

@@ -1,6 +1,7 @@
 ---
 name: sentry-setup-ai-monitoring
-description: Setup Sentry AI Agent Monitoring in any project. Use when asked to monitor LLM calls, track AI agents, or instrument OpenAI/Anthropic/Vercel AI/LangChain/Google GenAI. Detects installed AI SDKs and configures appropriate integrations.
+description: Setup Sentry AI Agent Monitoring in any project. Use when asked to monitor LLM calls, track AI agents, or instrument OpenAI/Anthropic/Vercel AI/LangChain/Google GenAI/Pydantic AI. Detects installed AI SDKs and configures appropriate integrations.
+license: Apache-2.0
 ---
 
 # Setup Sentry AI Agent Monitoring
@@ -58,42 +59,51 @@ grep -E '(openai|anthropic|langchain|huggingface)' requirements.txt pyproject.to
 
 ### Python
 
-Integrations auto-enable when the AI package is installed — no extras needed:
+Integrations auto-enable when the AI package is installed — no explicit registration needed:
 
-| Package | Install | Auto? |
-|---------|---------|-------|
-| `openai` | `pip install sentry-sdk` | Yes |
-| `anthropic` | `pip install sentry-sdk` | Yes |
-| `langchain` | `pip install sentry-sdk` | Yes |
-| `huggingface_hub` | `pip install sentry-sdk` | Yes |
+| Package | Auto? | Notes |
+|---------|-------|-------|
+| `openai` | Yes | Includes OpenAI Agents SDK |
+| `anthropic` | Yes | |
+| `langchain` / `langgraph` | Yes | |
+| `huggingface_hub` | Yes | |
+| `google-genai` | Yes | |
+| `pydantic-ai` | Yes | |
+| `litellm` | **No** | Requires explicit integration |
+| `mcp` (Model Context Protocol) | Yes | |
 
 ## JavaScript Configuration
 
-### Auto-enabled integrations (OpenAI, Anthropic, Google GenAI, LangChain)
+### Node.js — auto-enabled integrations
 
-Just ensure tracing is enabled. Prompt/output capture is opt-in (see Data Capture Warning):
+Just ensure tracing is enabled. Integrations auto-enable when the AI package is installed:
 
 ```javascript
 Sentry.init({
   dsn: "YOUR_DSN",
   tracesSampleRate: 1.0, // Lower in production (e.g., 0.1)
-  integrations: [
-    Sentry.openAIIntegration({
-      // Optional — captures prompt/response content (contains user PII)
-      // recordInputs: true,
-      // recordOutputs: true,
-    }),
-  ],
+  // OpenAI, Anthropic, Google GenAI, LangChain integrations auto-enable in Node.js
 });
 ```
 
-### Next.js OpenAI (additional step required)
+To customize (e.g., enable prompt capture — see Data Capture Warning):
 
-For Next.js projects using OpenAI, you must wrap the client:
+```javascript
+integrations: [
+  Sentry.openAIIntegration({
+    // recordInputs: true,  // Opt-in: captures prompt content (PII)
+    // recordOutputs: true, // Opt-in: captures response content (PII)
+  }),
+],
+```
+
+### Browser / Next.js OpenAI (manual wrapping required)
+
+In browser-side code or Next.js meta-framework apps, auto-instrumentation is not available. Wrap the client manually:
 
 ```javascript
 import OpenAI from "openai";
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from "@sentry/nextjs"; // or @sentry/react, @sentry/browser
 
 const openai = Sentry.instrumentOpenAiClient(new OpenAI());
 // Use 'openai' client as normal
@@ -136,19 +146,18 @@ await generateText({
 
 ## Python Configuration
 
+Integrations auto-enable — just init with tracing. Only add explicit imports to customize options:
+
 ```python
 import sentry_sdk
-from sentry_sdk.integrations.openai import OpenAIIntegration  # or anthropic, langchain
 
 sentry_sdk.init(
     dsn="YOUR_DSN",
     traces_sample_rate=1.0,  # Lower in production (e.g., 0.1)
     # send_default_pii=True,  # Opt-in: required for prompt capture (sends user PII)
-    integrations=[
-        OpenAIIntegration(
-            # include_prompts=True,  # Opt-in: captures prompt/response content (PII)
-        ),
-    ],
+    # Integrations auto-enable when the AI package is installed.
+    # Only specify explicitly to customize (e.g., include_prompts):
+    # integrations=[OpenAIIntegration(include_prompts=True)],
 )
 ```
 
@@ -192,14 +201,11 @@ await Sentry.startSpan({
 | `gen_ai.agent.name` | Agent identifier |
 | `gen_ai.tool.name` | Tool identifier |
 
-## PII Considerations
+Enable prompt/output capture only after confirming with the user (see Data Capture Warning above).
 
-Prompts and model outputs contain user-generated content and are classified as PII. Capture is **disabled by default** and must be explicitly opted into:
+## Verification
 
-- **JS**: `recordInputs: true, recordOutputs: true` per-integration
-- **Python**: `include_prompts=True` + `send_default_pii=True`
-
-Only enable these after confirming with the user that prompt capture is desired and compliant with their data handling requirements.
+After configuring, make an LLM call and check the Sentry Traces dashboard. AI spans appear with `gen_ai.*` operations showing model, token counts, and latency.
 
 ## Troubleshooting
 
