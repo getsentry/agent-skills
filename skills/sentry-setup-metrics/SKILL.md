@@ -15,12 +15,12 @@ Configure Sentry's custom metrics for tracking counters, gauges, and distributio
 
 ## Quick Reference
 
+Check [Sentry Metrics Getting Started](https://docs.sentry.io/product/explore/metrics/getting-started/) for the full list of supported SDKs and minimum versions. Examples below use JavaScript and Python:
+
 | Platform | Min SDK | API |
 |----------|---------|-----|
 | JavaScript | 10.25.0+ | `Sentry.metrics.*` |
 | Python | 2.44.0+ | `sentry_sdk.metrics.*` |
-
-**Note:** Ruby does not have metrics support.
 
 ## Metric Types
 
@@ -144,7 +144,7 @@ def track_duration(name, **attrs):
 
 ## Best Practices
 
-- **Low cardinality**: Avoid user IDs, request IDs in attributes
+- **Stay under 2KB per metric**: Each metric event has a 2KB size limit — keep attribute sets concise
 - **Namespaced names**: `api.request.duration`, not `duration`
 - **Flush on exit**: Call `Sentry.flush()` before process exit
 
@@ -153,5 +153,5 @@ def track_duration(name, **attrs):
 | Issue | Solution |
 |-------|----------|
 | Metrics not appearing | Verify SDK version, check DSN, wait for buffer flush |
-| High cardinality warning | Remove unique IDs from attributes |
+| Metric dropped silently | Check that metric event is under 2KB size limit — reduce attributes |
 | Too many metrics | Use `beforeSendMetric` to filter |
