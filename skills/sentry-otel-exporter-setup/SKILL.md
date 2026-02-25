@@ -193,10 +193,12 @@ Once credentials are set, validate the configuration using the appropriate metho
 
 #### Binary validation
 
-Use the collector path recorded in Step 2 (either `otelcol-contrib` if on PATH, or `./otelcol-contrib` if local):
+Use the collector path recorded in Step 2 (either `otelcol-contrib` if on PATH, or `./otelcol-contrib` if local).
+
+**Load environment variables first**, then run validation:
 
 ```bash
-<collector_path> validate --config <config_file>
+export $(grep -v '^#' <env_file> | xargs) && <collector_path> validate --config <config_file>
 ```
 
 #### Docker validation
@@ -238,8 +240,10 @@ Provide the appropriate command based on the installation method chosen in Step 
 
 ### Binary
 
+**Load environment variables first**, then run the collector:
+
 ```bash
-<collector_path> --config <config_file>
+export $(grep -v '^#' <env_file> | xargs) && <collector_path> --config <config_file>
 ```
 
 ### Docker
