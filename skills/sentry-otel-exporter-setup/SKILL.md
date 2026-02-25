@@ -42,8 +42,9 @@ The Sentry Exporter requires **otelcol-contrib v0.145.0 or later**.
 
 ### Check for existing collector
 
-1. Run `which otelcol-contrib` or check for `./otelcol-contrib` in the project
-2. If found, run `otelcol-contrib --version` and parse the version number
+1. Run `which otelcol-contrib` to check if it's on PATH, or check for `./otelcol-contrib` in the project
+2. If found, run the appropriate version command and parse the version number
+3. **Record the collector path** (e.g., `otelcol-contrib` if on PATH, or `./otelcol-contrib` if local) for use in later steps
 
 | Existing Version | Action |
 |------------------|--------|
@@ -64,6 +65,8 @@ Fetch the latest release version from GitHub:
 curl -s https://api.github.com/repos/open-telemetry/opentelemetry-collector-releases/releases/latest | grep '"tag_name"' | cut -d'"' -f4
 ```
 
+**Important**: The GitHub API returns versions with a `v` prefix (e.g., `v0.145.0`), but download URLs and Docker tags use the numeric version without the prefix (e.g., `0.145.0`). Strip the `v` prefix before using in URLs.
+
 Detect the user's platform and download the binary:
 
 1. Run `uname -s` and `uname -m` to detect OS and architecture
@@ -72,12 +75,14 @@ Detect the user's platform and download the binary:
    - Darwin + x86_64 → `darwin_amd64`
    - Linux + x86_64 → `linux_amd64`
    - Linux + aarch64 → `linux_arm64`
-3. Download and extract using the latest version:
+3. Download and extract using the numeric version (without `v` prefix):
 ```bash
-curl -LO https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/<version>/otelcol-contrib_<version>_<os>_<arch>.tar.gz
-tar -xzf otelcol-contrib_<version>_<os>_<arch>.tar.gz
+curl -LO https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v<numeric_version>/otelcol-contrib_<numeric_version>_<os>_<arch>.tar.gz
+tar -xzf otelcol-contrib_<numeric_version>_<os>_<arch>.tar.gz
 chmod +x otelcol-contrib
 ```
+
+Example: For version `v0.145.0`, the URL uses `v0.145.0` in the path but `0.145.0` in the filename.
 
 Perform these steps for the user—do not just show them the commands.
 
@@ -85,10 +90,12 @@ Perform these steps for the user—do not just show them the commands.
 
 1. Verify Docker is installed by running `docker --version`
 2. Fetch the latest release tag from GitHub (same as above)
-3. Pull the image using the latest version:
+3. Pull the image using the numeric version (without `v` prefix):
 ```bash
-docker pull otel/opentelemetry-collector-contrib:<version>
+docker pull otel/opentelemetry-collector-contrib:<numeric_version>
 ```
+
+Example: For GitHub tag `v0.145.0`, use `docker pull otel/opentelemetry-collector-contrib:0.145.0`.
 
 The `docker run` command comes later in Step 6 after the config is created.
 
@@ -104,7 +111,7 @@ Ask the user whether to enable automatic project creation. Do not recommend eith
 
 ## Step 4: Write Collector Config
 
-**Use the decision from Step 1** - if the user chose to modify an existing config, edit that file. If they chose to create a separate config, create a new file.
+**Use the decision from Step 1** - if the user chose to modify an existing config, edit that file. If they chose to create a separate config, create a new file. **Record the config file path** for use in Steps 5 and 6.
 
 Fetch the latest configuration from the Sentry Exporter documentation:
 
@@ -147,7 +154,7 @@ Search for existing `.env` files in the project using glob `**/.env`. If any are
 - **[path to discovered .env file]**: Add to existing file
 - **Create new at root**: Create .env in project root
 
-**Wait for the user's answer, then add the placeholders to the chosen file.**
+**Wait for the user's answer, then add the placeholders to the chosen file. Record the env file path** for use in Steps 5 (validation) and 6 (running).
 
 Add these placeholder values to the chosen file:
 
@@ -180,15 +187,33 @@ If user selects "Not yet", wait and ask again. Do not proceed to Step 6 until cr
 
 ### Validate config
 
-Once credentials are set, validate the configuration:
+Once credentials are set, validate the configuration using the appropriate method based on the installation choice from Step 2.
+
+**Use the config file path from Step 1** (either the existing config you modified or the new `collector-config.yaml`).
+
+#### Binary validation
+
+Use the collector path recorded in Step 2 (either `otelcol-contrib` if on PATH, or `./otelcol-contrib` if local):
 
 ```bash
-./otelcol-contrib validate --config collector-config.yaml
+<collector_path> validate --config <config_file>
 ```
+
+#### Docker validation
+
+```bash
+docker run --rm \
+  -v $(pwd)/<config_file>:/etc/otelcol-contrib/config.yaml \
+  --env-file <env_file> \
+  otel/opentelemetry-collector-contrib:<numeric_version> \
+  validate --config /etc/otelcol-contrib/config.yaml
+```
+
+Use the `.env` file path chosen in Step 5.
 
 **If validation fails:**
 1. Review the error message carefully
-2. Fix the issues in collector-config.yaml
+2. Fix the issues in the config file
 3. Run validation again
 4. Repeat until validation passes
 
@@ -204,12 +229,17 @@ Once credentials are set, validate the configuration:
 
 **Give the user the run command but do not execute it automatically.** The user will run it themselves.
 
-Provide the appropriate command based on the installation method chosen in Step 2:
+Provide the appropriate command based on the installation method chosen in Step 2.
+
+**Use the actual paths chosen earlier:**
+- **Config file**: From Step 1 (existing config or new `collector-config.yaml`)
+- **Env file**: From Step 5 (the `.env` file the user selected)
+- **Collector path**: From Step 2 (either `otelcol-contrib` if on PATH, or `./otelcol-contrib` if local)
 
 ### Binary
 
 ```bash
-./otelcol-contrib --config collector-config.yaml
+<collector_path> --config <config_file>
 ```
 
 ### Docker
@@ -220,12 +250,12 @@ docker run -d \
   -p 4317:4317 \
   -p 4318:4318 \
   -p 13133:13133 \
-  -v $(pwd)/collector-config.yaml:/etc/otelcol-contrib/config.yaml \
-  --env-file .env \
-  otel/opentelemetry-collector-contrib:<version>
+  -v $(pwd)/<config_file>:/etc/otelcol-contrib/config.yaml \
+  --env-file <env_file> \
+  otel/opentelemetry-collector-contrib:<numeric_version>
 ```
 
-Use the same version that was pulled in Step 2.
+Use the same numeric version (without `v` prefix) that was pulled in Step 2.
 
 After providing the command, tell the user to run it when they're ready, then proceed to Step 7 for verification.
 
