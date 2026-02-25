@@ -5,6 +5,8 @@ description: Configure the OpenTelemetry Collector with Sentry Exporter for mult
 
 # Sentry OTel Exporter Setup
 
+**Terminology**: Always capitalize "Sentry Exporter" when referring to the exporter component.
+
 Configure the OpenTelemetry Collector to send traces and logs to Sentry using the Sentry Exporter.
 
 ## Setup Overview
