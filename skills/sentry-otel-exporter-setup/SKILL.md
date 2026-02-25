@@ -100,9 +100,9 @@ Example: For GitHub tag `v0.145.0`, use `docker pull otel/opentelemetry-collecto
 
 The `docker run` command comes later in Step 6 after the config is created.
 
-## Step 3: Configure Project Creation
+## Step 3: Configure Sentry Project Creation
 
-Ask the user whether to enable automatic project creation. Do not recommend either option:
+Ask the user whether to enable automatic Sentry project creation. Do not recommend either option:
 - **Yes**: Projects created from service.name. Requires at least one team in your Sentry org. All new projects are assigned to the first team found. Initial data may be dropped during creation.
 - **No**: Projects must exist in Sentry before telemetry arrives.
 
@@ -164,11 +164,11 @@ SENTRY_ORG_SLUG=your-org-slug
 SENTRY_AUTH_TOKEN=your-token-here
 ```
 
-After adding the placeholders, tell the user how to get their real values:
+After adding the placeholders, tell the user how to get their real values from Sentry:
 
-1. **Org slug**: Go to **Settings → Organization Settings → Organization Slug**. This is also your subdomain (e.g., `myorg` in `https://myorg.sentry.io`)
-2. **Auth token**: Create an Internal Integration in Sentry:
-   - Go to **Settings → Developer Settings → Custom Integrations**
+1. **Sentry org slug**: In Sentry, go to **Settings → Organization Settings → Organization Slug**. This is also your subdomain (e.g., `myorg` in `https://myorg.sentry.io`)
+2. **Sentry auth token**: Create an Internal Integration in Sentry:
+   - In Sentry, go to **Settings → Developer Settings → Custom Integrations**
    - Click **Create New Integration** → Choose **Internal Integration**
    - Set permissions:
      - **Organization: Read** — required
