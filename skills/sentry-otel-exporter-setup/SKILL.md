@@ -87,7 +87,11 @@ Example: For version `v0.145.0`, the URL uses `v0.145.0` in the path but `0.145.
 
 Perform these steps for the user—do not just show them the commands.
 
-4. Ask the user if they want to delete the downloaded tarball to save disk space (~50MB). If yes, remove it:
+4. **Ask the user** if they want to delete the downloaded tarball to save disk space (~50MB):
+   - **Yes, delete it**: Remove the tarball
+   - **No, keep it**: Leave the tarball in place
+
+**Wait for the user's response.** Only delete if they explicitly choose to:
 ```bash
 rm otelcol-contrib_<numeric_version>_<os>_<arch>.tar.gz
 ```
@@ -156,11 +160,13 @@ SAY INSTEAD:
 - "Adding placeholder values—you'll replace these with your actual credentials"
 - "I'll set up the env var keys with placeholder values"
 
-Search for existing `.env` files in the project using glob `**/.env`. If any are found, ask the user which file to add the placeholders to (use actual discovered paths like `.env` or `backend/.env`):
-- **[path to discovered .env file]**: Add to existing file
+Search for existing `.env` files in the project using glob `**/.env`. **Always ask the user which file to use**—do not infer from context or guess based on open files.
+
+Present the discovered options:
+- **[path to discovered .env file]**: Add to existing file (list each discovered path)
 - **Create new at root**: Create .env in project root
 
-**Wait for the user's answer, then add the placeholders to the chosen file. Record the env file path** for use in Steps 5 (validation) and 6 (running).
+**Wait for the user's explicit selection.** Do not proceed until they choose. Record the env file path for use in Steps 5 (validation) and 6 (running).
 
 Add these placeholder values to the chosen file:
 
