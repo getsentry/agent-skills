@@ -5,9 +5,22 @@ description: Configure the OpenTelemetry Collector with Sentry Exporter for mult
 
 # Sentry OTel Exporter Setup
 
-**Terminology**: Always capitalize "Sentry Exporter" when referring to the exporter component.
-
 Configure the OpenTelemetry Collector to send traces and logs to Sentry using the Sentry Exporter.
+
+## Setup Overview
+
+Copy this checklist to track your progress:
+
+```
+OTel Exporter Setup:
+- [ ] Step 1: Check for existing configuration
+- [ ] Step 2: Check collector version and install if needed
+- [ ] Step 3: Configure project creation settings
+- [ ] Step 4: Write collector config
+- [ ] Step 5: Add environment variable placeholders
+- [ ] Step 6: Run the collector
+- [ ] Step 7: Verify setup
+```
 
 ## Step 1: Check for Existing Configuration
 
@@ -35,16 +48,8 @@ The Sentry Exporter requires **otelcol-contrib v0.145.0 or later**.
 ### Installation
 
 Ask the user how they want to run the collector:
-
-```
-Question: "How do you want to run the OpenTelemetry Collector?"
-Header: "Collector"
-Options:
-  - label: "Binary"
-    description: "Download from GitHub releases. No Docker required."
-  - label: "Docker"
-    description: "Run as a container. Requires Docker installed."
-```
+- **Binary**: Download from GitHub releases. No Docker required.
+- **Docker**: Run as a container. Requires Docker installed.
 
 ### Binary Installation
 
@@ -84,16 +89,8 @@ The `docker run` command comes later in Step 6 after the config is created.
 ## Step 3: Configure Project Creation
 
 Ask the user whether to enable automatic project creation. Do not recommend either option:
-
-```
-Question: "Do you want Sentry to automatically create projects when telemetry arrives?"
-Header: "Auto-create"
-Options:
-  - label: "Yes"
-    description: "Projects created from service.name. Requires at least one team in your Sentry org. All new projects are assigned to the first team found. Initial data may be dropped during creation."
-  - label: "No"
-    description: "Projects must exist in Sentry before telemetry arrives."
-```
+- **Yes**: Projects created from service.name. Requires at least one team in your Sentry org. All new projects are assigned to the first team found. Initial data may be dropped during creation.
+- **No**: Projects must exist in Sentry before telemetry arrives.
 
 **If user chooses Yes**: Warn them that the exporter will scan all projects and use the first team it finds. All auto-created projects will be assigned to that team. If they don't have any teams yet, they should create one in Sentry first.
 
@@ -136,17 +133,9 @@ SAY INSTEAD:
 - "Adding placeholder values—you'll replace these with your actual credentials"
 - "I'll set up the env var keys with placeholder values"
 
-Search for existing `.env` files in the project using glob `**/.env`. If any are found, ask the user which file to add the placeholders to:
-
-```
-Question: "Where should I add the environment variable placeholders?"
-Header: "Env file"
-Options:
-  - label: "<path/to/.env>"  # One option per discovered .env file
-    description: "Add to existing file"
-  - label: "Create new at root"
-    description: "Create .env in project root"
-```
+Search for existing `.env` files in the project using glob `**/.env`. If any are found, ask the user which file to add the placeholders to (use actual discovered paths like `.env` or `backend/.env`):
+- **[path to discovered .env file]**: Add to existing file
+- **Create new at root**: Create .env in project root
 
 Add these placeholder values to the chosen file:
 
@@ -172,28 +161,24 @@ Ensure the chosen `.env` file is in `.gitignore`.
 ### Wait for user to set credentials
 
 After explaining how to get the values, ask the user to confirm when they've updated the `.env` file:
-
-```
-Question: "Have you updated the .env file with your real Sentry credentials?"
-Header: "Ready"
-Options:
-  - label: "Yes, credentials are set"
-    description: "Proceed to validate and run the collector"
-  - label: "Not yet"
-    description: "I'll wait while you update the .env file"
-```
+- **Yes, credentials are set**: Proceed to validate and run the collector
+- **Not yet**: I'll wait while you update the .env file
 
 If user selects "Not yet", wait and ask again. Do not proceed to Step 6 until credentials are confirmed.
 
 ### Validate config
 
-Once credentials are set, validate the config before running:
+Once credentials are set, validate the configuration:
 
 ```bash
 ./otelcol-contrib validate --config collector-config.yaml
 ```
 
-If validation fails, fix the issues before proceeding.
+**If validation fails:**
+1. Review the error message carefully
+2. Fix the issues in collector-config.yaml
+3. Run validation again
+4. **Only proceed to Step 6 when validation passes**
 
 ## Step 6: Run the Collector
 
