@@ -1,6 +1,6 @@
 ---
 name: sentry-go-sdk
-description: Full Sentry SDK setup for Go. Use when asked to "add Sentry to Go", "install sentry-go", "setup Sentry in Go", or configure error monitoring, tracing, profiling, logging, metrics, or crons for Go applications. Supports net/http, Gin, Echo, Fiber, FastHTTP, Iris, and Negroni.
+description: Full Sentry SDK setup for Go. Use when asked to "add Sentry to Go", "install sentry-go", "setup Sentry in Go", or configure error monitoring, tracing, logging, metrics, or crons for Go applications. Supports net/http, Gin, Echo, Fiber, FastHTTP, Iris, and Negroni.
 license: Apache-2.0
 ---
 
@@ -11,7 +11,7 @@ Opinionated wizard that scans your Go project and guides you through complete Se
 ## Invoke This Skill When
 
 - User asks to "add Sentry to Go" or "setup Sentry" in a Go app
-- User wants error monitoring, tracing, profiling, or logging in Go
+- User wants error monitoring, tracing, logging, metrics, or crons in Go
 - User mentions `sentry-go`, `github.com/getsentry/sentry-go`, or Go Sentry SDK
 - User wants to monitor panics, HTTP handlers, or scheduled jobs in Go
 
@@ -63,9 +63,9 @@ Based on what you found, present a concrete recommendation. Don't ask open-ended
 - ✅ **Logging** — if logrus, zap, zerolog, or slog is detected
 
 **Optional (enhanced observability):**
-- ⚡ **Profiling** — low-overhead CPU/memory profiling in production
 - ⚡ **Metrics** — custom counters and gauges for business KPIs / SLOs
 - ⚡ **Crons** — detect silent failures in scheduled jobs
+- ⚠️ **Profiling** — removed in sentry-go v0.31.0; see `references/profiling.md` for alternatives
 
 **Recommendation logic:**
 
@@ -73,12 +73,12 @@ Based on what you found, present a concrete recommendation. Don't ask open-ended
 |---------|------------------|
 | Error Monitoring | **Always** — non-negotiable baseline |
 | Tracing | `net/http`, gin, echo, fiber, or gRPC imports detected |
-| Profiling | Production app where performance matters |
 | Logging | logrus, zap, zerolog, or `log/slog` imports detected |
 | Metrics | Business events, SLO tracking, or counters needed |
 | Crons | `robfig/cron`, `gocron`, or scheduled job patterns detected |
+| Profiling | ⚠️ **Removed in v0.31.0** — do not recommend; see `references/profiling.md` |
 
-Propose: *"I recommend setting up Error Monitoring + Tracing [+ Logging if applicable]. Want me to also add Profiling, Metrics, or Crons?"*
+Propose: *"I recommend setting up Error Monitoring + Tracing [+ Logging if applicable]. Want me to also add Metrics or Crons?"*
 
 ---
 

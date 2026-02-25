@@ -8,7 +8,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 
 | Skill | Description | Platforms | Docs |
 |-------|-------------|-----------|------|
-| `sentry-go-sdk` | Full Sentry setup wizard for Go — error monitoring, tracing, profiling, logging, metrics, crons | Go (net/http, Gin, Echo, Fiber) | [Go Guide](https://docs.sentry.io/platforms/go/) |
+| `sentry-go-sdk` | Full Sentry setup wizard for Go — error monitoring, tracing, logging, metrics, crons | Go (net/http, Gin, Echo, Fiber) | [Go Guide](https://docs.sentry.io/platforms/go/) |
 | `sentry-svelte-sdk` | Full Sentry setup wizard for Svelte/SvelteKit — error monitoring, tracing, session replay, logging | Svelte, SvelteKit | [SvelteKit Guide](https://docs.sentry.io/platforms/javascript/guides/sveltekit/) |
 
 ### Setup Skills

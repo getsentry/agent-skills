@@ -321,12 +321,65 @@ SvelteKit renders `+error.svelte` for handled errors. You can surface the Sentry
 
 ---
 
-## Scopes: `withScope` vs `configureScope`
+## Error Boundaries (Svelte 5+)
+
+> Requires Svelte 5 + `@sveltejs/kit` ≥2.x. Catches errors thrown in child components before they propagate to the page.
+
+`<svelte:boundary>` prevents a component subtree from crashing the whole page and lets you report the error to Sentry and optionally display a fallback UI:
+
+```svelte
+<script>
+  import * as Sentry from "@sentry/sveltekit";
+</script>
+
+<svelte:boundary onerror={(error, reset) => {
+  Sentry.captureException(error);
+}}>
+  <RiskyComponent />
+
+  {#snippet failed(error, reset)}
+    <p>Something went wrong.</p>
+    <button onclick={reset}>Try again</button>
+  {/snippet}
+</svelte:boundary>
+```
+
+**Tips:**
+- `onerror` fires synchronously before Svelte tears down the subtree — safe to call `captureException` here
+- `reset` re-mounts the boundary subtree; pair it with `Sentry.lastEventId()` + `Sentry.showReportDialog()` for user feedback
+- Nest multiple boundaries to isolate independent widgets — a failure in one won't affect others
+- Works in both client and server-rendered pages; server-side errors are still captured via `hooks.server.ts`
+
+```svelte
+<!-- With user feedback dialog on reset -->
+<svelte:boundary onerror={(error) => {
+  Sentry.captureException(error);
+}}>
+  <DataWidget />
+
+  {#snippet failed(error, reset)}
+    <button onclick={() => {
+      const eventId = Sentry.lastEventId();
+      if (eventId) Sentry.showReportDialog({ eventId });
+      reset();
+    }}>Report &amp; retry</button>
+  {/snippet}
+</svelte:boundary>
+```
+
+---
+
+## Scopes: `withScope` vs Persistent Context
+
+> Minimum SDK: `@sentry/sveltekit` ≥8.0.0 for isolation scopes; ≥10.32.0 for `getGlobalScope`/`getIsolationScope`
 
 | API | Lifetime | Use case |
 |-----|----------|----------|
 | `Sentry.withScope(fn)` | Isolated to callback | One-off context for a single capture |
-| `Sentry.configureScope(fn)` | Mutates global scope | Persistent per-session context (user login, etc.) |
+| `Sentry.getIsolationScope()` | Per-request (SvelteKit server) | Persistent context scoped to one request |
+| `Sentry.getGlobalScope()` | Entire process lifetime | App-wide context (version tags, env) |
+
+> **Note:** `Sentry.configureScope()` is deprecated since SDK v8. Use `getIsolationScope()` or `getGlobalScope()` instead.
 
 ```typescript
 // withScope — temporary, doesn't affect subsequent events
@@ -335,11 +388,14 @@ Sentry.withScope((scope) => {
   Sentry.captureException(err);  // only this event gets the tag
 });
 
-// configureScope — persistent
-Sentry.configureScope((scope) => {
-  scope.setUser({ id: session.userId });
-  scope.setTag("tenant", session.tenantId);
-});
+// Set persistent scope data (per-request in SvelteKit server)
+const scope = Sentry.getIsolationScope();
+scope.setTag("tenant", session.tenantId);
+scope.setUser({ id: session.userId });
+
+// App-wide context (set once at startup)
+const globalScope = Sentry.getGlobalScope();
+globalScope.setTag("app.version", "1.0.0");
 ```
 
 ---
@@ -360,7 +416,7 @@ Sentry.configureScope((scope) => {
 
 - Export `handleError = Sentry.handleErrorWithSentry()` from **both** hook files in SvelteKit — server errors are missed if only one is set
 - Set `sendDefaultPii: true` to capture user IP and request headers automatically
-- Use `Sentry.withScope()` for one-off context, `Sentry.configureScope()` for session-wide context
+- Use `Sentry.withScope()` for one-off context, `Sentry.getIsolationScope()` / `Sentry.getGlobalScope()` for persistent context
 - Scrub PII in `beforeSend` if `sendDefaultPii: true` is set but specific fields must be hidden
 - Set `debug: true` during development to verify events are being captured
 
