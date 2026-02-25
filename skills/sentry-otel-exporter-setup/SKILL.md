@@ -203,9 +203,11 @@ export $(grep -v '^#' <env_file> | xargs) && <collector_path> validate --config 
 
 #### Docker validation
 
+**Note**: Docker volume mounts require absolute paths. If `<config_file>` or `<env_file>` are relative paths, prefix them with `$(pwd)/`. If they're already absolute paths, use them directly.
+
 ```bash
 docker run --rm \
-  -v $(pwd)/<config_file>:/etc/otelcol-contrib/config.yaml \
+  -v <absolute_config_path>:/etc/otelcol-contrib/config.yaml \
   --env-file <env_file> \
   otel/opentelemetry-collector-contrib:<numeric_version> \
   validate --config /etc/otelcol-contrib/config.yaml
@@ -248,13 +250,15 @@ export $(grep -v '^#' <env_file> | xargs) && <collector_path> --config <config_f
 
 ### Docker
 
+**Note**: Docker volume mounts require absolute paths. If `<config_file>` or `<env_file>` are relative paths, prefix them with `$(pwd)/`. If they're already absolute paths, use them directly.
+
 ```bash
 docker run -d \
   --name otel-collector \
   -p 4317:4317 \
   -p 4318:4318 \
   -p 13133:13133 \
-  -v $(pwd)/<config_file>:/etc/otelcol-contrib/config.yaml \
+  -v <absolute_config_path>:/etc/otelcol-contrib/config.yaml \
   --env-file <env_file> \
   otel/opentelemetry-collector-contrib:<numeric_version>
 ```
