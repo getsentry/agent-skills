@@ -4,6 +4,13 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 
 ## Available Skills
 
+### SDK Skills (Full Platform Bundles)
+
+| Skill | Description | Platforms | Docs |
+|-------|-------------|-----------|------|
+| `sentry-go-sdk` | Full Sentry setup wizard for Go — error monitoring, tracing, profiling, logging, metrics, crons | Go (net/http, Gin, Echo, Fiber) | [Go Guide](https://docs.sentry.io/platforms/go/) |
+| `sentry-svelte-sdk` | Full Sentry setup wizard for Svelte/SvelteKit — error monitoring, tracing, session replay, logging | Svelte, SvelteKit | [SvelteKit Guide](https://docs.sentry.io/platforms/javascript/guides/sveltekit/) |
+
 ### Setup Skills
 
 | Skill | Description | Platforms | Docs |
@@ -277,6 +284,15 @@ sentry-setup-tracing/
 
 Once installed, your AI assistant will automatically discover the skills. Simply ask:
 
+### SDK Skills (Full Platform Bundles)
+
+| What to Say | Skill Used |
+|-------------|------------|
+| "Add Sentry to my Go app" | `sentry-go-sdk` |
+| "Set up Sentry in my Gin/Echo/Fiber project" | `sentry-go-sdk` |
+| "Add Sentry to my SvelteKit app" | `sentry-svelte-sdk` |
+| "Set up Sentry in Svelte" | `sentry-svelte-sdk` |
+
 ### Setup
 
 | What to Say | Skill Used |
@@ -329,6 +345,17 @@ description: Description of what this skill does and when to use it
 Instructions for the AI assistant...
 ```
 
+**SDK skill bundles** use a `references/` directory for feature-specific deep dives:
+
+```
+sentry-go-sdk/
+  SKILL.md           # Main wizard
+  references/
+    error-monitoring.md
+    tracing.md
+    ...
+```
+
 ---
 
 ## Contributing
@@ -341,6 +368,8 @@ Contributions are welcome! Please ensure any new skills:
 4. **Keep skills concise** - use tables over prose, avoid obvious information
 5. Include an "Invoke This Skill When" section with trigger phrases
 6. Verify technical details against [Sentry docs](https://docs.sentry.io/)
+
+For full-platform SDK skills (covering all Sentry features for one language/framework), see [docs/sdk-skill-philosophy.md](docs/sdk-skill-philosophy.md) for the bundle architecture pattern.
 
 ### Style Guidelines
 
