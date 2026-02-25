@@ -204,7 +204,7 @@ Use the collector path recorded in Step 2 (either `otelcol-contrib` if on PATH, 
 **Load environment variables first**, then run validation:
 
 ```bash
-set -a && source <env_file> && set +a && <collector_path> validate --config <config_file>
+set -a && source "<env_file>" && set +a && "<collector_path>" validate --config "<config_file>"
 ```
 
 #### Docker validation
@@ -213,8 +213,8 @@ set -a && source <env_file> && set +a && <collector_path> validate --config <con
 
 ```bash
 docker run --rm \
-  -v <absolute_config_path>:/etc/otelcol-contrib/config.yaml \
-  --env-file <env_file> \
+  -v "<absolute_config_path>":/etc/otelcol-contrib/config.yaml \
+  --env-file "<env_file>" \
   otel/opentelemetry-collector-contrib:<numeric_version> \
   validate --config /etc/otelcol-contrib/config.yaml
 ```
@@ -251,7 +251,7 @@ Provide the appropriate command based on the installation method chosen in Step 
 **Load environment variables first**, then run the collector:
 
 ```bash
-set -a && source <env_file> && set +a && <collector_path> --config <config_file>
+set -a && source "<env_file>" && set +a && "<collector_path>" --config "<config_file>"
 ```
 
 ### Docker
@@ -269,8 +269,8 @@ docker run -d \
   -p 4317:4317 \
   -p 4318:4318 \
   -p 13133:13133 \
-  -v <absolute_config_path>:/etc/otelcol-contrib/config.yaml \
-  --env-file <env_file> \
+  -v "<absolute_config_path>":/etc/otelcol-contrib/config.yaml \
+  --env-file "<env_file>" \
   otel/opentelemetry-collector-contrib:<numeric_version>
 ```
 
