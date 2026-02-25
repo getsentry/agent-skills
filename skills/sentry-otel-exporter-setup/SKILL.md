@@ -76,7 +76,7 @@ Detect the user's platform and download the binary:
    - Darwin + x86_64 → `darwin_amd64`
    - Linux + x86_64 → `linux_amd64`
    - Linux + aarch64 → `linux_arm64`
-3. Download and extract using the numeric version (without `v` prefix):
+3. Download and extract:
 ```bash
 curl -LO https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v<numeric_version>/otelcol-contrib_<numeric_version>_<os>_<arch>.tar.gz
 tar -xzf otelcol-contrib_<numeric_version>_<os>_<arch>.tar.gz
@@ -86,6 +86,11 @@ chmod +x otelcol-contrib
 Example: For version `v0.145.0`, the URL uses `v0.145.0` in the path but `0.145.0` in the filename.
 
 Perform these steps for the user—do not just show them the commands.
+
+4. Ask the user if they want to delete the downloaded tarball to save disk space (~50MB). If yes, remove it:
+```bash
+rm otelcol-contrib_<numeric_version>_<os>_<arch>.tar.gz
+```
 
 ### Docker Installation
 
