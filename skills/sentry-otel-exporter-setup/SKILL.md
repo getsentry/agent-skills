@@ -1,6 +1,7 @@
 ---
 name: sentry-otel-exporter-setup
 description: Configure the OpenTelemetry Collector with Sentry Exporter for multi-project routing and automatic project creation. Use when setting up OTel with Sentry, configuring collector pipelines for traces and logs, or routing telemetry from multiple services to Sentry projects.
+license: Apache-2.0
 ---
 
 # Sentry OTel Exporter Setup
@@ -198,7 +199,7 @@ Use the collector path recorded in Step 2 (either `otelcol-contrib` if on PATH, 
 **Load environment variables first**, then run validation:
 
 ```bash
-export $(grep -v '^#' <env_file> | xargs) && <collector_path> validate --config <config_file>
+set -a && source <env_file> && set +a && <collector_path> validate --config <config_file>
 ```
 
 #### Docker validation
@@ -245,7 +246,7 @@ Provide the appropriate command based on the installation method chosen in Step 
 **Load environment variables first**, then run the collector:
 
 ```bash
-export $(grep -v '^#' <env_file> | xargs) && <collector_path> --config <config_file>
+set -a && source <env_file> && set +a && <collector_path> --config <config_file>
 ```
 
 ### Docker
