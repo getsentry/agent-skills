@@ -28,9 +28,13 @@ OTel Exporter Setup:
 
 Search for existing OpenTelemetry Collector configs by looking for YAML files containing `receivers:`. Also check for files named `otel-collector-config.*`, `collector-config.*`, or `otelcol.*`.
 
-**If an existing config is found**: Ask the user if they want to modify it to add the Sentry exporter, or create a separate config file. Prefer editing the existing file to avoid duplicates.
+**If an existing config is found**: Ask the user which approach they want:
+- **Modify existing config**: Add Sentry Exporter to the existing file (recommended to avoid duplicates)
+- **Create separate config**: Keep existing config unchanged and create a new one for testing
 
-**If no config exists**: Proceed to create a new `collector-config.yaml`.
+**Wait for the user's answer and record their choice before proceeding to Step 2.** The rest of the workflow depends on this decision.
+
+**If no config exists**: Note that you'll create a new `collector-config.yaml` in Step 4, then proceed to Step 2.
 
 ## Step 2: Check Collector Version
 
@@ -94,9 +98,13 @@ Ask the user whether to enable automatic project creation. Do not recommend eith
 - **Yes**: Projects created from service.name. Requires at least one team in your Sentry org. All new projects are assigned to the first team found. Initial data may be dropped during creation.
 - **No**: Projects must exist in Sentry before telemetry arrives.
 
+**Wait for the user's answer before proceeding to Step 4.**
+
 **If user chooses Yes**: Warn them that the exporter will scan all projects and use the first team it finds. All auto-created projects will be assigned to that team. If they don't have any teams yet, they should create one in Sentry first.
 
 ## Step 4: Write Collector Config
+
+**Use the decision from Step 1** - if the user chose to modify an existing config, edit that file. If they chose to create a separate config, create a new file.
 
 Fetch the latest configuration from the Sentry Exporter documentation:
 
@@ -105,11 +113,11 @@ Fetch the latest configuration from the Sentry Exporter documentation:
 
 Use WebFetch to retrieve the example config as a starting template. Reference the spec if the user needs advanced options not shown in the example.
 
-### If editing an existing config
+### If editing an existing config (per Step 1 decision)
 
 Add the `sentry` exporter to the `exporters:` section and include it in the appropriate pipelines (`traces`, `logs`). Do not remove or modify other exporters unless the user requests it.
 
-### If creating a new config
+### If creating a new config (per Step 1 decision)
 
 Create `collector-config.yaml` based on the fetched example. Ensure credentials use environment variable references (`${env:SENTRY_ORG_SLUG}`, `${env:SENTRY_AUTH_TOKEN}`).
 
@@ -138,6 +146,8 @@ SAY INSTEAD:
 Search for existing `.env` files in the project using glob `**/.env`. If any are found, ask the user which file to add the placeholders to (use actual discovered paths like `.env` or `backend/.env`):
 - **[path to discovered .env file]**: Add to existing file
 - **Create new at root**: Create .env in project root
+
+**Wait for the user's answer, then add the placeholders to the chosen file.**
 
 Add these placeholder values to the chosen file:
 
