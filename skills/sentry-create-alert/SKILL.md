@@ -1,11 +1,14 @@
 ---
 name: sentry-create-alert
-description: Create Sentry alerts using the workflow engine API. Use when asked to create alerts, set up notifications, configure issue priority alerts, or build workflow automations. Supports email, Slack, and PagerDuty actions with flexible trigger and condition configuration.
+description: Create Sentry alerts using the workflow engine API. Use when asked to create alerts, set up notifications, configure issue priority alerts, or build workflow automations. Supports email, Slack, PagerDuty, Discord, and other notification actions.
+license: Apache-2.0
 ---
 
 # Create Sentry Alert
 
 Create alerts via Sentry's workflow engine API.
+
+**Note:** This API is currently in **beta** and may be subject to change. It is part of New Monitors and Alerts and may not be viewable in the legacy Alerts UI.
 
 ## Invoke This Skill When
 
@@ -17,7 +20,7 @@ Create alerts via Sentry's workflow engine API.
 ## Prerequisites
 
 - `curl` available in shell
-- Sentry org auth token with `alerts:write` scope
+- Sentry org auth token with `alerts:write` scope (also accepts `org:admin` or `org:write`)
 
 ## Phase 1: Gather Configuration
 
@@ -73,21 +76,30 @@ Pick which issue events fire the workflow. Use `logicType: "any-short"` (trigger
 | `first_seen_event` | New issue created |
 | `regression_event` | Resolved issue recurs |
 | `reappeared_event` | Archived issue reappears |
+| `issue_resolved_trigger` | Issue is resolved |
 
 ### Filter Conditions
 
 Conditions that must pass before actions execute. Use `logicType: "all"`, `"any-short"`, or `"none"`.
 
-| Type | comparison | Description |
-|------|-----------|-------------|
-| `issue_priority_greater_or_equal` | `25` / `50` / `75` / `100` | Priority >= Low/Medium/High/Critical |
-| `issue_priority_deescalating` | `true` | Priority dropped below peak |
-| `event_frequency_count` | `<number>` | Event count exceeds threshold |
-| `event_unique_user_frequency_count` | `<number>` | Affected users exceed threshold |
-| `tagged_event` | `"key:value"` | Event has specific tag |
-| `assigned_to` | `"<user_or_team_id>"` | Issue assigned to target |
+**The `comparison` field is polymorphic** — its shape depends on the condition `type`:
 
-Priority scale: Low=25, Medium=50, High=75, Critical=100.
+| Type | `comparison` format | Description |
+|------|---------------------|-------------|
+| `issue_priority_greater_or_equal` | `75` (bare integer) | Priority >= Low(25)/Medium(50)/High(75) |
+| `issue_priority_deescalating` | `true` (bare boolean) | Priority dropped below peak |
+| `event_frequency_count` | `{"value": 100, "interval": "1hr"}` | Event count in time window |
+| `event_unique_user_frequency_count` | `{"value": 50, "interval": "1hr"}` | Affected users in time window |
+| `tagged_event` | `{"key": "level", "match": "eq", "value": "error"}` | Event tag matches |
+| `assigned_to` | `{"targetType": "Member", "targetIdentifier": 123}` | Issue assigned to target |
+| `level` | `{"level": 40, "match": "gte"}` | Event level (fatal=50, error=40, warning=30) |
+| `age_comparison` | `{"time": "hour", "value": 24, "comparisonType": "older"}` | Issue age |
+| `issue_category` | `{"value": 1}` | Category (1=Error, 6=Feedback) |
+| `issue_occurrences` | `{"value": 100}` | Total occurrence count |
+
+**Interval options:** `"1min"`, `"5min"`, `"15min"`, `"1hr"`, `"1d"`, `"1w"`, `"30d"`
+
+**Tag match types:** `"co"` (contains), `"nc"` (not contains), `"eq"`, `"ne"`, `"sw"` (starts with), `"ew"` (ends with), `"is"` (set), `"ns"` (not set)
 
 Set `conditionResult` to `false` to invert (fire when condition is NOT met).
 
@@ -95,9 +107,14 @@ Set `conditionResult` to `false` to invert (fire when condition is NOT met).
 
 | Type | Key Config |
 |------|-----------|
-| `email` | `targetType`: `"user"` / `"team"` / `"issue_owners"`, `targetIdentifier`: `<id>` |
-| `slack` | `integrationId`: `<id>`, `channel`: `"#name"`, `channel_id`: `<id>` |
-| `pagerduty` | `integrationId`: `<id>`, `service`: `<id>`, `severity`: `"critical"` |
+| `email` | `config.targetType`: `"user"` / `"team"` / `"issue_owners"`, `config.targetIdentifier`: `<id>` |
+| `slack` | `integrationId`: `<id>`, `config.targetDisplay`: `"#channel-name"` |
+| `pagerduty` | `integrationId`: `<id>`, `config.targetDisplay`: `<service_name>`, `data.priority`: `"critical"` |
+| `discord` | `integrationId`: `<id>`, `data.tags`: tag list |
+| `msteams` | `integrationId`: `<id>`, `config.targetDisplay`: `<channel>` |
+| `opsgenie` | `integrationId`: `<id>`, `data.priority`: `"P1"`-`"P5"` |
+| `jira` | `integrationId`: `<id>`, `data`: project/issue config |
+| `github` | `integrationId`: `<id>`, `data`: repo/issue config |
 
 ### Full Payload Structure
 
@@ -106,17 +123,19 @@ Set `conditionResult` to `false` to invert (fire when condition is NOT met).
   "name": "<Alert Name>",
   "enabled": true,
   "environment": null,
-  "config": { "frequency": 0 },
+  "config": { "frequency": 30 },
   "triggers": {
     "logicType": "any-short",
     "conditions": [
       { "type": "first_seen_event", "comparison": true, "conditionResult": true }
-    ]
+    ],
+    "actions": []
   },
   "actionFilters": [{
     "logicType": "all",
     "conditions": [
-      { "type": "issue_priority_greater_or_equal", "comparison": 75, "conditionResult": true }
+      { "type": "issue_priority_greater_or_equal", "comparison": 75, "conditionResult": true },
+      { "type": "event_frequency_count", "comparison": {"value": 50, "interval": "1hr"}, "conditionResult": true }
     ],
     "actions": [{
       "type": "email",
@@ -126,13 +145,16 @@ Set `conditionResult` to `false` to invert (fire when condition is NOT met).
         "targetType": "user",
         "targetIdentifier": "<user_id>",
         "targetDisplay": null
-      }
+      },
+      "status": "active"
     }]
   }]
 }
 ```
 
-`frequency`: seconds between repeated notifications. `0` = no throttling, `1800` = 30 min.
+`frequency`: minutes between repeated notifications. Allowed values: `0`, `5`, `10`, `30`, `60`, `180`, `720`, `1440`.
+
+**Structure note:** `triggers.actions` is always `[]` — actions live inside `actionFilters[].actions`.
 
 ## Phase 4: Create the Alert
 
@@ -168,6 +190,9 @@ curl -s "$API/workflows/" -H "$AUTH"
 
 # Get one workflow
 curl -s "$API/workflows/{id}/" -H "$AUTH"
+
+# Update a workflow
+curl -s -X PUT "$API/workflows/{id}/" -H "$AUTH" -H "Content-Type: application/json" -d '{payload}'
 
 # Delete a workflow
 curl -s -X DELETE "$API/workflows/{id}/" -H "$AUTH"

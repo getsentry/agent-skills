@@ -1,6 +1,7 @@
 ---
 name: sentry-python-setup
-description: Setup Sentry in Python apps. Use when asked to add Sentry to Python, install sentry-sdk, or configure error monitoring for Python applications, Django, Flask, FastAPI.
+description: Setup Sentry in Python apps. Use when asked to add Sentry to Python, install sentry-sdk, or configure error monitoring, profiling, or logging for Python applications, Django, Flask, FastAPI.
+license: Apache-2.0
 ---
 
 # Sentry Python Setup
@@ -12,6 +13,8 @@ Install and configure Sentry in Python projects.
 - User asks to "add Sentry to Python" or "install Sentry" in a Python app
 - User wants error monitoring, logging, or tracing in Python
 - User mentions "sentry-sdk" or Python frameworks (Django, Flask, FastAPI)
+
+**Important:** The configuration options and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and defaults may have changed.
 
 ## Install
 
@@ -64,74 +67,48 @@ asyncio.run(main())
 
 ## Framework Integrations
 
-### Django
+Use the same `sentry_sdk.init()` call shown above. Place it where it runs before your app starts:
 
-```python
-# settings.py
-import sentry_sdk
-
-sentry_sdk.init(
-    dsn="YOUR_SENTRY_DSN",
-    send_default_pii=True,
-    traces_sample_rate=1.0,
-    enable_logs=True,
-)
-```
-
-### Flask
-
-```python
-from flask import Flask
-import sentry_sdk
-
-sentry_sdk.init(
-    dsn="YOUR_SENTRY_DSN",
-    send_default_pii=True,
-    traces_sample_rate=1.0,
-    enable_logs=True,
-)
-
-app = Flask(__name__)
-```
-
-### FastAPI
-
-```python
-from fastapi import FastAPI
-import sentry_sdk
-
-sentry_sdk.init(
-    dsn="YOUR_SENTRY_DSN",
-    send_default_pii=True,
-    traces_sample_rate=1.0,
-    enable_logs=True,
-)
-
-app = FastAPI()
-```
+| Framework | Where to Init | Notes |
+|-----------|--------------|-------|
+| **Django** | Top of `settings.py` | Auto-detects Django, no extra install |
+| **Flask** | Before `app = Flask(__name__)` | Auto-detects Flask |
+| **FastAPI** | Before `app = FastAPI()` | Auto-detects FastAPI |
+| **Celery** | In Celery worker config | Auto-detects Celery |
+| **AIOHTTP** | Before app creation | Auto-detects AIOHTTP |
 
 ## Configuration Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `dsn` | Sentry DSN | Required |
-| `send_default_pii` | Include user data | `False` |
-| `traces_sample_rate` | % of transactions traced | `0` |
-| `profile_session_sample_rate` | % of sessions profiled | `0` |
-| `enable_logs` | Send logs to Sentry | `False` |
-| `environment` | Environment name | Auto-detected |
-| `release` | Release version | Auto-detected |
+| Option | Description | Default | Min SDK |
+|--------|-------------|---------|---------|
+| `dsn` | Sentry DSN | `None` (SDK no-ops without it) | — |
+| `send_default_pii` | Include user data | `None` | — |
+| `traces_sample_rate` | % of transactions traced | `None` (tracing disabled) | — |
+| `profile_session_sample_rate` | % of sessions profiled | `None` (profiling disabled) | 2.24.1+ |
+| `profile_lifecycle` | Profiling mode (`"trace"` or `"manual"`) | `"manual"` | 2.24.1+ |
+| `enable_logs` | Send logs to Sentry | `False` | 2.35.0+ |
+| `environment` | Environment name | `"production"` (or `SENTRY_ENVIRONMENT` env var) | — |
+| `release` | Release version | Auto-detected | — |
 
 ## Environment Variables
 
+The SDK auto-reads these:
+
 ```bash
 SENTRY_DSN=https://xxx@o123.ingest.sentry.io/456
+SENTRY_ENVIRONMENT=production
+SENTRY_RELEASE=1.0.0
+```
+
+For `sentry-cli` (source maps, releases), also set:
+
+```bash
 SENTRY_AUTH_TOKEN=sntrys_xxx
 SENTRY_ORG=my-org
 SENTRY_PROJECT=my-project
 ```
 
-Or use in code:
+Or pass DSN in code:
 
 ```python
 import os

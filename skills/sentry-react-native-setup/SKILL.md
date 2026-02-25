@@ -1,6 +1,7 @@
 ---
 name: sentry-react-native-setup
 description: Setup Sentry in React Native using the wizard CLI. Use when asked to add Sentry to React Native, install @sentry/react-native, or configure error monitoring for React Native or Expo apps.
+license: Apache-2.0
 ---
 
 # Sentry React Native Setup
@@ -12,6 +13,8 @@ Install and configure Sentry in React Native projects using the official wizard 
 - User asks to "add Sentry to React Native" or "install Sentry" in a React Native app
 - User wants error monitoring, logging, or tracing in React Native or Expo
 - User mentions "@sentry/react-native" or mobile error tracking
+
+**Important:** The configuration options and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and defaults may have changed.
 
 ## Wizard Setup (Recommended)
 
@@ -29,7 +32,7 @@ npx @sentry/wizard@latest -i reactNative
 | Android setup | Enables Gradle build step for source maps |
 | iOS setup | Wraps Xcode build phase, adds debug symbol upload |
 | Pod install | Runs `pod install` for iOS |
-| Credentials | Stores in `ios/sentry.properties`, `android/sentry.properties`, `.env.local` |
+| Credentials | Stores in `ios/sentry.properties`, `android/sentry.properties`, `env.local` |
 | Init code | Configures Sentry in `App.tsx` or `_layout.tsx` |
 
 ## Manual Configuration
@@ -96,7 +99,7 @@ Works for both managed and bare Expo projects.
 | `app.json` | Expo config (if Expo) |
 | `ios/sentry.properties` | iOS build credentials |
 | `android/sentry.properties` | Android build credentials |
-| `.env.local` | Environment variables |
+| `env.local` | Environment variables |
 
 ## Environment Variables
 

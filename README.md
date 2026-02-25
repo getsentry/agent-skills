@@ -12,11 +12,12 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-react-native-setup`  | Setup Sentry in React Native using the wizard CLI | React Native, Expo              | [React Native Guide](https://docs.sentry.io/platforms/react-native/)                                             |
 | `sentry-python-setup`        | Setup Sentry in Python apps                       | Python (Django, Flask, FastAPI) | [Python Guide](https://docs.sentry.io/platforms/python/)                                                         |
 | `sentry-ruby-setup`          | Setup Sentry in Ruby apps                         | Ruby (Rails)                    | [Ruby Guide](https://docs.sentry.io/platforms/ruby/)                                                             |
+| `sentry-ios-swift-setup`     | Setup Sentry in iOS/Swift apps                    | iOS (Swift, UIKit, SwiftUI)     | [Apple Guide](https://docs.sentry.io/platforms/apple/guides/ios/)                                                |
 | `sentry-setup-tracing`       | Setup Sentry Tracing (Performance Monitoring)     | JS, Python, Ruby                | [Tracing](https://docs.sentry.io/platforms/javascript/tracing/)                                                  |
 | `sentry-setup-logging`       | Setup Sentry Logging                              | JS, Python, Ruby                | [Logs](https://docs.sentry.io/platforms/javascript/logs/)                                                        |
 | `sentry-setup-metrics`       | Setup Sentry Metrics                              | JS, Python                      | [Metrics](https://docs.sentry.io/platforms/javascript/metrics/)                                                  |
 | `sentry-setup-ai-monitoring` | Setup Sentry AI Agent Monitoring                  | JS, Python                      | [AI Agents](https://docs.sentry.io/platforms/javascript/guides/nextjs/tracing/instrumentation/ai-agents-module/) |
-| `sentry-otel-exporter-setup` | Setup OTel Collector with Sentry Exporter         | OTel Collector                  | [OTel](https://docs.sentry.io/platforms/opentelemetry/)                                                          |
+| `sentry-otel-exporter-setup` | Setup OTel Collector with Sentry Exporter         | OTel Collector                  | [Exporter Guide](https://docs.sentry.io/concepts/otlp/forwarding/pipelines/sentry-exporter/)                     |
 
 ### Workflow Skills
 
@@ -355,7 +356,7 @@ Instructions for the AI assistant...
 Contributions are welcome! Please ensure any new skills:
 
 1. Follow the [Agent Skills specification](https://agentskills.io/specification)
-2. Have a valid `name` (lowercase, hyphens, 1-64 chars)
+2. Have a valid `name` (lowercase letters, numbers, hyphens, 1-64 chars, no consecutive hyphens, must not start or end with hyphen)
 3. Include a clear `description` (1-1024 chars)
 4. **Keep skills concise** - use tables over prose, avoid obvious information
 5. Include an "Invoke This Skill When" section with trigger phrases

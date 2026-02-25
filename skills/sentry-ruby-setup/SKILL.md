@@ -1,6 +1,7 @@
 ---
 name: sentry-ruby-setup
-description: Setup Sentry in Ruby apps. Use when asked to add Sentry to Ruby, install sentry-ruby gem, or configure error monitoring for Ruby applications or Rails.
+description: Setup Sentry in Ruby apps. Use when asked to add Sentry to Ruby, install sentry-ruby gem, or configure error monitoring for Ruby applications, Rails, or Sidekiq.
+license: Apache-2.0
 ---
 
 # Sentry Ruby Setup
@@ -13,6 +14,8 @@ Install and configure Sentry in Ruby projects.
 - User wants error monitoring, logging, or tracing in Ruby
 - User mentions "sentry-ruby" gem or Ruby on Rails
 
+**Important:** The configuration options and code samples below are examples. Always verify against [docs.sentry.io](https://docs.sentry.io) before implementing, as APIs and defaults may have changed.
+
 ## Requirements
 
 - Ruby 2.4+ or recent JRuby versions
@@ -24,8 +27,10 @@ Add to `Gemfile`:
 ```ruby
 gem "sentry-ruby"
 
-# For profiling, also add:
-gem "stackprof"
+# For profiling, add ONE of:
+gem "stackprof"  # SDK 5.9.0+ — works on all Ruby versions
+# gem "vernier"  # SDK 5.21.0+ — requires Ruby 3.2.1+, better for multi-threaded servers
+                 # Also requires: config.profiler_class = Sentry::Vernier::Profiler
 ```
 
 Then run:
@@ -51,8 +56,9 @@ Sentry.init do |config|
   # Tracing
   config.traces_sample_rate = 1.0
   
-  # Profiling (requires stackprof gem)
+  # Profiling (requires stackprof or vernier gem)
   config.profiles_sample_rate = 1.0
+  # config.profiler_class = Sentry::Vernier::Profiler  # Uncomment if using vernier
   
   # Logs
   config.enable_logs = true
@@ -89,12 +95,12 @@ gem "sentry-resque"  # If using Resque
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `dsn` | Sentry DSN | Required |
+| `dsn` | Sentry DSN | `nil` (SDK no-ops without it) |
 | `send_default_pii` | Include user data | `false` |
-| `traces_sample_rate` | % of transactions traced | `0` |
-| `profiles_sample_rate` | % of traces profiled | `0` |
+| `traces_sample_rate` | % of transactions traced | `nil` (tracing disabled) |
+| `profiles_sample_rate` | % of traces profiled | `nil` (profiling disabled) |
 | `enable_logs` | Send logs to Sentry | `false` |
-| `environment` | Environment name | Auto-detected |
+| `environment` | Environment name | `"development"` (checks `SENTRY_CURRENT_ENV`, `SENTRY_ENVIRONMENT`, `RAILS_ENV`, `RACK_ENV` in order) |
 | `release` | Release version | Auto-detected |
 
 ## Breadcrumb Loggers
@@ -103,6 +109,7 @@ gem "sentry-resque"  # If using Resque
 |--------|-------------|
 | `:sentry_logger` | Sentry's own logger |
 | `:http_logger` | HTTP request breadcrumbs |
+| `:redis_logger` | Redis command breadcrumbs |
 | `:active_support_logger` | Rails ActiveSupport (Rails only) |
 
 ## Environment Variables

@@ -43,14 +43,14 @@ description: Brief description including trigger keywords. Use when asked to [ac
 **Required fields:**
 | Field | Requirements |
 |-------|--------------|
-| `name` | kebab-case, 1-64 chars, must match directory name |
+| `name` | kebab-case, 1-64 chars, must match directory name, no consecutive hyphens, must not start or end with hyphen |
 | `description` | 1-1024 chars, include trigger phrases and supported platforms |
 
 **Optional fields:**
 | Field | Purpose |
 |-------|---------|
-| `model` | Override model (`sonnet`, `opus`, `haiku`) |
-| `allowed-tools` | Space-delimited tool allowlist |
+| `metadata` | Arbitrary key-value mapping (e.g., `author`, `version`) |
+| `allowed-tools` | Space-delimited tool allowlist (experimental) |
 | `license` | License name or path |
 | `compatibility` | Environment requirements (max 500 chars) |
 
