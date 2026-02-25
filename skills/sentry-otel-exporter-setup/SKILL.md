@@ -65,7 +65,7 @@ Fetch the latest release version from GitHub:
 curl -s https://api.github.com/repos/open-telemetry/opentelemetry-collector-releases/releases/latest | grep '"tag_name"' | cut -d'"' -f4
 ```
 
-**Important**: The GitHub API returns versions with a `v` prefix (e.g., `v0.145.0`), but download URLs and Docker tags use the numeric version without the prefix (e.g., `0.145.0`). Strip the `v` prefix before using in URLs.
+**Important**: The GitHub API returns versions with a `v` prefix (e.g., `v0.145.0`). The download URL path requires the full tag with `v` prefix, but the filename and Docker tags use the numeric version without the prefix (e.g., `0.145.0`).
 
 Detect the user's platform and download the binary:
 
