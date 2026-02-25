@@ -253,6 +253,11 @@ set -a && source <env_file> && set +a && <collector_path> --config <config_file>
 
 **Note**: Docker volume mounts require absolute paths. If `<config_file>` or `<env_file>` are relative paths, prefix them with `$(pwd)/`. If they're already absolute paths, use them directly.
 
+**If re-running**: Stop and remove any existing container first:
+```bash
+docker stop otel-collector 2>/dev/null; docker rm otel-collector 2>/dev/null
+```
+
 ```bash
 docker run -d \
   --name otel-collector \
@@ -289,3 +294,4 @@ If using Docker, check logs with `docker logs otel-collector`.
 | "invalid auth token" | Wrong token type or expired | Use Internal Integration token, not user auth token |
 | "connection refused" on 4317/4318 | Collector not running or port conflict | Check collector logs and ensure ports are available |
 | Validation fails with env var errors | .env file not loaded or placeholders not replaced | Ensure real credentials are in .env and the file is sourced |
+| "container name already in use" | Previous container exists | Run `docker stop otel-collector && docker rm otel-collector` |
