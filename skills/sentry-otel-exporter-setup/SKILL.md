@@ -190,11 +190,21 @@ Once credentials are set, validate the configuration:
 1. Review the error message carefully
 2. Fix the issues in collector-config.yaml
 3. Run validation again
-4. **Only proceed to Step 6 when validation passes**
+4. Repeat until validation passes
+
+**Once validation passes**, ask the user if they're ready to run the collector:
+- **Yes, run it now**: Proceed to Step 6 and start the collector
+- **Not yet**: Wait. The user may want to review the config or prepare their environment first.
+
+**Wait for the user's confirmation before proceeding to Step 6.**
 
 ## Step 6: Run the Collector
 
-Provide run instructions based on the installation method chosen in Step 2.
+**Only reach this step after the user confirms they're ready to run the collector.**
+
+**Give the user the run command but do not execute it automatically.** The user will run it themselves.
+
+Provide the appropriate command based on the installation method chosen in Step 2:
 
 ### Binary
 
@@ -216,6 +226,8 @@ docker run -d \
 ```
 
 Use the same version that was pulled in Step 2.
+
+After providing the command, tell the user to run it when they're ready, then proceed to Step 7 for verification.
 
 ## Step 7: Verify Setup
 
