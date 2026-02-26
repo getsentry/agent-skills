@@ -8,7 +8,6 @@ Cron monitoring detects missed, failed, or slow scheduled jobs by capturing chec
 
 - [Manual check-ins](#manual-check-ins)
 - [ActiveJob integration](#activejob-integration)
-- [Sidekiq-Cron integration](#sidekiq-cron-integration)
 - [Upserting monitor configuration](#upserting-monitor-configuration)
 - [Heartbeat pattern](#heartbeat-pattern)
 - [Best Practices](#best-practices)
@@ -77,19 +76,6 @@ class NightlyCleanupJob < ApplicationJob
   end
 end
 ```
-
-## Sidekiq-Cron Integration
-
-Enable automatic check-ins for all Sidekiq-Cron periodic jobs with a single patch:
-
-```ruby
-Sentry.init do |config|
-  config.dsn = ENV["SENTRY_DSN"]
-  config.enabled_patches += [:sidekiq_cron]
-end
-```
-
-Sentry captures check-ins for every job defined in your Sidekiq-Cron schedule automatically — no per-job changes needed.
 
 ## Upserting Monitor Configuration
 
@@ -164,5 +150,5 @@ Heartbeats detect when a job doesn't run at all but cannot detect runtime overag
 | Monitor shows "missed" immediately | `checkin_margin` too low; increase it to account for scheduler jitter |
 | `capture_check_in` returns `nil` | SDK not initialized — ensure `Sentry.init` runs before the job |
 | ActiveJob mixin not capturing | Confirm `include Sentry::Cron::MonitorCheckIns` and `sentry_monitor_check_ins` are both present |
-| Sidekiq-Cron not auto-capturing | Ensure `config.enabled_patches += [:sidekiq_cron]` is in `Sentry.init`; requires `sidekiq-cron` gem |
+
 | Duplicate check-in pairs | Check that `capture_check_in` is not called in both the mixin and manual code for the same job |

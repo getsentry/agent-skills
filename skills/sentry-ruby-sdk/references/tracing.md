@@ -36,7 +36,6 @@ Sentry.init do |config|
       when /health/ then 0.0   # drop health checks
       else               0.1
       end
-    when /sidekiq/ then 0.01
     else                0.0
     end
   end
@@ -62,10 +61,6 @@ use Sentry::Rack::CaptureExceptions
 ```
 
 Wraps each Rack request in a transaction.
-
-### Sidekiq (via `sentry-sidekiq`)
-
-No extra code. Each worker execution becomes a transaction, inheriting distributed trace context from the enqueuing request.
 
 ## Custom Instrumentation
 
@@ -209,9 +204,6 @@ Sentry becomes a Span Exporter and Propagator — existing OTel instrumentation 
 | ActiveRecord | `sentry-rails` | SQL queries → spans |
 | ActionMailer | `sentry-rails` | Mail delivery → spans |
 | ActiveJob | `sentry-rails` | Job execution → spans |
-| Sidekiq workers | `sentry-sidekiq` | Worker execution → transactions |
-| Resque workers | `sentry-resque` | Worker execution → transactions |
-| DelayedJob | `sentry-delayed_job` | Job execution → transactions |
 | Net::HTTP | `sentry-ruby` | Outbound HTTP → spans + header propagation |
 | Redis | `sentry-ruby` | Redis commands → spans (needs `:redis_logger`) |
 | GraphQL | `sentry-ruby` | Queries → transactions (enable with `enabled_patches`) |
@@ -229,7 +221,6 @@ Sentry becomes a Span Exporter and Propagator — existing OTel instrumentation 
 | Issue | Solution |
 |-------|----------|
 | No transactions in dashboard | Set `traces_sample_rate > 0`; ensure `sentry-rails` or Rack middleware is present |
-| Sidekiq jobs not traced | Add `sentry-sidekiq` gem; no other config needed |
 | Missing DB spans | Ensure `sentry-rails` is loaded (it patches ActiveRecord) |
 | Distributed trace not stitching | Verify `sentry-trace` + `baggage` headers are forwarded by all services |
 | Frontend trace not linking | Add `<%= Sentry.get_trace_propagation_meta.html_safe %>` to your HTML `<head>` |

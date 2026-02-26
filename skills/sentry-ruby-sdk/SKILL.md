@@ -1,6 +1,6 @@
 ---
 name: sentry-ruby-sdk
-description: Full Sentry SDK setup for Ruby. Use when asked to add Sentry to Ruby, install sentry-ruby, setup Sentry in Rails/Sinatra/Rack, or configure error monitoring, tracing, logging, metrics, profiling, or crons for Ruby applications. Also handles migration from AppSignal or Honeybadger. Supports Rails, Sinatra, Rack, Sidekiq, and Resque.
+description: Full Sentry SDK setup for Ruby. Use when asked to add Sentry to Ruby, install sentry-ruby, setup Sentry in Rails/Sinatra/Rack, or configure error monitoring, tracing, logging, metrics, profiling, or crons for Ruby applications. Supports Rails, Sinatra, and Rack.
 license: Apache-2.0
 ---
 
@@ -13,8 +13,7 @@ Opinionated wizard that scans the project and guides through complete Sentry set
 - User asks to "add Sentry to Ruby" or "set up Sentry" in a Ruby app
 - User wants error monitoring, tracing, logging, metrics, profiling, or crons in Ruby
 - User mentions `sentry-ruby`, `sentry-rails`, or the Ruby Sentry SDK
-- User is migrating from AppSignal or Honeybadger to Sentry
-- User wants to monitor exceptions, HTTP requests, or background jobs in Rails/Sinatra
+- User wants to monitor exceptions or HTTP requests in Rails/Sinatra
 
 > **Note:** SDK APIs below reflect sentry-ruby v6.4.0.
 > Always verify against [docs.sentry.io/platforms/ruby/](https://docs.sentry.io/platforms/ruby/) before implementing.
@@ -30,26 +29,14 @@ grep -i sentry Gemfile 2>/dev/null
 # Framework
 grep -E '"rails"|"sinatra"' Gemfile 2>/dev/null
 
-# Background jobs
-grep -E '"sidekiq"|"resque"|"delayed_job"' Gemfile 2>/dev/null
-
-# Competitor monitoring tools — triggers migration path if found
-grep -E '"appsignal"|"honeybadger"' Gemfile 2>/dev/null
-
-# Existing metric patterns (StatsD, Datadog, Prometheus)
-grep -rE "(statsd|dogstatsd|prometheus|\.gauge|\.histogram|\.increment|\.timing)" \
-  app/ lib/ --include="*.rb" 2>/dev/null | grep -v "_spec\|_test" | head -20
-
 # Companion frontend
 cat package.json frontend/package.json web/package.json 2>/dev/null | grep -E '"@sentry|"sentry-'
 ```
 
 **Route from what you find:**
-- **Competitor detected** (`appsignal`, `honeybadger`) → load `references/migration.md` first; **delete the competitor initializer** (`config/initializers/honeybadger.rb` or `config/initializers/appsignal.rb`) as part of migration
 - **Sentry already present** → skip to Phase 2 to configure features
 - **Rails** → use `sentry-rails` + `config/initializers/sentry.rb`
 - **Rack/Sinatra** → `sentry-ruby` + `Sentry::Rack::CaptureExceptions` middleware
-- **Sidekiq** → add `sentry-sidekiq`; recommend Metrics if existing metric patterns found
 
 ---
 
@@ -62,9 +49,9 @@ Lead with a concrete proposal — don't ask open-ended questions:
 | Error Monitoring | **Always** |
 | Tracing | Rails / Sinatra / Rack / any HTTP framework |
 | Logging | **Always** — `enable_logs: true` costs nothing |
-| Metrics | Sidekiq present; existing metric lib (StatsD, Prometheus) detected |
+| Metrics | Business KPIs, SLO tracking, or custom counters needed |
 | Profiling | ⚠️ Beta — performance profiling requested; requires `stackprof` or `vernier` gem |
-| Crons | Scheduled jobs detected (ActiveJob, Sidekiq-Cron, Clockwork, Whenever) |
+| Crons | Scheduled jobs detected (ActiveJob, Clockwork, Whenever) |
 
 Propose: *"I recommend Error Monitoring + Tracing + Logging [+ Metrics if applicable]. Shall I proceed?"*
 
@@ -79,9 +66,6 @@ Propose: *"I recommend Error Monitoring + Tracing + Logging [+ Metrics if applic
 # Gemfile
 gem "sentry-ruby"
 gem "sentry-rails"
-gem "sentry-sidekiq"      # if using Sidekiq
-gem "sentry-resque"       # if using Resque
-gem "sentry-delayed_job"  # if using DelayedJob
 ```
 
 **Rack / Sinatra / plain Ruby:**
@@ -124,21 +108,6 @@ end
 use Sentry::Rack::CaptureExceptions  # in config.ru, before app middleware
 ```
 
-### Init — Sidekiq standalone
-
-```ruby
-require "sentry-ruby"
-require "sentry-sidekiq"
-
-Sentry.init do |config|
-  config.dsn = ENV["SENTRY_DSN"]
-  config.spotlight = ENV.fetch("RAILS_ENV", "development") == "development"
-  config.breadcrumbs_logger = [:sentry_logger]
-  config.traces_sample_rate = 1.0
-  config.enable_logs = true
-end
-```
-
 ### Environment variables
 
 ```bash
@@ -153,11 +122,10 @@ Load each reference when implementing the corresponding feature:
 
 | Feature | Reference | Load when... |
 |---------|-----------|-------------|
-| Migration | `references/migration.md` | Competitor gem found — load **before** installing Sentry |
 | Error Monitoring | `references/error-monitoring.md` | Always |
 | Tracing | `references/tracing.md` | HTTP handlers / distributed tracing |
 | Logging | `references/logging.md` | Structured log capture |
-| Metrics | `references/metrics.md` | Sidekiq present; existing metric patterns |
+| Metrics | `references/metrics.md` | Business KPIs, SLO tracking |
 | Profiling | `references/profiling.md` | Performance profiling requested (beta) |
 | Crons | `references/crons.md` | Scheduled jobs detected or requested |
 
@@ -240,7 +208,6 @@ For trace stitching between Ruby backend and JS frontend, see `references/tracin
 | Events not appearing | `config.debug = true`; verify DSN; ensure `Sentry.init` before first request |
 | Rails exceptions missing | Must use `sentry-rails` — `sentry-ruby` alone doesn't hook Rails error handlers |
 | No traces | Set `traces_sample_rate > 0`; ensure `sentry-rails` or `Sentry::Rack::CaptureExceptions` |
-| Sidekiq jobs not traced | Add `sentry-sidekiq` gem |
 | Missing request context | Set `config.send_default_pii = true` |
 | Logs not appearing | Set `config.enable_logs = true`; sentry-ruby ≥ 5.24.0 required |
 | Metrics not appearing | Check `enable_metrics` is not `false`; verify DSN |
