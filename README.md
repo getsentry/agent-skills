@@ -13,6 +13,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-svelte-sdk` | Full Sentry setup wizard for Svelte/SvelteKit — error monitoring, tracing, session replay, logging | Svelte, SvelteKit | [SvelteKit Guide](https://docs.sentry.io/platforms/javascript/guides/sveltekit/) |
 | `sentry-ruby-sdk` | Full Sentry setup wizard for Ruby — error monitoring, tracing, logging, Sidekiq metrics + dashboard, migration from AppSignal/Honeybadger | Ruby, Rails, Sinatra, Rack, Sidekiq | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
 | `sentry-cocoa-sdk` | Full Sentry setup wizard for Apple platforms — error monitoring, tracing, profiling, session replay, logging | iOS, macOS, tvOS, watchOS, visionOS (Swift, UIKit, SwiftUI) | [Apple Guide](https://docs.sentry.io/platforms/apple/) |
+| `sentry-react-native-sdk` | Full Sentry setup wizard for React Native and Expo — error monitoring, tracing, profiling, session replay, logging, native crash symbolication | React Native, Expo managed/bare | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
 
 ### Setup Skills
 
@@ -309,6 +310,9 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Add Sentry to my iOS app" | `sentry-cocoa-sdk` |
 | "Set up Sentry in my Swift/SwiftUI project" | `sentry-cocoa-sdk` |
 | "Add Sentry to my macOS app" | `sentry-cocoa-sdk` |
+| "Add Sentry to my React Native app" | `sentry-react-native-sdk` |
+| "Set up Sentry in Expo" | `sentry-react-native-sdk` |
+| "Configure session replay for React Native" | `sentry-react-native-sdk` |
 
 ### Setup
 
