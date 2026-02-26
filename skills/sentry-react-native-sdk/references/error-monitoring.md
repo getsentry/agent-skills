@@ -1156,11 +1156,11 @@ Sentry.init({ defaultIntegrations: false });
 Sentry.init({
   integrations: [
     Sentry.breadcrumbsIntegration({
-      console: false,
-      dom: true,
+      console: false,  // disable console breadcrumbs
       fetch: true,
-      history: true,
       xhr: true,
+      sentry: true,
+      // Note: `dom` and `history` are web-only — not applicable in React Native
     }),
   ],
 });
@@ -1211,8 +1211,10 @@ Sentry.init({
   // ── Filtering ─────────────────────────────────────────────────────
   ignoreErrors: ["Script error", /^Non-Error/],
   ignoreTransactions: ["/healthcheck"],
-  denyUrls: ["chrome-extension://", /extensions\//i],
-  allowUrls: ["https://myapp.com"],
+  // denyUrls / allowUrls match stack frame URLs — primarily useful for web;
+  // in React Native these can filter native frames but are rarely needed.
+  // denyUrls: ["chrome-extension://", /extensions\//i],
+  // allowUrls: ["https://myapp.com"],
   maxBreadcrumbs: 100,
   maxValueLength: 250,        // max length of string values in events
 
@@ -1261,7 +1263,7 @@ Sentry.init({
   enableNativeCrashHandling: true,
   autoInitializeNativeSdk: true,
   enableNdkScopeSync: true,            // sync Java scope to NDK (Android)
-  enableTombstone: false,              // Android 12+ ApplicationExitInfo
+  enableTombstone: true,               // Android 12+ ApplicationExitInfo (default: false)
   attachThreads: false,                // all threads on Android events
   enableNativeNagger: true,            // warn if native init fails
   enableWatchdogTerminationTracking: true, // iOS OOM tracking

@@ -42,8 +42,8 @@ Sentry.init({
   tracesSampleRate: 1.0,
 
   // Option B: dynamic sampler — takes precedence over tracesSampleRate when both are set
-  // tracesSampler: ({ transactionContext }) => {
-  //   if (transactionContext.name === "checkout") return 1.0;
+  // tracesSampler: ({ name, attributes, parentSampled }) => {
+  //   if (name === "checkout") return 1.0;
   //   return 0.2;
   // },
 });
@@ -842,9 +842,7 @@ Sentry.init({
 Sentry.init({
   dsn: "YOUR_DSN",
 
-  tracesSampler: ({ transactionContext, parentSampled }) => {
-    const { name, attributes } = transactionContext;
-
+  tracesSampler: ({ name, attributes, parentSampled }) => {
     // Always sample critical user flows
     if (name === "checkout" || name === "PaymentScreen") {
       return 1.0;
@@ -858,7 +856,7 @@ Sentry.init({
     // Respect parent sampling decision for distributed traces
     // (keeps frontend + backend in the same trace or both dropped)
     if (parentSampled !== undefined) {
-      return parentSampled;
+      return parentSampled ? 1.0 : 0;
     }
 
     // Default: sample 10%

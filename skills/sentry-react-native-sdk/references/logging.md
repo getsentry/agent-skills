@@ -1,8 +1,8 @@
 # Logging — Sentry React Native SDK
 
 > **Minimum SDK:** `@sentry/react-native` ≥7.0.0 for `Sentry.logger` API  
-> **Scope-based attribute setters** (`getGlobalScope`, `withScope`): requires ≥10.32.0  
-> **`consoleLoggingIntegration()`**: requires ≥10.13.0
+> **Scope-based attribute setters** (`getGlobalScope`, `withScope`): requires ≥7.8.0  
+> **`consoleLoggingIntegration()`**: requires ≥7.0.0
 
 ---
 
@@ -119,7 +119,7 @@ Sentry.logger.error("Navigation failed", {
 
 ---
 
-## Scope-Based Automatic Attributes (SDK ≥10.32.0)
+## Scope-Based Automatic Attributes (SDK ≥7.8.0)
 
 Set attributes once on a scope and they are **automatically attached to all logs** emitted within that scope.
 
@@ -154,7 +154,7 @@ Sentry.withScope((scope) => {
 
 ## Console Logging Integration
 
-Automatically forwards `console.log`, `console.warn`, and `console.error` calls to Sentry as structured logs. Requires SDK ≥10.13.0.
+Automatically forwards `console.log`, `console.warn`, and `console.error` calls to Sentry as structured logs. Requires SDK ≥7.0.0.
 
 ```typescript
 Sentry.init({
@@ -242,7 +242,7 @@ React Native **does not** emit the following attributes that web SDKs include:
 
 - `browser.name` / `browser.version` — not applicable on native
 - `sentry.trace.parent_span_id` — not linked unless using the web tracing stack
-- `sentry.replay_id` — Session Replay is not available in React Native
+- `sentry.replay_id` — not automatically attached to log events in React Native (mobile replay uses a different linking mechanism)
 - `server.address` — server-side only
 - `payload_size` — web-only
 
@@ -401,7 +401,7 @@ function checkoutMiddleware(store) {
 | No per-log sampling | Use `beforeSendLog` to reduce volume; sampling is all-or-nothing |
 | 1 MB size cap | Logs larger than 1 MB are dropped server-side |
 | No `browser.*` attributes | React Native emits no browser context — these columns are empty in the Logs UI |
-| Session Replay unavailable | `sentry.replay_id` is never populated in React Native logs |
+| Session Replay not on logs | Expected — mobile replay doesn't populate this attribute on log events; replay is still linked via trace context |
 
 ---
 
@@ -410,11 +410,11 @@ function checkoutMiddleware(store) {
 | Issue | Solution |
 |-------|----------|
 | Logs not appearing in Sentry | Check `enableLogs: true` is set in `Sentry.init()` |
-| SDK version too old | Upgrade to `@sentry/react-native` ≥7.0.0 for `Sentry.logger`; ≥10.13.0 for `consoleLoggingIntegration`; ≥10.32.0 for scope attribute setters |
+| SDK version too old | Upgrade to `@sentry/react-native` ≥7.0.0 for `Sentry.logger`; ≥7.0.0 for `consoleLoggingIntegration`; ≥7.8.0 for scope attribute setters |
 | `logger.fmt` not creating `parameter.*` attributes | Ensure it is called as a tagged template literal: `Sentry.logger.fmt\`...\`` — not as a function `Sentry.logger.fmt(...)` |
 | Logs disappearing silently | Check Sentry org stats for rate limiting or logs exceeding 1 MB |
 | Attribute values showing `[Filtered]` | Server-side PII scrubbing rule matched — adjust **Data Scrubbing** settings in your Sentry project |
 | `console.log` calls not forwarded | Add `consoleLoggingIntegration()` to `integrations` and ensure the `levels` array includes `"log"` |
 | Too many logs in production | Use `beforeSendLog` to drop `trace`/`debug` levels when `!__DEV__` |
 | Logs not linked to traces | Enable tracing (`tracesSampleRate > 0`) and emit logs inside a `Sentry.startSpan()` callback |
-| Scope attributes not attaching | Upgrade to ≥10.32.0 for `getGlobalScope().setAttributes()` support |
+| Scope attributes not attaching | Upgrade to ≥7.8.0 for `getGlobalScope().setAttributes()` support |

@@ -210,7 +210,7 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0,
   replaysSessionSampleRate: 0.1,
 
-  // Logging
+  // Logging (SDK ≥7.0.0)
   enableLogs: true,
 
   // Navigation

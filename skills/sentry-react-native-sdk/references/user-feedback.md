@@ -1,7 +1,7 @@
 # User Feedback — Sentry React Native SDK
 
-> **Minimum SDK:** `@sentry/react-native` ≥5.0.0 for `captureFeedback()` API  
-> **Feedback widget** (`showFeedbackWidget`, `feedbackIntegration`): ≥5.0.0  
+> **Minimum SDK:** `@sentry/react-native` ≥6.5.0 for `captureFeedback()` API  
+> **Feedback widget** (`showFeedbackWidget`, `feedbackIntegration`): ≥6.9.0  
 > **Self-hosted Sentry:** ≥24.4.2 required for full user feedback functionality  
 > **New Architecture (Fabric):** Feedback widget requires React Native ≥0.71+
 
@@ -20,7 +20,7 @@ Sentry provides three complementary approaches to collecting user feedback in Re
 All approaches support:
 - Linking feedback to specific error events via `associatedEventId`
 - Offline caching (stored on-device, sent when connectivity restores)
-- Session Replay integration (buffers last 30 seconds of activity with submitted feedback)
+- Session Replay integration (buffers last 60 seconds of activity with submitted feedback)
 
 ---
 
@@ -436,7 +436,7 @@ Sentry.init({
 
 ## Session Replay Integration with Feedback
 
-When `mobileReplayIntegration()` is enabled and a user submits feedback via the widget, Sentry automatically buffers and attaches **up to 30 seconds of prior session replay** to the feedback submission. This gives you visual context for what the user experienced before they filed the report — no extra code required.
+When `mobileReplayIntegration()` is enabled and a user submits feedback via the widget, Sentry automatically buffers and attaches **up to 60 seconds of prior session replay** to the feedback submission. This gives you visual context for what the user experienced before they filed the report — no extra code required.
 
 ```typescript
 Sentry.init({
@@ -659,12 +659,13 @@ Returns the feedback event ID (or `undefined` if SDK is disabled).
 
 | Feature | Min SDK | Notes |
 |---------|---------|-------|
-| `captureFeedback()` | ≥5.0.0 | Replaces deprecated `captureUserFeedback()` |
-| `showFeedbackWidget()` | ≥5.0.0 | Requires `Sentry.wrap(App)` |
-| `feedbackIntegration()` | ≥5.0.0 | Configure widget appearance |
-| `FeedbackWidget` component | ≥5.0.0 | Inline embedded widget |
+| `captureFeedback()` | ≥6.5.0 | Replaces deprecated `captureUserFeedback()` |
+| `showFeedbackWidget()` | ≥6.9.0 | Requires `Sentry.wrap(App)` |
+| `feedbackIntegration()` | ≥6.9.0 | Configure widget appearance |
+| `FeedbackWidget` component | ≥6.9.0 | Inline embedded widget |
+| `showFeedbackButton()` / `hideFeedbackButton()` | ≥6.15.0 | Floating feedback button |
 | Offline caching | Built-in | Automatic, no config needed |
-| Session Replay attachment | ≥5.0.0 | When `mobileReplayIntegration` enabled |
+| Session Replay attachment | ≥6.9.0 | When `mobileReplayIntegration` enabled |
 | New Architecture (Fabric) support | React Native ≥0.71 | Widget works on new arch |
 
 ---
