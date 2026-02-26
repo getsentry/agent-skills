@@ -295,7 +295,7 @@ module ErrorCapture
     begin
       OldTool.notify(exception)  # replace OldTool with actual constant
     rescue => e
-      Rails.logger.warn("OldTool capture failed: #{e.message}")
+      Sentry.logger.warn("OldTool capture failed: %{message}", message: e.message)
     end
   end
 end
