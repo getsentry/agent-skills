@@ -20,7 +20,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 |-------|-------------|-----------|------|
 | `sentry-react-setup` | Setup Sentry in React apps | React | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
 | `sentry-react-native-setup` | Setup Sentry in React Native using the wizard CLI | React Native, Expo | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
-| `sentry-ios-swift-setup` | Setup Sentry in iOS/Swift apps | iOS (Swift, UIKit, SwiftUI) | [Apple Guide](https://docs.sentry.io/platforms/apple/guides/ios/) |
+| `sentry-ios-swift-setup` | Setup Sentry in iOS/Swift apps (superseded by `sentry-cocoa-sdk`) | iOS (Swift, UIKit, SwiftUI) | [Apple Guide](https://docs.sentry.io/platforms/apple/guides/ios/) |
 | `sentry-setup-tracing` | Setup Sentry Tracing (Performance Monitoring) | JS, Python, Ruby | [Tracing](https://docs.sentry.io/platforms/javascript/tracing/) |
 | `sentry-setup-logging` | Setup Sentry Logging | JS, Python, Ruby | [Logs](https://docs.sentry.io/platforms/javascript/logs/) |
 | `sentry-setup-metrics` | Setup Sentry Metrics | JS, Python | [Metrics](https://docs.sentry.io/platforms/javascript/metrics/) |
@@ -306,13 +306,16 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Set up Sentry metrics for Puma/Sidekiq" | `sentry-ruby-sdk` |
 | "Migrate from AppSignal to Sentry" | `sentry-ruby-sdk` |
 | "Replace Honeybadger with Sentry" | `sentry-ruby-sdk` |
+| "Add Sentry to my iOS app" | `sentry-cocoa-sdk` |
+| "Set up Sentry in my Swift/SwiftUI project" | `sentry-cocoa-sdk` |
+| "Add Sentry to my macOS app" | `sentry-cocoa-sdk` |
 
 ### Setup
 
 | What to Say | Skill Used |
 |-------------|------------|
 | "Add Sentry to my React app" | `sentry-react-setup` |
-| "Add Sentry to my iOS/Swift app" | `sentry-ios-swift-setup` |
+| "Add Sentry to my iOS/Swift app" | `sentry-cocoa-sdk` |
 | "Set up Sentry in React Native" | `sentry-react-native-setup` |
 | "Add performance monitoring to my app" | `sentry-setup-tracing` |
 | "Enable Sentry logging" | `sentry-setup-logging` |
