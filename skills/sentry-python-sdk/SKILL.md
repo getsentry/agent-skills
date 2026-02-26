@@ -311,7 +311,7 @@ If a frontend exists without Sentry, suggest the matching skill:
 | uWSGI not capturing | Add `--enable-threads --py-call-uwsgi-fork-hooks` to uWSGI command |
 | No traces appearing | Verify `traces_sample_rate` is set (not `None`); check that the integration is auto-enabled |
 | Profiling not starting | Requires `traces_sample_rate > 0` + either `profile_session_sample_rate` or `profiles_sample_rate` |
-| `enable_logs` not working | Requires SDK ≥ 2.35.0; use `sentry_sdk.logger` not stdlib `logging` for structured logs |
+| `enable_logs` not working | Requires SDK ≥ 2.35.0; for direct structured logs use `sentry_sdk.logger`; for stdlib bridging use `LoggingIntegration(sentry_logs_level=...)` |
 | Too many transactions | Lower `traces_sample_rate` or use `traces_sampler` to drop health checks |
 | Cross-request data leaking | Don't use `get_global_scope()` for per-request data — use `get_isolation_scope()` |
 | RQ worker not reporting | Pass `--sentry-dsn=""` to disable RQ's own Sentry shortcut; init via settings file instead |

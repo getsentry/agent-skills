@@ -1,6 +1,6 @@
 # AI Monitoring — Sentry Python SDK
 
-> Minimum SDK: `sentry-sdk` 2.41.0+ recommended for AI Agents Monitoring
+> Minimum SDK: `sentry-sdk` 2.1.0+ (core AI spans); 2.45.0+ for auto-enabling all integrations
 
 ## Prerequisites
 
@@ -19,13 +19,13 @@ sentry_sdk.init(dsn="...", traces_sample_rate=1.0)
 | LangChain | `sentry-sdk` | langchain 0.1.0+ | ✅ Yes | Stable |
 | LangGraph | `sentry-sdk` | langgraph 0.6.6+ | ✅ Yes | Stable |
 | OpenAI Agents SDK | `sentry-sdk` | agents 0.0.19+ | ✅ Yes | ⚠️ Beta |
-| Google GenAI | `sentry-sdk` | google-genai 1.29.0+ | ⚠️ Use explicit | Stable |
+| Google GenAI | `sentry-sdk` | google-genai 1.29.0+ | ✅ Yes | Stable |
 | HuggingFace Hub | `sentry-sdk` | huggingface_hub 0.24.7+ | ✅ Yes | Stable |
 | LiteLLM | `sentry-sdk` | litellm 1.77.5+ | ❌ **No** | Stable |
-| MCP | `sentry-sdk` | mcp 1.15.0+ | ❌ **No** | Stable |
-| Pydantic AI | `sentry-sdk` | pydantic-ai 1.0.0+ | ❌ **No** | ⚠️ Beta |
+| MCP | `sentry-sdk` | mcp 1.15.0+ | ✅ Yes | Stable |
+| Pydantic AI | `sentry-sdk` | pydantic-ai 1.0.0+ | ✅ Yes | ⚠️ Beta |
 
-**LiteLLM, MCP, and Pydantic AI MUST be explicitly added to `integrations=[]`.**
+**LiteLLM MUST be explicitly added to `integrations=[]`.**
 
 ## PII Control
 
@@ -81,9 +81,6 @@ sentry_sdk.init(
 ```python
 import sentry_sdk
 from sentry_sdk.integrations.litellm import LiteLLMIntegration
-from sentry_sdk.integrations.mcp import MCPIntegration
-from sentry_sdk.integrations.pydantic_ai import PydanticAIIntegration
-from sentry_sdk.integrations.google_genai import GoogleGenAIIntegration
 
 sentry_sdk.init(
     dsn="...",
@@ -91,12 +88,6 @@ sentry_sdk.init(
     send_default_pii=True,
     integrations=[
         LiteLLMIntegration(include_prompts=True),   # 100+ providers via proxy
-        MCPIntegration(include_prompts=True),
-        PydanticAIIntegration(
-            include_prompts=True,
-            handled_tool_call_exceptions=True,       # capture validation/retry errors
-        ),
-        GoogleGenAIIntegration(include_prompts=True),
     ],
 )
 ```
@@ -260,6 +251,8 @@ This populates the **AI Agents Dashboard** in Sentry with per-agent latency, too
 
 ### Conversation tracking (Alpha)
 
+> Requires SDK ≥ 2.51.0
+
 ```python
 import sentry_sdk
 
@@ -294,7 +287,7 @@ sentry_sdk.ai.set_conversation_id("user-session-abc123")
 |-------|----------|
 | No AI spans appearing | Verify `traces_sample_rate > 0`; wrap calls in a transaction |
 | Prompts not captured | Set `send_default_pii=True` and verify `include_prompts=True` (default) |
-| LiteLLM/MCP not tracked | These are NOT auto-enabled — add to `integrations=[]` explicitly |
+| LiteLLM not tracked | LiteLLM is NOT auto-enabled — add `LiteLLMIntegration` to `integrations=[]` explicitly |
 | Token counts missing for OpenAI streaming | Install `tiktoken>=0.3.0` and set `tiktoken_encoding_name` |
 | AI Agents Dashboard empty | Wrap agent runs in `gen_ai.invoke_agent` spans |
 | Wrong cost calculations | Ensure cached/reasoning token counts are subsets of totals, not additions |

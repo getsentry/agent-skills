@@ -4,7 +4,7 @@
 
 ## Overview
 
-`sentry_sdk.metrics` provides custom counters, gauges, distributions, sets, and timing. Metrics are enabled by default — no extra `init()` flag needed.
+`sentry_sdk.metrics` provides custom counters, gauges, and distributions. Metrics are enabled by default — no extra `init()` flag needed.
 
 ## Metric Types
 
@@ -13,8 +13,6 @@
 | Counter | `metrics.count()` | Event occurrences, request counts |
 | Distribution | `metrics.distribution()` | Latencies, sizes — supports p50/p90/p95/p99 |
 | Gauge | `metrics.gauge()` | Current values (min, max, avg, sum, count — no percentiles) |
-| Set | `metrics.set()` | Count unique values |
-| Timing | `metrics.timing()` | Duration measurement (convenience wrapper) |
 
 ## Configuration
 
