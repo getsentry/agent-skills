@@ -33,6 +33,12 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-pr-code-review` | Review a project's PRs to check for issues detected in code review by Seer Bug Prediction | GitHub CLI | [Seer](https://docs.sentry.io/product/ai-in-sentry/seer/) |
 | `sentry-create-alert` | Create Sentry alerts using the workflow engine API | `curl`, auth token | [Alerts](https://docs.sentry.io/product/alerts/) |
 
+### Authoring Skills
+
+| Skill | Description | Requirements |
+|-------|-------------|--------------|
+| `sentry-sdk-skill-creator` | Create a complete SDK skill bundle for any new platform — research, write, verify, and register | Web search, `claude` tool |
+
 ## Installation
 
 ### Quick Install (Recommended)
