@@ -149,7 +149,7 @@ gem "sentry-sidekiq"   # if Sidekiq
 | `Bugsnag.notify(e) { \|event\| event.set_user(id, email, name) }` | `Sentry.set_user(id: id, email: email, username: name)` |
 | `Bugsnag.leave_breadcrumb(name, meta, type)` | `Sentry.add_breadcrumb(Sentry::Breadcrumb.new(message: name, data: meta, category: type))` |
 | `Bugsnag.add_metadata(:section, hash)` | `Sentry.set_context("section", hash)` |
-| `Bugsnag.configure { \|c\| c.discard_classes << "MyError" }` | `config.before_send = lambda { \|_e, h\| nil if h[:exception].is_a?(MyError) }` |
+| `Bugsnag.configure { \|c\| c.discard_classes << "MyError" }` | `config.before_send = lambda { \|e, h\| h[:exception].is_a?(MyError) ? nil : e }` |
 | `event.ignore!` (in on_error callback) | Return `nil` from `config.before_send` |
 
 ### Find call sites
@@ -228,7 +228,7 @@ Also check for and remove: `require 'airbrake/capistrano'` in `Capfile`, `requir
 | `Airbrake.notify_sync(e)` | `Sentry.capture_exception(e)` (Sentry handles delivery asynchronously) |
 | `Airbrake.notify("message")` | `Sentry.capture_message("message")` |
 | `Airbrake.merge_context(hash)` | `Sentry.set_context("app", hash)` |
-| `Airbrake.add_filter { \|n\| n.ignore! if ... }` | `config.before_send = lambda { \|e, _h\| nil if ... }` |
+| `Airbrake.add_filter { \|n\| n.ignore! if ... }` | `config.before_send = lambda { \|e, _h\| ... ? nil : e }` |
 | `Airbrake.add_filter(MyFilter)` | `config.before_send = lambda { \|e, _h\| ... }` |
 | `notice[:context][:user_id] = id` | `Sentry.set_user(id: id)` |
 | `Airbrake.notify_deploy(info)` | Use Sentry release tracking via `SENTRY_RELEASE` env var |
