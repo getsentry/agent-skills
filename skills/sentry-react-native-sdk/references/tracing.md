@@ -619,7 +619,6 @@ function trackAnimationPerformance() {
       span.setAttribute("animation.completed", finished);
       span.end(); // must call end() manually
     });
-    animation.start();
   });
 }
 ```

@@ -138,12 +138,12 @@ Sentry.getGlobalScope().setAttributes({
 ### Scoped attributes — single operation or code block
 
 ```typescript
-Sentry.withScope((scope) => {
+Sentry.withScope(async (scope) => {
   scope.setAttribute("order_id", "ord_789");
   scope.setAttribute("payment_method", "stripe");
 
   Sentry.logger.info("Validating cart", { cartId: cart.id });
-  // order_id and payment_method included in this log only
+  // order_id and payment_method included in this log
   await processPayment();
   Sentry.logger.info("Payment complete");
   // order_id and payment_method included here too
