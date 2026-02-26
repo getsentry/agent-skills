@@ -12,6 +12,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-python-sdk` | Full Sentry setup wizard for Python — error monitoring, tracing, profiling, logging, metrics, crons, AI monitoring | Python (Django, Flask, FastAPI, Celery, Starlette, AIOHTTP) | [Python Guide](https://docs.sentry.io/platforms/python/) |
 | `sentry-svelte-sdk` | Full Sentry setup wizard for Svelte/SvelteKit — error monitoring, tracing, session replay, logging | Svelte, SvelteKit | [SvelteKit Guide](https://docs.sentry.io/platforms/javascript/guides/sveltekit/) |
 | `sentry-ruby-sdk` | Full Sentry setup wizard for Ruby — error monitoring, tracing, logging, Sidekiq metrics + dashboard, migration from AppSignal/Honeybadger | Ruby, Rails, Sinatra, Rack, Sidekiq | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
+| `sentry-cocoa-sdk` | Full Sentry setup wizard for Apple platforms — error monitoring, tracing, profiling, session replay, logging | iOS, macOS, tvOS, watchOS, visionOS (Swift, UIKit, SwiftUI) | [Apple Guide](https://docs.sentry.io/platforms/apple/) |
 
 ### Setup Skills
 
