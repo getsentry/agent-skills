@@ -86,7 +86,7 @@ Present a concrete recommendation based on what you found. Don't ask open-ended 
 | Tracing | **Always for React SPAs** — page load + navigation spans are high-value |
 | Session Replay | User-facing app, login flows, or checkout pages |
 | Logging | App needs structured log search or log-to-trace correlation |
-| Profiling | Performance-critical app; server supports COOP/COEP headers |
+| Profiling | Performance-critical app; server sends `Document-Policy: js-profiling` header |
 
 **React-specific extras:**
 - React 19 detected → set up `reactErrorHandler()` on `createRoot`
@@ -201,30 +201,37 @@ Configure the matching integration for your router:
 
 | Router | Integration | Notes |
 |--------|------------|-------|
-| React Router v6/v7 | `reactRouterV6BrowserTracingIntegration` | Uses `useEffect`, `useLocation`, `useNavigationType`, `matchRoutes`, `createRoutesFromChildren` |
+| React Router v7 | `reactRouterV7BrowserTracingIntegration` | `useEffect`, `useLocation`, `useNavigationType`, `createRoutesFromChildren`, `matchRoutes` from `react-router` |
+| React Router v6 | `reactRouterV6BrowserTracingIntegration` | `useEffect`, `useLocation`, `useNavigationType`, `createRoutesFromChildren`, `matchRoutes` from `react-router-dom` |
 | React Router v5 | `reactRouterV5BrowserTracingIntegration` | Wrap routes in `withSentryRouting(Route)` |
-| TanStack Router | `tanstackRouterBrowserTracingIntegration()` | Zero-config once added to integrations |
+| TanStack Router | `tanstackRouterBrowserTracingIntegration(router)` | Pass router instance — no hooks required |
 | No router / custom | `browserTracingIntegration()` | Names transactions by URL path |
 
 **React Router v6/v7 setup:**
 
 ```typescript
 // in instrument.ts integrations array:
+import React from "react";
 import {
-  reactRouterV6BrowserTracingIntegration,
-  useEffect, useLocation, useNavigationType,
-  matchRoutes, createRoutesFromChildren,
-} from "@sentry/react";
+  createRoutesFromChildren, matchRoutes,
+  useLocation, useNavigationType,
+} from "react-router-dom"; // or "react-router" for v7
+import * as Sentry from "@sentry/react";
+import { reactRouterV6BrowserTracingIntegration } from "@sentry/react";
 import { createBrowserRouter } from "react-router-dom";
 
-// Option A — createBrowserRouter (recommended for v6.4+/v7):
-const router = Sentry.wrapCreateBrowserRouter(createBrowserRouter)([...routes]);
+// Option A — createBrowserRouter (recommended for v6.4+):
+const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouterV6(createBrowserRouter);
+const router = sentryCreateBrowserRouter([...routes]);
 
-// Option B — integration with hooks (v6 without data APIs):
+// Option B — createBrowserRouter for React Router v7:
+// const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouterV7(createBrowserRouter);
+
+// Option C — integration with hooks (v6 without data APIs):
 Sentry.init({
   integrations: [
     reactRouterV6BrowserTracingIntegration({
-      useEffect,
+      useEffect: React.useEffect,
       useLocation,
       useNavigationType,
       matchRoutes,
@@ -239,8 +246,9 @@ Sentry.init({
 ```typescript
 import { tanstackRouterBrowserTracingIntegration } from "@sentry/react";
 
+// Pass your TanStack router instance:
 Sentry.init({
-  integrations: [tanstackRouterBrowserTracingIntegration()],
+  integrations: [tanstackRouterBrowserTracingIntegration(router)],
 });
 ```
 
@@ -269,7 +277,7 @@ import react from "@vitejs/plugin-react";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 export default defineConfig({
-  build: { sourcemap: true },
+  build: { sourcemap: "hidden" },
   plugins: [
     react(),
     sentryVitePlugin({
@@ -324,6 +332,7 @@ Walk through features one at a time. Load the reference file, follow its steps, 
 | Session Replay | `${SKILL_ROOT}/references/session-replay.md` | User-facing app |
 | Logging | `${SKILL_ROOT}/references/logging.md` | Structured log search / log-to-trace |
 | Profiling | `${SKILL_ROOT}/references/profiling.md` | Performance-critical app |
+| React Features | `${SKILL_ROOT}/references/react-features.md` | Redux, component tracking, source maps, integrations catalog |
 
 For each feature: `Read ${SKILL_ROOT}/references/<feature>.md`, follow steps exactly, verify it works.
 
@@ -432,4 +441,4 @@ If a backend exists without Sentry configured, suggest the matching skill:
 | Redux actions not in breadcrumbs | Add `Sentry.createReduxEnhancer()` to store enhancers |
 | Ad blockers dropping events | Set `tunnel: "/sentry-tunnel"` and add server-side relay endpoint |
 | High replay storage costs | Lower `replaysSessionSampleRate`; keep `replaysOnErrorSampleRate: 1.0` |
-| Profiling not working | Verify COOP/COEP headers set (`Cross-Origin-Opener-Policy: same-origin`) |
+| Profiling not working | Verify `Document-Policy: js-profiling` header is set on document responses |
