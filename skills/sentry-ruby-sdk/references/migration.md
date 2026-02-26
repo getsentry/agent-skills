@@ -93,7 +93,7 @@ gem "sentry-ruby"
 gem "sentry-rails"
 ```
 
-**Delete:** `config/honeybadger.yml`, `.honeybadger.yml`
+**Delete:** `config/honeybadger.yml`, `.honeybadger.yml`, `config/initializers/honeybadger.rb`
 
 ### API mapping
 

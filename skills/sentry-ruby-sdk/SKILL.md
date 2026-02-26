@@ -36,7 +36,7 @@ cat package.json frontend/package.json web/package.json 2>/dev/null | grep -E '"
 ```
 
 **Route from what you find:**
-- **Competitor detected** (`appsignal`, `honeybadger`) → load `references/migration.md` first
+- **Competitor detected** (`appsignal`, `honeybadger`) → load `references/migration.md` first; **delete the competitor initializer** (`config/initializers/honeybadger.rb` or `config/initializers/appsignal.rb`) as part of migration
 - **Sentry already present** → skip to Phase 2 to configure features
 - **Rails** → use `sentry-rails` + `config/initializers/sentry.rb`
 - **Rack/Sinatra** → `sentry-ruby` + `Sentry::Rack::CaptureExceptions` middleware
