@@ -1,6 +1,6 @@
 # Logging — Sentry Ruby SDK
 
-> Minimum SDK: `sentry-ruby` v5.24.0+
+> Minimum SDK: `sentry-ruby` v5.27.0+
 > Logs are sent as independent events to Sentry Logs — separate from breadcrumbs and error events.
 
 ## Contents
@@ -15,6 +15,12 @@
 - [Troubleshooting](#troubleshooting)
 
 ## Configuration
+
+| Option | Type | Default | Purpose |
+|--------|------|---------|---------|
+| `enable_logs` | Boolean | `false` | Enable Sentry structured Logs — must be `true` |
+| `before_send_log` | Lambda | `nil` | Mutate or drop log events before sending |
+| `breadcrumbs_logger` | Array | `[]` | Loggers for automatic breadcrumbs (separate from Sentry Logs) |
 
 ```ruby
 Sentry.init do |config|
@@ -80,6 +86,17 @@ config.before_send_log = lambda do |log|
 end
 ```
 
+### Log object properties
+
+The `log` object passed to `before_send_log` exposes:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `level` | Symbol | `:trace`, `:debug`, `:info`, `:warn`, `:error`, `:fatal` |
+| `message` | String | The formatted log message |
+| `body` | String | Raw template string (e.g., `"Order %{order_id} placed"`) |
+| `attributes` | Hash | Structured parameters passed as keyword arguments |
+
 ## Breadcrumb Loggers
 
 Breadcrumbs are different from Sentry Logs — they are attached to the next error event, not sent independently. See `error-monitoring.md` for the full logger table and configuration options.
@@ -134,7 +151,7 @@ Sentry.logger.error("Payment failed: %{message}", message: e.message)
 
 | Issue | Solution |
 |-------|----------|
-| Logs not appearing in Sentry | Set `config.enable_logs = true`; verify `sentry-ruby` ≥ 5.24.0 |
+| Logs not appearing in Sentry | Set `config.enable_logs = true`; verify `sentry-ruby` ≥ 5.27.0 |
 | Breadcrumbs not attached to events | Check `breadcrumbs_logger` includes the right symbol for your stack |
 | `Sentry.logger` call crashes | Ensure `Sentry.init` was called before `Sentry.logger` is accessed |
 | High log volume | Use `before_send_log` to filter by level; set `:debug` and `:trace` to drop in production |

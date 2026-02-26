@@ -21,7 +21,15 @@ Profiling attaches CPU/memory samples to Sentry transactions. It requires tracin
 | StackProf | `stackprof` | v5.9.0 | Any | Wall-clock or CPU sampling |
 | Vernier | `vernier` | v5.21.0 | 3.2.1+ | Lower overhead; GVL-aware |
 
-Vernier is preferred for Ruby 3.2.1+ applications — it profiles across threads and has lower overhead. Use StackProf for older Ruby versions.
+Vernier is preferred for Ruby 3.2.1+ applications. Use StackProf for older Ruby versions.
+
+### GVL-aware profiling (Vernier)
+
+Ruby's Global VM Lock (GVL) means only one thread executes Ruby code at a time. StackProf only samples the thread holding the GVL, so multi-threaded apps (Puma, Sidekiq) show incomplete profiles. Vernier is GVL-aware — it tracks all threads including those waiting on I/O or the GVL, giving a complete picture of where time is spent across the entire process.
+
+### Production overhead
+
+Both profilers use sampling (not tracing), so overhead is low. Expect ~2-5% CPU overhead per profiled transaction. Use `profiles_sample_rate` to control how many transactions are profiled — start with `0.1` in production and adjust based on your performance budget.
 
 ## StackProf Setup
 

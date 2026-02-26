@@ -1,6 +1,6 @@
 ---
 name: sentry-ruby-sdk
-description: Full Sentry SDK setup for Ruby. Use when asked to add Sentry to Ruby, install sentry-ruby, setup Sentry in Rails/Sinatra/Rack, or configure error monitoring, tracing, logging, metrics, profiling, or crons for Ruby applications. Also handles migration from AppSignal or Honeybadger. Supports Rails, Sinatra, Rack, Sidekiq, and Resque.
+description: Full Sentry SDK setup for Ruby. Use when asked to add Sentry to Ruby, install sentry-ruby, setup Sentry in Rails/Sinatra/Rack, or configure error monitoring, tracing, logging, metrics, profiling, or crons for Ruby applications. Also handles migration from AppSignal, Honeybadger, Bugsnag, Rollbar, or Airbrake. Supports Rails, Sinatra, Rack, Sidekiq, and Resque.
 license: Apache-2.0
 ---
 
@@ -13,7 +13,7 @@ Opinionated wizard that scans the project and guides through complete Sentry set
 - User asks to "add Sentry to Ruby" or "set up Sentry" in a Ruby app
 - User wants error monitoring, tracing, logging, metrics, profiling, or crons in Ruby
 - User mentions `sentry-ruby`, `sentry-rails`, or the Ruby Sentry SDK
-- User is migrating from AppSignal or Honeybadger to Sentry
+- User is migrating from AppSignal, Honeybadger, Bugsnag, Rollbar, or Airbrake to Sentry
 - User wants to monitor exceptions, HTTP requests, or background jobs in Rails/Sinatra
 
 > **Note:** SDK APIs below reflect sentry-ruby v6.4.0.
@@ -28,13 +28,25 @@ Opinionated wizard that scans the project and guides through complete Sentry set
 grep -i sentry Gemfile 2>/dev/null
 
 # Framework
-grep -E '"rails"|"sinatra"' Gemfile 2>/dev/null
+grep -iE '\brails\b|\bsinatra\b' Gemfile 2>/dev/null
 
 # Background jobs
-grep -E '"sidekiq"|"resque"|"delayed_job"' Gemfile 2>/dev/null
+grep -iE '\bsidekiq\b|\bresque\b|\bdelayed_job\b' Gemfile 2>/dev/null
 
 # Competitor monitoring tools — triggers migration path if found
-grep -E '"appsignal"|"honeybadger"' Gemfile 2>/dev/null
+grep -iE '\bappsignal\b|\bhoneybadger\b|\bbugsnag\b|\brollbar\b|\bairbrake\b' Gemfile 2>/dev/null
+
+# Scheduled jobs — triggers Crons recommendation
+grep -iE '\bsidekiq-cron\b|\bclockwork\b|\bwhenever\b|\brufus-scheduler\b' Gemfile 2>/dev/null
+grep -rn "Sidekiq::Cron\|Clockwork\|every.*do" config/ lib/ --include="*.rb" 2>/dev/null | head -10
+
+# OpenTelemetry tracing — check for SDK + instrumentations
+grep -iE '\bopentelemetry-sdk\b|\bopentelemetry-instrumentation\b' Gemfile 2>/dev/null
+grep -rn "OpenTelemetry::SDK\.configure\|\.use_all\|\.in_span" config/ lib/ app/ --include="*.rb" 2>/dev/null | head -5
+
+# OpenTelemetry logging — check for logs SDK (much less common in Ruby)
+grep -iE '\bopentelemetry-logs-sdk\b|\bopentelemetry-logs-api\b' Gemfile 2>/dev/null
+grep -rn "OpenTelemetry::Logs" config/ lib/ app/ --include="*.rb" 2>/dev/null | head -5
 
 # Existing metric patterns (StatsD, Datadog, Prometheus)
 grep -rE "(statsd|dogstatsd|prometheus|\.gauge|\.histogram|\.increment|\.timing)" \
@@ -45,11 +57,14 @@ cat package.json frontend/package.json web/package.json 2>/dev/null | grep -E '"
 ```
 
 **Route from what you find:**
-- **Competitor detected** (`appsignal`, `honeybadger`) → load `references/migration.md` first; **delete the competitor initializer** (`config/initializers/honeybadger.rb` or `config/initializers/appsignal.rb`) as part of migration
+- **Competitor detected** (`appsignal`, `honeybadger`, `bugsnag`, `rollbar`, `airbrake`) → load `${SKILL_ROOT}/references/migration.md` first; **delete the competitor initializer** as part of migration
 - **Sentry already present** → skip to Phase 2 to configure features
 - **Rails** → use `sentry-rails` + `config/initializers/sentry.rb`
 - **Rack/Sinatra** → `sentry-ruby` + `Sentry::Rack::CaptureExceptions` middleware
 - **Sidekiq** → add `sentry-sidekiq`; recommend Metrics if existing metric patterns found
+- **OTel tracing detected** (`opentelemetry-sdk` + instrumentations in Gemfile, or `OpenTelemetry::SDK.configure` in source) → use OTLP path: `config.otlp.enabled = true`; do **not** set `traces_sample_rate`; Sentry links errors to OTel traces automatically
+- **OTel logging detected** (`opentelemetry-logs-sdk` in Gemfile, or `OpenTelemetry::Logs` in source) → skip `enable_logs`; OTel handles log export
+- **OTel tracing present but NOT logging** (the common case) → use OTLP for tracing **and** Sentry native `enable_logs: true` for logging
 
 ---
 
@@ -60,13 +75,18 @@ Lead with a concrete proposal — don't ask open-ended questions:
 | Feature | Recommend when... |
 |---------|------------------|
 | Error Monitoring | **Always** |
-| Tracing | Rails / Sinatra / Rack / any HTTP framework |
-| Logging | **Always** — `enable_logs: true` costs nothing |
+| OTLP Integration | OTel tracing detected — **replaces** native Tracing |
+| Tracing | Rails / Sinatra / Rack / any HTTP framework; **skip if OTel tracing detected** |
+| Logging | **Always** — `enable_logs: true` costs nothing; **skip only if OTel logging detected** |
 | Metrics | Sidekiq present; existing metric lib (StatsD, Prometheus) detected |
 | Profiling | ⚠️ Beta — performance profiling requested; requires `stackprof` or `vernier` gem |
 | Crons | Scheduled jobs detected (ActiveJob, Sidekiq-Cron, Clockwork, Whenever) |
 
-Propose: *"I recommend Error Monitoring + Tracing + Logging [+ Metrics if applicable]. Shall I proceed?"*
+**OTel tracing + no OTel logging** (the common case): *"I see OpenTelemetry tracing in the project. I recommend Sentry's OTLP integration for tracing (via your existing OTel setup) + Error Monitoring + Sentry Logging [+ Metrics/Crons if applicable]. Shall I proceed?"*
+
+**OTel tracing + OTel logging:** *"I see OpenTelemetry handling both tracing and logging. I recommend Sentry's OTLP integration + Error Monitoring [+ Metrics/Crons if applicable]. Shall I proceed?"*
+
+**No OTel:** *"I recommend Error Monitoring + Tracing + Logging [+ Metrics if applicable]. Shall I proceed?"*
 
 ---
 
@@ -90,6 +110,16 @@ gem "sentry-ruby"
 ```
 
 Run `bundle install`.
+
+### Framework Integration
+
+| Framework / Runtime | Gem | Init location | Auto-instruments |
+|---------------------|-----|---------------|-----------------|
+| Rails | `sentry-rails` | `config/initializers/sentry.rb` | Controllers, ActiveRecord, ActiveJob, ActionMailer |
+| Rack / Sinatra | `sentry-ruby` | Top of `config.ru` | Requests (via `Sentry::Rack::CaptureExceptions` middleware) |
+| Sidekiq | `sentry-sidekiq` | Sentry initializer or Sidekiq config | Worker execution → transactions |
+| Resque | `sentry-resque` | Sentry initializer | Worker execution → transactions |
+| DelayedJob | `sentry-delayed_job` | Sentry initializer | Job execution → transactions |
 
 ### Init — Rails (`config/initializers/sentry.rb`)
 
@@ -149,17 +179,19 @@ SENTRY_RELEASE=my-app@1.0.0
 
 ### Feature reference files
 
-Load each reference when implementing the corresponding feature:
+Walk through features one at a time. Load the reference file for each, follow its steps, and verify before moving to the next:
 
-| Feature | Reference | Load when... |
-|---------|-----------|-------------|
-| Migration | `references/migration.md` | Competitor gem found — load **before** installing Sentry |
-| Error Monitoring | `references/error-monitoring.md` | Always |
-| Tracing | `references/tracing.md` | HTTP handlers / distributed tracing |
-| Logging | `references/logging.md` | Structured log capture |
-| Metrics | `references/metrics.md` | Sidekiq present; existing metric patterns |
-| Profiling | `references/profiling.md` | Performance profiling requested (beta) |
-| Crons | `references/crons.md` | Scheduled jobs detected or requested |
+| Feature | Reference file | Load when... |
+|---------|---------------|-------------|
+| Migration | `${SKILL_ROOT}/references/migration.md` | Competitor gem found — load **before** installing Sentry |
+| Error Monitoring | `${SKILL_ROOT}/references/error-monitoring.md` | Always |
+| Tracing | `${SKILL_ROOT}/references/tracing.md` | HTTP handlers / distributed tracing |
+| Logging | `${SKILL_ROOT}/references/logging.md` | Structured log capture |
+| Metrics | `${SKILL_ROOT}/references/metrics.md` | Sidekiq present; existing metric patterns |
+| Profiling | `${SKILL_ROOT}/references/profiling.md` | Performance profiling requested (beta) |
+| Crons | `${SKILL_ROOT}/references/crons.md` | Scheduled jobs detected or requested |
+
+For each feature: `Read ${SKILL_ROOT}/references/<feature>.md`, follow steps exactly, verify it works.
 
 ---
 
@@ -182,6 +214,7 @@ Load each reference when implementing the corresponding feature:
 | `breadcrumbs_logger` | Array | `[]` | Loggers for automatic breadcrumbs (see logging reference) |
 | `max_breadcrumbs` | Integer | `100` | Max breadcrumbs per event |
 | `debug` | Boolean | `false` | Verbose SDK output to stdout |
+| `otlp.enabled` | Boolean | `false` | Route OTel spans to Sentry via OTLP; **do not combine with** `traces_sample_rate` |
 | `before_send` | Lambda | `nil` | Mutate or drop error events before sending |
 | `before_send_transaction` | Lambda | `nil` | Mutate or drop transaction events before sending |
 | `before_send_log` | Lambda | `nil` | Mutate or drop log events before sending |
@@ -239,8 +272,12 @@ For trace stitching between Ruby backend and JS frontend, see `references/tracin
 |-------|----------|
 | Events not appearing | `config.debug = true`; verify DSN; ensure `Sentry.init` before first request |
 | Rails exceptions missing | Must use `sentry-rails` — `sentry-ruby` alone doesn't hook Rails error handlers |
-| No traces | Set `traces_sample_rate > 0`; ensure `sentry-rails` or `Sentry::Rack::CaptureExceptions` |
+| No traces (native) | Set `traces_sample_rate > 0`; ensure `sentry-rails` or `Sentry::Rack::CaptureExceptions` |
+| No traces (OTLP) | Verify `opentelemetry-exporter-otlp` gem is installed; do **not** set `traces_sample_rate` when using `otlp.enabled = true` |
 | Sidekiq jobs not traced | Add `sentry-sidekiq` gem |
 | Missing request context | Set `config.send_default_pii = true` |
-| Logs not appearing | Set `config.enable_logs = true`; sentry-ruby ≥ 5.24.0 required |
+| Logs not appearing | Set `config.enable_logs = true`; sentry-ruby ≥ 5.27.0 required |
 | Metrics not appearing | Check `enable_metrics` is not `false`; verify DSN |
+| Events lost on shutdown | `Process.exit!` skips `at_exit` hooks — call `Sentry.flush` explicitly before forced exits |
+| Forking server loses events | Puma/Unicorn fork workers — re-initialize in `on_worker_boot` or `after_fork`; without this, the background worker thread dies in child processes |
+| DSN rejected / events not delivered | Verify DSN format: `https://<key>@o<org>.ingest.sentry.io/<project>`; set `config.debug = true` to see transport errors |

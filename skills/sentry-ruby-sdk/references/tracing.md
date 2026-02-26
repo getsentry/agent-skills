@@ -179,27 +179,69 @@ config.before_send_transaction = lambda do |event, _hint|
 end
 ```
 
-## OpenTelemetry Bridge
+## OpenTelemetry — OTLP Integration
 
-If your app already uses OpenTelemetry, use `sentry-opentelemetry` to route OTel spans into Sentry:
+> Minimum SDK: `sentry-ruby` v6.4.0+ with `sentry-opentelemetry` v6.4.0+
+
+If the project already uses OpenTelemetry for tracing or logging, **use the OTLP integration instead of Sentry's native tracing**. Sentry ingests OTel spans directly via its OTLP endpoint — no span conversion, no dual instrumentation.
+
+**When to use this path:** OTel tracing gems (`opentelemetry-sdk`, `opentelemetry-instrumentation-*`) detected in the Gemfile, or `OpenTelemetry::SDK.configure` found in source.
+
+**When NOT to use this path:** No OpenTelemetry in the project — use Sentry's native `traces_sample_rate` instead.
+
+**Logging:** OTLP replaces Sentry native *tracing* only. If the project does not use OTel for logging (`opentelemetry-logs-sdk` not in Gemfile), still set `config.enable_logs = true` for Sentry structured logging — this is the common case.
+
+### Setup
 
 ```ruby
-# Gemfile
+# Gemfile — add alongside existing opentelemetry gems:
 gem "sentry-opentelemetry"
+gem "opentelemetry-exporter-otlp"  # required for OTLP export
 ```
 
 ```ruby
+# config/initializers/sentry.rb
 Sentry.init do |config|
   config.dsn = ENV["SENTRY_DSN"]
-  config.traces_sample_rate = 1.0
-end
+  config.send_default_pii = true
+  config.otlp.enabled = true
+  config.enable_logs = true  # keep Sentry native logging unless OTel logs SDK is also present
 
-# In your OTel setup:
-require "sentry-opentelemetry"
-Sentry.init_otel_provider
+  # Do NOT set traces_sample_rate — tracing is handled by OTel
+  # Errors, Logs, Crons, and Metrics are still captured natively by Sentry
+  # and automatically linked to the active OTel trace
+end
 ```
 
-Sentry becomes a Span Exporter and Propagator — existing OTel instrumentation flows through without changes.
+```ruby
+# config/initializers/opentelemetry.rb — keep your existing OTel setup:
+OpenTelemetry::SDK.configure do |c|
+  c.use_all  # or specific instrumentations
+  # Sentry auto-adds its OTLP exporter and propagator —
+  # no manual SpanProcessor or Propagator wiring needed
+end
+```
+
+### How it works
+
+- Sentry derives an OTLP endpoint from your DSN and registers a `BatchSpanProcessor` with the existing `TracerProvider` — your other exporters (Jaeger, Zipkin, Collector) continue working
+- A propagator injects `sentry-trace` + `baggage` headers for distributed tracing with other Sentry-instrumented services
+- Errors captured via `Sentry.capture_exception` are automatically linked to the active OTel trace/span via shared `trace_id`
+
+### OTLP configuration options
+
+| Option | Default | Purpose |
+|--------|---------|---------|
+| `config.otlp.enabled` | `false` | Master switch |
+| `config.otlp.setup_otlp_traces_exporter` | `true` | Auto-configure exporter; set `false` if you send to your own Collector |
+| `config.otlp.setup_propagator` | `true` | Auto-configure propagator; set `false` if you manage propagation yourself |
+
+### Important
+
+**Do not combine OTLP with native Sentry tracing.** When `config.otlp.enabled = true`:
+- Do **not** set `traces_sample_rate` or `traces_sampler`
+- Do **not** set `config.instrumenter = :otel` (that is the legacy SpanProcessor approach)
+- Do **not** call `Sentry.with_child_span` or `Sentry.start_transaction` — use OTel's `tracer.in_span` instead
 
 ## Framework Auto-Instrumentation Summary
 

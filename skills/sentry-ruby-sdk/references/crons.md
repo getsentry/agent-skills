@@ -10,7 +10,7 @@ Cron monitoring detects missed, failed, or slow scheduled jobs by capturing chec
 - [ActiveJob integration](#activejob-integration)
 - [Sidekiq-Cron integration](#sidekiq-cron-integration)
 - [Upserting monitor configuration](#upserting-monitor-configuration)
-- [Heartbeat pattern](#heartbeat-pattern)
+- [Completion-only check-in](#completion-only-check-in)
 - [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
 
@@ -135,9 +135,9 @@ Sentry::Cron::MonitorConfig.from_interval(
 
 Supported interval units: `:minute`, `:hour`, `:day`, `:week`, `:month`, `:year`
 
-## Heartbeat Pattern
+## Completion-Only Check-In
 
-For jobs where only missed-schedule detection matters (not duration), send a single `:ok` check-in at job completion:
+For jobs where only missed-schedule detection matters (not duration), send a single `:ok` check-in at job completion instead of the two-step `:in_progress` / `:ok` pair:
 
 ```ruby
 def run_health_ping
@@ -146,7 +146,7 @@ def run_health_ping
 end
 ```
 
-Heartbeats detect when a job doesn't run at all but cannot detect runtime overages.
+This detects when a job doesn't run at all but cannot detect stuck or long-running jobs — there is no `:in_progress` marker, so Sentry has no start time to measure against `max_runtime`. Use the full two-step pattern for jobs where duration matters.
 
 ## Best Practices
 
