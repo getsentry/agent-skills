@@ -149,7 +149,7 @@ gem "sentry-sidekiq"   # if Sidekiq
 | `Bugsnag.notify(e) { \|event\| event.set_user(id, email, name) }` | `Sentry.set_user(id: id, email: email, username: name)` |
 | `Bugsnag.leave_breadcrumb(name, meta, type)` | `Sentry.add_breadcrumb(Sentry::Breadcrumb.new(message: name, data: meta, category: type))` |
 | `Bugsnag.add_metadata(:section, hash)` | `Sentry.set_context("section", hash)` |
-| `Bugsnag.configure { \|c\| c.discard_classes << "MyError" }` | `config.before_send = lambda { \|e, _h\| nil if e.exception.is_a?(MyError) }` |
+| `Bugsnag.configure { \|c\| c.discard_classes << "MyError" }` | `config.before_send = lambda { \|_e, h\| nil if h[:exception].is_a?(MyError) }` |
 | `event.ignore!` (in on_error callback) | Return `nil` from `config.before_send` |
 
 ### Find call sites
@@ -185,7 +185,7 @@ gem "sentry-sidekiq"   # if Sidekiq
 | `Rollbar.info(msg, extra)` | `Sentry.with_scope { \|s\| s.set_context("extra", extra); Sentry.capture_message(msg, level: :info) }` |
 | `Rollbar.critical(e)` | `Sentry.capture_exception(e, level: :fatal)` |
 | `Rollbar.debug(msg)` | `Sentry.capture_message(msg, level: :debug)` |
-| `Rollbar.log(level, e)` | `Sentry.capture_exception(e, level: level.to_sym)` |
+| `Rollbar.log(level, e)` | `Sentry.capture_exception(e, level: { "critical" => :fatal }.fetch(level, level.to_sym))` |
 | `Rollbar.scoped(person: p) { }` | `Sentry.with_scope { \|s\| s.set_user(p); ... }` |
 | `Rollbar.scope!(person: p)` | `Sentry.set_user(p)` |
 | `Rollbar.silenced { }` | `# remove — no Sentry equivalent needed` |
