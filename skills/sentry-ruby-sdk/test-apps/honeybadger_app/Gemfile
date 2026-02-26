@@ -2,5 +2,4 @@ source "https://rubygems.org"
 
 gem "rails",       "~> 8.0"
 gem "puma",        "~> 6.0"
-gem "sentry-ruby"
-gem "sentry-rails"
+gem "honeybadger", "~> 5.0"
