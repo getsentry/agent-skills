@@ -9,8 +9,9 @@
 - [Custom Instrumentation](#custom-instrumentation)
 - [Distributed Tracing](#distributed-tracing)
 - [`before_send_transaction` hook](#before_send_transaction-hook)
-- [OpenTelemetry Bridge](#opentelemetry-bridge)
+- [OpenTelemetry — OTLP Integration](#opentelemetry--otlp-integration)
 - [Framework Auto-Instrumentation Summary](#framework-auto-instrumentation-summary)
+- [Request Queue Time](#request-queue-time)
 - [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
 
@@ -22,6 +23,7 @@
 | `traces_sampler` | Lambda | `nil` | Custom per-transaction sampling; overrides `traces_sample_rate` |
 | `trace_propagation_targets` | Array | `[/.*/]` | URLs to inject `sentry-trace` + `baggage` headers into |
 | `propagate_traces` | Boolean | `true` | Propagate trace headers on outbound Net::HTTP requests |
+| `capture_queue_time` | Boolean | `true` | Record request queue time from `X-Request-Start` header (v6.4.0+) |
 
 ```ruby
 Sentry.init do |config|
@@ -257,6 +259,40 @@ end
 | Net::HTTP | `sentry-ruby` | Outbound HTTP → spans + header propagation |
 | Redis | `sentry-ruby` | Redis commands → spans (needs `:redis_logger`) |
 | GraphQL | `sentry-ruby` | Queries → transactions (enable with `enabled_patches`) |
+
+## Request Queue Time
+
+> Minimum SDK: `sentry-ruby` v6.4.0+. Enabled by default (`capture_queue_time = true`).
+
+Sentry automatically reads the `X-Request-Start` header and records how long the request waited in the server queue before a worker thread picked it up. The value is stored as `http.server.request.time_in_queue` (milliseconds) on the transaction.
+
+When running behind Puma, the SDK subtracts `puma.request_body_wait` (time Puma spent receiving the request body from a slow client) to isolate actual queue time from upload time.
+
+### Proxy configuration required
+
+Your reverse proxy must set the header. Without it, no queue time is recorded.
+
+**Nginx:**
+```nginx
+proxy_set_header X-Request-Start "t=${msec}";
+```
+
+**Heroku:** Sets `X-Request-Start` automatically — no configuration needed.
+
+**HAProxy:**
+```
+http-request set-header X-Request-Start t=%[date()]%[date_us()]
+```
+
+### Disable
+
+```ruby
+config.capture_queue_time = false
+```
+
+### Why this matters
+
+High queue time means Puma workers are saturated — requests are waiting for a free thread. This is a key indicator for scaling decisions. Sentry surfaces it in the transaction waterfall so you can distinguish "the app is slow" from "the app was waiting for a worker."
 
 ## Best Practices
 

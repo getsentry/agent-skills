@@ -30,6 +30,9 @@ grep -i sentry Gemfile 2>/dev/null
 # Framework
 grep -iE '\brails\b|\bsinatra\b' Gemfile 2>/dev/null
 
+# Web server — Puma triggers queue time guidance
+grep -iE '\bpuma\b' Gemfile 2>/dev/null
+
 # Background jobs
 grep -iE '\bsidekiq\b|\bresque\b|\bdelayed_job\b' Gemfile 2>/dev/null
 
@@ -62,6 +65,7 @@ cat package.json frontend/package.json web/package.json 2>/dev/null | grep -E '"
 - **Rails** → use `sentry-rails` + `config/initializers/sentry.rb`
 - **Rack/Sinatra** → `sentry-ruby` + `Sentry::Rack::CaptureExceptions` middleware
 - **Sidekiq** → add `sentry-sidekiq`; recommend Metrics if existing metric patterns found
+- **Puma detected** → queue time capture is automatic (v6.4.0+), but the reverse proxy must set `X-Request-Start` header; see `${SKILL_ROOT}/references/tracing.md` → "Request Queue Time"
 - **OTel tracing detected** (`opentelemetry-sdk` + instrumentations in Gemfile, or `OpenTelemetry::SDK.configure` in source) → use OTLP path: `config.otlp.enabled = true`; do **not** set `traces_sample_rate`; Sentry links errors to OTel traces automatically
 - **OTel logging detected** (`opentelemetry-logs-sdk` in Gemfile, or `OpenTelemetry::Logs` in source) → skip `enable_logs`; OTel handles log export
 - **OTel tracing present but NOT logging** (the common case) → use OTLP for tracing **and** Sentry native `enable_logs: true` for logging
@@ -214,6 +218,7 @@ For each feature: `Read ${SKILL_ROOT}/references/<feature>.md`, follow steps exa
 | `breadcrumbs_logger` | Array | `[]` | Loggers for automatic breadcrumbs (see logging reference) |
 | `max_breadcrumbs` | Integer | `100` | Max breadcrumbs per event |
 | `debug` | Boolean | `false` | Verbose SDK output to stdout |
+| `capture_queue_time` | Boolean | `true` | Record request queue time from `X-Request-Start` header (v6.4.0+) |
 | `otlp.enabled` | Boolean | `false` | Route OTel spans to Sentry via OTLP; **do not combine with** `traces_sample_rate` |
 | `before_send` | Lambda | `nil` | Mutate or drop error events before sending |
 | `before_send_transaction` | Lambda | `nil` | Mutate or drop transaction events before sending |
