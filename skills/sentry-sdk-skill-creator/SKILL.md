@@ -15,7 +15,7 @@ Produce a complete, research-backed SDK skill bundle — a main wizard SKILL.md 
 - Building a new `sentry-<platform>-sdk` skill bundle
 - Porting the SDK skill pattern to a new Sentry SDK
 
-> Read `${SKILL_ROOT}/../../../docs/sdk-skill-philosophy.md` first — it defines the bundle architecture, wizard flow, and design principles this skill implements.
+> Read `${SKILL_ROOT}/../../docs/sdk-skill-philosophy.md` first — it defines the bundle architecture, wizard flow, and design principles this skill implements.
 
 ---
 
