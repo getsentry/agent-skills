@@ -12,6 +12,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-python-sdk` | Full Sentry setup wizard for Python — error monitoring, tracing, profiling, logging, metrics, crons, AI monitoring | Python (Django, Flask, FastAPI, Celery, Starlette, AIOHTTP) | [Python Guide](https://docs.sentry.io/platforms/python/) |
 | `sentry-svelte-sdk` | Full Sentry setup wizard for Svelte/SvelteKit — error monitoring, tracing, session replay, logging | Svelte, SvelteKit | [SvelteKit Guide](https://docs.sentry.io/platforms/javascript/guides/sveltekit/) |
 | `sentry-ruby-sdk` | Full Sentry setup wizard for Ruby — error monitoring, tracing, logging, Sidekiq metrics + dashboard, migration from AppSignal/Honeybadger | Ruby, Rails, Sinatra, Rack, Sidekiq | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
+| `sentry-react-native-sdk` | Full Sentry setup wizard for React Native and Expo — error monitoring, tracing, profiling, session replay, logging, native crash symbolication | React Native, Expo managed/bare | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
 
 ### Setup Skills
 
@@ -305,6 +306,9 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Set up Sentry metrics for Puma/Sidekiq" | `sentry-ruby-sdk` |
 | "Migrate from AppSignal to Sentry" | `sentry-ruby-sdk` |
 | "Replace Honeybadger with Sentry" | `sentry-ruby-sdk` |
+| "Add Sentry to my React Native app" | `sentry-react-native-sdk` |
+| "Set up Sentry in Expo" | `sentry-react-native-sdk` |
+| "Configure session replay for React Native" | `sentry-react-native-sdk` |
 
 ### Setup
 
