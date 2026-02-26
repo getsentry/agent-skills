@@ -1,0 +1,20 @@
+[
+  {
+    "sessionId": "ad9b9695-f8bc-4e13-998c-dc214bd02a8c",
+    "prompt": "Search the Sentry Cocoa SDK documentation and GitHub source to verify these specific API details:\n\n1. Does `options.screenshot.maskAllText` exist as a sub-property on SentryOptions? Or are screenshot ",
+    "model": "claude-sonnet-4-6",
+    "timestamp": "2026-02-26T18:26:19.696Z",
+    "elapsed": 495757,
+    "cost": 2.8984029999999987,
+    "turns": 3
+  },
+  {
+    "sessionId": "3353e484-1e72-44f4-bbdf-f0ceb4641de6",
+    "prompt": "Verify the Sentry Cocoa SDK user feedback API. I need to know the exact API names.\n\n1. Visit https://docs.sentry.io/platforms/apple/user-feedback/ and extract the EXACT API for showing the user feedba",
+    "model": "claude-sonnet-4-6",
+    "timestamp": "2026-02-26T18:32:32.763Z",
+    "elapsed": 266682,
+    "cost": 1.8311577500000005,
+    "turns": 4
+  }
+]

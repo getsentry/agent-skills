@@ -79,7 +79,7 @@ Based on what you found, present a concrete recommendation. Don't ask open-ended
 | Error Monitoring | **Always** — non-negotiable baseline |
 | Tracing | **Always for apps** — rich auto-instrumentation out of the box |
 | Profiling | Production apps where performance matters |
-| Session Replay | iOS/tvOS user-facing apps (check iOS 26+ caveat) |
+| Session Replay | **iOS only** user-facing apps (check iOS 26+ caveat; not tvOS/macOS/watchOS/visionOS) |
 | Logging | Existing `os.log` / CocoaLumberjack usage, or structured logs needed |
 | User Feedback | Apps wanting in-app bug reports with screenshots |
 
@@ -171,8 +171,8 @@ struct MyApp: App {
             options.sessionReplay.sessionSampleRate = 1.0
             options.sessionReplay.onErrorSampleRate = 1.0
 
-            // Logging
-            options.experimental.enableLogs = true
+            // Logging (SDK 9.0.0+ top-level; use options.experimental.enableLogs in 8.x)
+            options.enableLogs = true
         }
     }
 
@@ -216,7 +216,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             options.sessionReplay.sessionSampleRate = 1.0
             options.sessionReplay.onErrorSampleRate = 1.0
 
-            options.experimental.enableLogs = true
+            // Logging (SDK 9.0.0+ top-level; use options.experimental.enableLogs in 8.x)
+            options.enableLogs = true
         }
         return true
     }
@@ -261,7 +262,7 @@ For each feature: `Read ${SKILL_ROOT}/references/<feature>.md`, follow steps exa
 | `enableWatchdogTerminationTracking` | `Bool` | `true` | Track watchdog kills (iOS, tvOS, Mac Catalyst) |
 | `attachScreenshot` | `Bool` | `false` | Capture screenshot on error |
 | `attachViewHierarchy` | `Bool` | `false` | Capture view hierarchy on error |
-| `tracesSampleRate` | `Float` | `0.0` | Transaction sample rate (0.0 = tracing disabled) |
+| `tracesSampleRate` | `NSNumber?` | `nil` | Transaction sample rate (`nil` = tracing disabled); Swift auto-boxes `Double` literals (e.g. `1.0` → `NSNumber`) |
 | `tracesSampler` | `Closure` | `nil` | Dynamic per-transaction sampling (overrides rate) |
 | `enableAutoPerformanceTracing` | `Bool` | `true` | Master switch for auto-instrumentation |
 | `tracePropagationTargets` | `[String]` | `[".*"]` | Hosts/regex that receive distributed trace headers |
@@ -357,7 +358,7 @@ If a backend is found, configure `tracePropagationTargets` to enable distributed
 | Go (`go.mod`) | `sentry-go-sdk` | ✅ automatic |
 | Python (`requirements.txt`) | `sentry-python-sdk` | ✅ automatic |
 | Ruby (`Gemfile`) | `sentry-ruby-sdk` | ✅ automatic |
-| Node/JS (`package.json`) | `sentry-react-setup` or `sentry-svelte-sdk` | ✅ automatic |
+| Node.js backend (`package.json`) | `sentry-node-sdk` (or `sentry-express-sdk`) | ✅ automatic |
 
 ---
 

@@ -356,11 +356,13 @@ SentrySDK.start { options in
         ".*\\.myapp\\.com"   // regex supported
     ]
 
-    // Also add W3C traceparent header (v9.0.0+)
+    // Also add W3C traceparent header (requires sentry-cocoa 9.0.0+)
     options.enablePropagateTraceparent = true
 }
 ```
 
+> **`enablePropagateTraceparent` requires sentry-cocoa 9.0.0+.** It is not available in 8.x.
+>
 > ⚠️ Both headers must be included in CORS allowlists and must not be blocked by proxies or firewalls.
 
 ---

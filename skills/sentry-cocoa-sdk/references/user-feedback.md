@@ -41,15 +41,17 @@ SentrySDK.start { options in
 }
 ```
 
-### Programmatic form presentation
+### Programmatic widget control
 
 ```swift
-// Show the feedback form directly (skip the floating button)
-SentrySDK.showUserFeedbackForm()
-
-// Show only the floating widget button
+// Show the floating widget button programmatically
 SentrySDK.feedback.showWidget()
+
+// Hide the widget button
+SentrySDK.feedback.hideWidget()
 ```
+
+> `SentrySDK.feedback` is of type `SentryFeedbackAPI`. There is no `showUserFeedbackForm()` method — always use `showWidget()` to trigger the UI.
 
 ### SwiftUI integration
 
@@ -114,7 +116,7 @@ SentrySDK.capture(feedback: .init(
     name: "Jane Doe",
     email: "jane@example.org",
     source: .custom,
-    screenshot: somePNGImageData   // Optional Data (PNG bytes); nil if no screenshot
+    attachments: nil   // pass [Attachment] to include screenshots or files; nil for none
 ))
 ```
 
@@ -292,6 +294,6 @@ SentrySDK.start { options in
 | Name/email fields not pre-filled | Ensure `useSentryUser = true` (default) and `SentrySDK.setUser(...)` was called before the form opens |
 | Submission error | Check network connectivity; verify DSN is correct; inspect `onSubmitError` callback for the error |
 | Feedback not linked to an issue | Use `associatedEventId` parameter with the event ID from `SentrySDK.capture(error:)` |
-| Screenshot not attached | Pass PNG-encoded `Data` to `SentryFeedback.init(screenshot:)`; ensure the data is non-nil and valid |
+| Screenshot not attached | Wrap PNG `Data` in an `Attachment` and pass via `SentryFeedback.init(attachments:)`; ensure the data is non-nil and valid |
 | Widget floating behind other UI | Raise `widget.windowLevel` above your custom windows |
 | `configureUserFeedback` not available | Requires v8.46.0+; check your SPM/CocoaPods version |

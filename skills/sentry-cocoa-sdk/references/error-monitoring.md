@@ -235,6 +235,9 @@ SentrySDK.start { options in
             return nil
         }
         // Suppress app hang events
+        // Note: V1 (enableAppHangTracking) uses exception type "App Hanging"
+        //       V2 (enableAppHangTrackingV2, default in 9.0+) may use a different
+        //       type — inspect event.exceptions?.first?.type in beforeSend to confirm
         if event.exceptions?.first?.type == "App Hanging" {
             return nil
         }
