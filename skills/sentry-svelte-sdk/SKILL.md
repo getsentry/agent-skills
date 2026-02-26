@@ -414,8 +414,8 @@ If a backend exists without Sentry configured, suggest the matching skill:
 | Backend detected | Suggest skill |
 |-----------------|--------------|
 | Go (`go.mod`) | `sentry-go-sdk` |
-| Python (`requirements.txt`, `pyproject.toml`) | `sentry-python-setup` |
-| Ruby (`Gemfile`) | `sentry-ruby-setup` |
+| Python (`requirements.txt`, `pyproject.toml`) | `sentry-python-sdk` |
+| Ruby (`Gemfile`) | `sentry-ruby-sdk` |
 | Node.js (Express, Fastify, etc.) | Use `@sentry/node` — see [docs.sentry.io/platforms/javascript/guides/express/](https://docs.sentry.io/platforms/javascript/guides/express/) |
 
 ---

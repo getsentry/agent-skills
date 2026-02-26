@@ -11,7 +11,7 @@ SDK skills are **living documentation bundles**. Instead of a flat SKILL.md that
 ```
 skills/
   sentry-<platform>-sdk/
-    SKILL.md                    # Main wizard (<500 lines)
+    SKILL.md                    # Main wizard
     references/
       error-monitoring.md       # Deep dive: errors, panics, wrapping
       tracing.md                # Deep dive: spans, distributed tracing

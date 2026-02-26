@@ -19,8 +19,6 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 |-------|-------------|-----------|------|
 | `sentry-react-setup` | Setup Sentry in React apps | React | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
 | `sentry-react-native-setup` | Setup Sentry in React Native using the wizard CLI | React Native, Expo | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
-| `sentry-python-setup` | Setup Sentry in Python apps | Python (Django, Flask, FastAPI) | [Python Guide](https://docs.sentry.io/platforms/python/) |
-| `sentry-ruby-setup` | Setup Sentry in Ruby apps | Ruby (Rails) | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
 | `sentry-ios-swift-setup` | Setup Sentry in iOS/Swift apps | iOS (Swift, UIKit, SwiftUI) | [Apple Guide](https://docs.sentry.io/platforms/apple/guides/ios/) |
 | `sentry-setup-tracing` | Setup Sentry Tracing (Performance Monitoring) | JS, Python, Ruby | [Tracing](https://docs.sentry.io/platforms/javascript/tracing/) |
 | `sentry-setup-logging` | Setup Sentry Logging | JS, Python, Ruby | [Logs](https://docs.sentry.io/platforms/javascript/logs/) |
@@ -315,8 +313,6 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Add Sentry to my React app" | `sentry-react-setup` |
 | "Add Sentry to my iOS/Swift app" | `sentry-ios-swift-setup` |
 | "Set up Sentry in React Native" | `sentry-react-native-setup` |
-| "Add Sentry to my Python/Django/Flask app" | `sentry-python-setup` |
-| "Set up Sentry in my Ruby/Rails app (quick)" | `sentry-ruby-setup` |
 | "Add performance monitoring to my app" | `sentry-setup-tracing` |
 | "Enable Sentry logging" | `sentry-setup-logging` |
 | "Track custom metrics with Sentry" | `sentry-setup-metrics` |
@@ -380,8 +376,7 @@ Contributions are welcome! Please ensure any new skills:
 1. Follow the [Agent Skills specification](https://agentskills.io/specification)
 2. Have a valid `name` (lowercase letters, numbers, hyphens, 1-64 chars, no consecutive hyphens, must not start or end with hyphen)
 3. Include a clear `description` (1-1024 chars)
-4. **Keep skills concise** - use tables over prose, avoid obvious information
-5. Include an "Invoke This Skill When" section with trigger phrases
+4. Include an "Invoke This Skill When" section with trigger phrases
 6. Verify technical details against [Sentry docs](https://docs.sentry.io/)
 
 For full-platform SDK skills (covering all Sentry features for one language/framework), see [docs/sdk-skill-philosophy.md](docs/sdk-skill-philosophy.md) for the bundle architecture pattern.
@@ -392,7 +387,7 @@ For full-platform SDK skills (covering all Sentry features for one language/fram
 - Use phases/steps for multi-stage workflows
 - Include version requirements where applicable
 - Add troubleshooting tables for common issues
-- Target ~100-200 lines per skill to minimize token usage
+- SDK skill bundles should be comprehensive — use `references/` directories for deep-dive content loaded on demand
 
 ---
 

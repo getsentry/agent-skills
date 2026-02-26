@@ -103,31 +103,16 @@ Requirements before the skill can be used.
 
 ## Style Guidelines
 
-### Token Optimization
+### Comprehensive Over Concise
 
-Skills are loaded into agent context, consuming tokens. **Keep skills concise** - target 100-200 lines.
+Skills should be thorough and all-encompassing. Use `references/` directories to split deep-dive content into separate files loaded on demand — this keeps the main wizard lean while allowing references to go deep.
 
 | Do | Don't |
 |----|-------|
-| Tables for reference data | Long prose explanations |
-| Code snippets with minimal comments | Verbose code with extensive comments |
-| Bullet points | Paragraphs |
-| One example per pattern | Multiple redundant examples |
-
-**Example - Before (verbose):**
-```markdown
-To enable logging in JavaScript, you need to make sure you have the correct
-version of the Sentry SDK installed. The minimum version required is 9.41.0.
-Once you have confirmed the version, you can enable logging by adding the
-enableLogs flag to your Sentry.init() configuration...
-```
-
-**Example - After (concise):**
-```markdown
-| Platform | Min SDK | Enable Flag |
-|----------|---------|-------------|
-| JavaScript | 9.41.0+ | `enableLogs: true` |
-```
+| Tables for reference data | Long prose where a table works better |
+| Complete, working code examples | Incomplete snippets that need guesswork |
+| Deep-dive references for each feature | Superficial coverage that omits details |
+| Comprehensive troubleshooting | Leaving users to figure out edge cases |
 
 ### Phases for Workflows
 
