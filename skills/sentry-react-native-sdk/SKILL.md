@@ -814,7 +814,7 @@ If a backend or web frontend exists without Sentry, suggest the matching skill:
 | Python backend (`requirements.txt`, `pyproject.toml`) | `sentry-python-sdk` |
 | Ruby backend (`Gemfile`) | `sentry-ruby-sdk` |
 | Node.js backend (Express, Fastify, etc.) | `@sentry/node` — see [docs.sentry.io/platforms/javascript/guides/express/](https://docs.sentry.io/platforms/javascript/guides/express/) |
-| React / Next.js web | `sentry-react-setup` |
+| React / Next.js web | `sentry-react-sdk` |
 | Svelte / SvelteKit web | `sentry-svelte-sdk` |
 
 **Distributed tracing setup** — if the backend skill is added, configure `tracePropagationTargets` in React Native to propagate trace context to your API:

@@ -225,7 +225,7 @@ cat package.json frontend/package.json web/package.json 2>/dev/null | grep -E '"
 
 | Frontend detected | Suggest |
 |-------------------|---------|
-| React / Next.js | `sentry-react-setup` |
+| React / Next.js | `sentry-react-sdk` |
 | Svelte / SvelteKit | `sentry-svelte-sdk` |
 | Vue | `@sentry/vue` — [docs.sentry.io/platforms/javascript/guides/vue/](https://docs.sentry.io/platforms/javascript/guides/vue/) |
 

@@ -20,7 +20,6 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 
 | Skill | Description | Platforms | Docs |
 |-------|-------------|-----------|------|
-| `sentry-react-setup` | Setup Sentry in React apps | React | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
 | `sentry-setup-ai-monitoring` | Setup Sentry AI Agent Monitoring | JS, Python | [AI Monitoring](https://docs.sentry.io/product/ai-monitoring/) |
 
 ### Workflow Skills
@@ -317,7 +316,6 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 
 | What to Say | Skill Used |
 |-------------|------------|
-| "Add Sentry to my React app" | `sentry-react-setup` (superseded by `sentry-react-sdk`) |
 | "Add Sentry to my iOS/Swift app" | `sentry-cocoa-sdk` |
 | "Monitor my OpenAI/LangChain calls" | `sentry-setup-ai-monitoring` |
 

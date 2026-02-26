@@ -122,7 +122,7 @@ Check for a companion frontend or backend that's missing Sentry:
 
 If found, suggest:
 > I see a React frontend in `frontend/` with no Sentry. Consider running the
-> `sentry-react-setup` or `sentry-svelte-sdk` skill for full-stack coverage.
+> `sentry-react-sdk` or `sentry-svelte-sdk` skill for full-stack coverage.
 ```
 
 ## Reference File Guidelines
