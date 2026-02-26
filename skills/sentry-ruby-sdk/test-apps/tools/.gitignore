@@ -1,0 +1,6 @@
+.captured_events.json
+.mock.log
+.rails.log
+.sinatra.log
+.honeybadger_app.log
+.spotlight_events.ndjson
