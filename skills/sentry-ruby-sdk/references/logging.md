@@ -86,9 +86,9 @@ config.before_send_log = lambda do |log|
 end
 ```
 
-### Log object properties
+### `before_send_log` parameter
 
-The `log` object passed to `before_send_log` exposes:
+The `log` argument passed to the callback exposes:
 
 | Property | Type | Description |
 |----------|------|-------------|
