@@ -14,6 +14,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-ruby-sdk` | Full Sentry setup wizard for Ruby — error monitoring, tracing, logging, Sidekiq metrics + dashboard, migration from AppSignal/Honeybadger | Ruby, Rails, Sinatra, Rack, Sidekiq | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
 | `sentry-cocoa-sdk` | Full Sentry setup wizard for Apple platforms — error monitoring, tracing, profiling, session replay, logging | iOS, macOS, tvOS, watchOS, visionOS (Swift, UIKit, SwiftUI) | [Apple Guide](https://docs.sentry.io/platforms/apple/) |
 | `sentry-react-native-sdk` | Full Sentry setup wizard for React Native and Expo — error monitoring, tracing, profiling, session replay, logging, native crash symbolication | React Native, Expo managed/bare | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
+| `sentry-react-sdk` | Full Sentry setup wizard for React — error monitoring, tracing, session replay, profiling, logging | React 16+, React Router v5-v7, TanStack Router, Redux, Vite, webpack | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
 
 ### Setup Skills
 
@@ -308,12 +309,15 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Add Sentry to my React Native app" | `sentry-react-native-sdk` |
 | "Set up Sentry in Expo" | `sentry-react-native-sdk` |
 | "Configure session replay for React Native" | `sentry-react-native-sdk` |
+| "Add Sentry to my React app" | `sentry-react-sdk` |
+| "Set up error boundaries in React" | `sentry-react-sdk` |
+| "Configure session replay for React" | `sentry-react-sdk` |
 
 ### Setup
 
 | What to Say | Skill Used |
 |-------------|------------|
-| "Add Sentry to my React app" | `sentry-react-setup` |
+| "Add Sentry to my React app" | `sentry-react-setup` (superseded by `sentry-react-sdk`) |
 | "Add Sentry to my iOS/Swift app" | `sentry-cocoa-sdk` |
 | "Monitor my OpenAI/LangChain calls" | `sentry-setup-ai-monitoring` |
 
