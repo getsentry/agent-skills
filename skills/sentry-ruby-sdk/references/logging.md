@@ -100,10 +100,11 @@ end
 
 ## Ruby stdlib Logger integration
 
-Capture writes from existing Ruby `Logger` instances as Sentry breadcrumbs:
+Capture writes from existing Ruby `Logger` instances as Sentry breadcrumbs. This requires enabling the `:logger` patch first — without it `std_lib_logger_filter` is never called:
 
 ```ruby
 config.breadcrumbs_logger = [:sentry_logger]
+config.enabled_patches << :logger   # required — activates the Logger patch
 
 # Optional: filter by severity
 config.std_lib_logger_filter = proc do |logger, message, severity|

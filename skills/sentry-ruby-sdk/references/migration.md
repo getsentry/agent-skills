@@ -1,5 +1,6 @@
 # Migrating to Sentry — Ruby SDK
 
+> Minimum SDK: `sentry-ruby` v5.0.0+ (Rails: also add `sentry-rails`)
 > Covers migrations from: AppSignal, Honeybadger
 
 ## Contents

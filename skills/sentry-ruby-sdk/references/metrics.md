@@ -1,7 +1,7 @@
 # Metrics — Sentry Ruby SDK
 
-> Minimum SDK: `sentry-ruby` v6.x+
-> Metrics are enabled by default (`config.enable_metrics = true`).
+> Minimum SDK: `sentry-ruby` v6.3.0+
+> Metrics are enabled by default (`config.enable_metrics = true`). The v6.3.0 release replaced the beta `increment` API with `count`.
 
 ## Contents
 

@@ -16,6 +16,13 @@
 
 ## Configuration
 
+| Option | Type | Default | Purpose |
+|--------|------|---------|---------|
+| `traces_sample_rate` | Float | `nil` | Uniform sample rate [0.0–1.0]; `nil` disables tracing |
+| `traces_sampler` | Lambda | `nil` | Custom per-transaction sampling; overrides `traces_sample_rate` |
+| `trace_propagation_targets` | Array | `[/.*/]` | URLs to inject `sentry-trace` + `baggage` headers into |
+| `propagate_traces` | Boolean | `true` | Propagate trace headers on outbound Net::HTTP requests |
+
 ```ruby
 Sentry.init do |config|
   config.traces_sample_rate = 1.0  # set to 0.05–0.2 in production
