@@ -26,6 +26,36 @@ jobs:
       - name: Delete latest tag
         run: git push origin :refs/tags/latest || true
 
+      - name: Generate release body
+        id: release-body
+        run: |
+          SKILL_LIST=$(./scripts/generate-skill-list.sh)
+          # Use heredoc to handle multiline output
+          {
+            echo 'BODY<<RELEASE_EOF'
+            cat <<EOF
+          Automatically updated Sentry agent skills package.
+
+          ## Installation
+
+          Download and extract to your editor's skills directory:
+
+          \`\`\`bash
+          # Example for Claude Code (project-level)
+          mkdir -p .claude/skills
+          curl -L https://github.com/getsentry/sentry-agent-skills/releases/download/latest/sentry-agent-skills.tar.gz | tar -xz -C .claude/skills
+
+          # Or use sentry-wizard
+          npx @sentry/wizard@latest --skills
+          \`\`\`
+
+          ## Included Skills
+
+          $SKILL_LIST
+          EOF
+            echo 'RELEASE_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - name: Create latest release
         uses: softprops/action-gh-release@v2
         with:
@@ -34,35 +64,4 @@ jobs:
           files: sentry-agent-skills.tar.gz
           prerelease: false
           make_latest: true
-          body: |
-            Automatically updated Sentry agent skills package.
-
-            ## Installation
-
-            Download and extract to your editor's skills directory:
-
-            ```bash
-            # Example for Claude Code (project-level)
-            mkdir -p .claude/skills
-            curl -L https://github.com/getsentry/sentry-agent-skills/releases/download/latest/sentry-agent-skills.tar.gz | tar -xz -C .claude/skills
-
-            # Or use sentry-wizard
-            npx @sentry/wizard@latest --skills
-            ```
-
-            ## Included Skills
-
-            **Setup:**
-            - `sentry-nextjs-setup` - Setup Sentry in Next.js projects
-            - `sentry-react-setup` - Setup Sentry in React apps
-            - `sentry-react-native-setup` - Setup Sentry in React Native/Expo apps
-            - `sentry-python-setup` - Setup Sentry in Python apps (Django, Flask, FastAPI)
-            - `sentry-ruby-setup` - Setup Sentry in Ruby/Rails apps
-            - `sentry-setup-tracing` - Setup Sentry Tracing and Performance Monitoring
-            - `sentry-setup-logging` - Setup Sentry Logging
-            - `sentry-setup-metrics` - Setup Sentry Metrics
-            - `sentry-setup-ai-monitoring` - Setup Sentry AI Agent Monitoring
-
-            **Workflow:**
-            - `sentry-fix-issues` - Find and fix production issues using Sentry MCP
-            - `sentry-pr-code-review` - Analyze and resolve Sentry comments on GitHub PRs
+          body: ${{ steps.release-body.outputs.BODY }}

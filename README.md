@@ -20,11 +20,6 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | Skill | Description | Platforms | Docs |
 |-------|-------------|-----------|------|
 | `sentry-react-setup` | Setup Sentry in React apps | React | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
-| `sentry-react-native-setup` | Setup Sentry in React Native using the wizard CLI | React Native, Expo | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
-| `sentry-ios-swift-setup` | Setup Sentry in iOS/Swift apps (superseded by `sentry-cocoa-sdk`) | iOS (Swift, UIKit, SwiftUI) | [Apple Guide](https://docs.sentry.io/platforms/apple/guides/ios/) |
-| `sentry-setup-tracing` | Setup Sentry Tracing (Performance Monitoring) | JS, Python, Ruby | [Tracing](https://docs.sentry.io/platforms/javascript/tracing/) |
-| `sentry-setup-logging` | Setup Sentry Logging | JS, Python, Ruby | [Logs](https://docs.sentry.io/platforms/javascript/logs/) |
-| `sentry-setup-metrics` | Setup Sentry Metrics | JS, Python | [Metrics](https://docs.sentry.io/platforms/javascript/metrics/) |
 | `sentry-setup-ai-monitoring` | Setup Sentry AI Agent Monitoring | JS, Python | [AI Monitoring](https://docs.sentry.io/product/ai-monitoring/) |
 
 ### Workflow Skills
@@ -93,7 +88,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .claude/skills/                # Project-level
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 </details>
@@ -126,7 +121,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .codex/skills/                 # Project-level
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 </details>
@@ -159,7 +154,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .github/skills/                # Project-level
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 </details>
@@ -194,7 +189,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .cursor/skills/                # Project-level
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 </details>
@@ -231,7 +226,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .claude/skills/                # Project-level (alternative)
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 </details>
@@ -268,7 +263,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .claude/skills/                # Project-level (alternative)
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 </details>
@@ -320,10 +315,6 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 |-------------|------------|
 | "Add Sentry to my React app" | `sentry-react-setup` |
 | "Add Sentry to my iOS/Swift app" | `sentry-cocoa-sdk` |
-| "Set up Sentry in React Native" | `sentry-react-native-setup` |
-| "Add performance monitoring to my app" | `sentry-setup-tracing` |
-| "Enable Sentry logging" | `sentry-setup-logging` |
-| "Track custom metrics with Sentry" | `sentry-setup-metrics` |
 | "Monitor my OpenAI/LangChain calls" | `sentry-setup-ai-monitoring` |
 
 ### Debugging & Workflow
