@@ -10,6 +10,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 |-------|-------------|-----------|------|
 | `sentry-go-sdk` | Full Sentry setup wizard for Go — error monitoring, tracing, logging, metrics, crons | Go (net/http, Gin, Echo, Fiber) | [Go Guide](https://docs.sentry.io/platforms/go/) |
 | `sentry-svelte-sdk` | Full Sentry setup wizard for Svelte/SvelteKit — error monitoring, tracing, session replay, logging | Svelte, SvelteKit | [SvelteKit Guide](https://docs.sentry.io/platforms/javascript/guides/sveltekit/) |
+| `sentry-ruby-sdk` | Full Sentry setup wizard for Ruby — error monitoring, tracing, logging, Sidekiq metrics + dashboard, migration from AppSignal/Honeybadger | Ruby, Rails, Sinatra, Rack, Sidekiq | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
 
 ### Setup Skills
 
@@ -298,6 +299,10 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Set up Sentry in my Gin/Echo/Fiber project" | `sentry-go-sdk` |
 | "Add Sentry to my SvelteKit app" | `sentry-svelte-sdk` |
 | "Set up Sentry in Svelte" | `sentry-svelte-sdk` |
+| "Add Sentry to my Ruby/Rails app" | `sentry-ruby-sdk` |
+| "Set up Sentry metrics for Puma/Sidekiq" | `sentry-ruby-sdk` |
+| "Migrate from AppSignal to Sentry" | `sentry-ruby-sdk` |
+| "Replace Honeybadger with Sentry" | `sentry-ruby-sdk` |
 
 ### Setup
 
@@ -307,7 +312,7 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Add Sentry to my iOS/Swift app" | `sentry-ios-swift-setup` |
 | "Set up Sentry in React Native" | `sentry-react-native-setup` |
 | "Add Sentry to my Python/Django/Flask app" | `sentry-python-setup` |
-| "Set up Sentry in my Ruby/Rails app" | `sentry-ruby-setup` |
+| "Set up Sentry in my Ruby/Rails app (quick)" | `sentry-ruby-setup` |
 | "Add performance monitoring to my app" | `sentry-setup-tracing` |
 | "Enable Sentry logging" | `sentry-setup-logging` |
 | "Track custom metrics with Sentry" | `sentry-setup-metrics` |
