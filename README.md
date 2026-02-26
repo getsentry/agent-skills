@@ -9,6 +9,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | Skill | Description | Platforms | Docs |
 |-------|-------------|-----------|------|
 | `sentry-go-sdk` | Full Sentry setup wizard for Go — error monitoring, tracing, logging, metrics, crons | Go (net/http, Gin, Echo, Fiber) | [Go Guide](https://docs.sentry.io/platforms/go/) |
+| `sentry-python-sdk` | Full Sentry setup wizard for Python — error monitoring, tracing, profiling, logging, metrics, crons, AI monitoring | Python (Django, Flask, FastAPI, Celery, Starlette, AIOHTTP) | [Python Guide](https://docs.sentry.io/platforms/python/) |
 | `sentry-svelte-sdk` | Full Sentry setup wizard for Svelte/SvelteKit — error monitoring, tracing, session replay, logging | Svelte, SvelteKit | [SvelteKit Guide](https://docs.sentry.io/platforms/javascript/guides/sveltekit/) |
 
 ### Setup Skills
@@ -296,6 +297,9 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 |-------------|------------|
 | "Add Sentry to my Go app" | `sentry-go-sdk` |
 | "Set up Sentry in my Gin/Echo/Fiber project" | `sentry-go-sdk` |
+| "Add Sentry to my Python app" | `sentry-python-sdk` |
+| "Set up Sentry in my Django/Flask/FastAPI project" | `sentry-python-sdk` |
+| "Monitor my OpenAI/LangChain calls in Python" | `sentry-python-sdk` |
 | "Add Sentry to my SvelteKit app" | `sentry-svelte-sdk` |
 | "Set up Sentry in Svelte" | `sentry-svelte-sdk` |
 
