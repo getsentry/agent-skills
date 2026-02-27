@@ -99,13 +99,13 @@ Propose: *"I recommend setting up Error Monitoring + Tracing + Session Replay. W
 
 ### Path A: SvelteKit (Recommended — Modern, ≥2.31.0)
 
-#### Option 1: Wizard (Easiest)
+#### Option 1: Wizard (Recommended)
 
 ```bash
 npx @sentry/wizard@latest -i sveltekit
 ```
 
-The wizard creates all necessary files automatically, uploads source maps, and adds a `/sentry-example-page` for verification. Skip to [Verification](#verification) after running it.
+The wizard walks you through login, org/project selection, and auth token setup interactively — no manual token creation needed. It then installs the SDK, creates all necessary files (client/server hooks, Vite plugin config), configures source map upload, and adds a `/sentry-example-page` for verification. Skip to [Verification](#verification) after running it.
 
 #### Option 2: Manual Setup
 
