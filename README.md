@@ -15,6 +15,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-cocoa-sdk` | Full Sentry setup wizard for Apple platforms — error monitoring, tracing, profiling, session replay, logging | iOS, macOS, tvOS, watchOS, visionOS (Swift, UIKit, SwiftUI) | [Apple Guide](https://docs.sentry.io/platforms/apple/) |
 | `sentry-react-native-sdk` | Full Sentry setup wizard for React Native and Expo — error monitoring, tracing, profiling, session replay, logging, native crash symbolication | React Native, Expo managed/bare | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
 | `sentry-react-sdk` | Full Sentry setup wizard for React — error monitoring, tracing, session replay, profiling, logging | React 16+, React Router v5-v7, TanStack Router, Redux, Vite, webpack | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
+| `sentry-nextjs-sdk` | Full Sentry setup wizard for Next.js — error monitoring, tracing, profiling, logging, session replay, AI monitoring, crons | Next.js App Router + Pages Router, Vercel, `@sentry/nextjs` | [Next.js Guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/) |
 
 ### Setup Skills
 
@@ -311,6 +312,9 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Add Sentry to my React app" | `sentry-react-sdk` |
 | "Set up error boundaries in React" | `sentry-react-sdk` |
 | "Configure session replay for React" | `sentry-react-sdk` |
+| "Add Sentry to my Next.js app" | `sentry-nextjs-sdk` |
+| "Set up Sentry in Next.js App Router" | `sentry-nextjs-sdk` |
+| "Monitor AI/OpenAI calls in Next.js" | `sentry-nextjs-sdk` |
 
 ### Setup
 
