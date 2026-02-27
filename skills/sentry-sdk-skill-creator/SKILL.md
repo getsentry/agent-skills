@@ -123,7 +123,7 @@ done
 
 ## Phase 3: Create the Main SKILL.md
 
-The main SKILL.md implements the **four-phase wizard** from the philosophy doc. It must stay under 500 lines.
+The main SKILL.md implements the **four-phase wizard** from the philosophy doc. Keep it focused — the main file should cover the wizard flow, quick start config, framework tables, and reference dispatch. Deep-dive details for individual features belong in `references/` files, not here. Be thorough but not redundant.
 
 ### Gather Context First
 
@@ -271,7 +271,7 @@ Run a reviewer on the complete skill bundle:
 - Technical accuracy of code examples
 - Consistency between main SKILL.md and reference files
 - Consistency with existing SDK skills in the repo
-- Agent Skills spec compliance (frontmatter, naming, line count)
+- Agent Skills spec compliance (frontmatter, naming)
 
 ### Fix Review Findings
 
@@ -310,7 +310,7 @@ Before declaring the skill complete:
 - [ ] Philosophy doc read and followed
 - [ ] All feature pillars researched from official docs (not from memory)
 - [ ] Research files verified (real content, correct APIs, >100 lines each)
-- [ ] Main SKILL.md under 500 lines
+- [ ] Main SKILL.md is focused — wizard flow + quick start + reference dispatch; deep dives in references
 - [ ] Main SKILL.md implements all 4 wizard phases
 - [ ] Wizard CLI checked — if supported, presented as "Option 1: Wizard (Recommended)" with auth flow + source map benefits described
 - [ ] Source map / debug symbol upload covered in manual setup path (frontend/mobile SDKs)

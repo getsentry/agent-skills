@@ -8,7 +8,7 @@ Rubric for evaluating SDK skill bundles before merge. Every item must pass.
 
 | Check | Requirement |
 |-------|-------------|
-| Line count | Under 500 lines |
+| Focus | Wizard flow + quick start + reference dispatch; deep dives belong in `references/` |
 | `name` field | Matches directory name, kebab-case, 1-64 chars |
 | `description` field | Under 1024 chars, includes trigger phrases, no angle brackets |
 | `license` field | `Apache-2.0` |
@@ -112,9 +112,7 @@ Watch for these red flags that indicate fabricated or outdated content:
 Run these before the last commit:
 
 ```bash
-# 1. Line count check
-wc -l skills/sentry-<platform>-sdk/SKILL.md
-# Must be under 500
+# 1. Verify all files exist and SKILL.md is focused (not bloated with deep-dive content)
 
 # 2. All files exist
 find skills/sentry-<platform>-sdk -type f | sort
