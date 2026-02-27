@@ -290,10 +290,10 @@ If a frontend exists without Sentry, suggest the matching skill:
 
 | Frontend detected | Suggest skill |
 |-------------------|--------------|
-| React / Next.js | `sentry-react-setup` |
+| React / Next.js | `sentry-react-sdk` |
 | Svelte / SvelteKit | `sentry-svelte-sdk` |
 | Vue / Nuxt | Use `@sentry/vue` — see [docs.sentry.io/platforms/javascript/guides/vue/](https://docs.sentry.io/platforms/javascript/guides/vue/) |
-| Other JS/TS | `sentry-react-setup` (covers generic JS patterns) |
+| Other JS/TS | `sentry-react-sdk` (covers generic browser JS patterns) |
 
 ---
 
