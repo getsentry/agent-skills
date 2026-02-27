@@ -200,7 +200,7 @@ app.Run();
     "MaxRequestBodySize": "Always",
     "MinimumBreadcrumbLevel": "Debug",
     "MinimumEventLevel": "Warning",
-    "AttachStackTrace": true,
+    "AttachStacktrace": true,
     "Debug": true,
     "TracesSampleRate": 1.0
   }
@@ -285,7 +285,7 @@ services.AddSingleton<ISentryUserFactory, MyUserFactory>();
 | Option | Type | Description |
 |--------|------|-------------|
 | `SendDefaultPii` | `bool` | Include request URL, headers, user IP, auth info |
-| `MaxRequestBodySize` | `RequestSize` | `None`, `Small` (<10 KB), `Medium` (<50 KB), `Always` |
+| `MaxRequestBodySize` | `RequestSize` | `None`, `Small` (<4 KB), `Medium` (<10 KB), `Always` |
 | `MinimumBreadcrumbLevel` | `LogLevel` | Min log level for breadcrumb capture from ILogger |
 | `MinimumEventLevel` | `LogLevel` | Min log level to generate a Sentry error event from ILogger |
 | `CaptureBlockingCalls` | `bool` | Detect `Task.Wait()` / `.Result` threadpool starvation |
@@ -1047,7 +1047,7 @@ await SentrySdk.FlushAsync(TimeSpan.FromSeconds(5));
 | `Environment` | `string?` | — | Deployment environment; also reads `SENTRY_ENVIRONMENT` |
 | `SampleRate` | `float` | `1.0` | Error event sampling rate (0–1) |
 | `TracesSampleRate` | `double` | `0` | Transaction sampling rate (0–1) |
-| `AttachStacktrace` | `bool` | `false` | Attach stack traces to message events too |
+| `AttachStacktrace` | `bool` | `true` | Attach stack traces to message events too |
 | `SendDefaultPii` | `bool` | `false` | Include IP, username, headers |
 | `MaxBreadcrumbs` | `int` | `100` | Max breadcrumbs per event |
 | `IsGlobalModeEnabled` | `bool` | `false` | Singleton scope for desktop apps |
@@ -1058,7 +1058,7 @@ await SentrySdk.FlushAsync(TimeSpan.FromSeconds(5));
 | `DefaultTags` | `IDictionary<string, string>` | `{}` | Tags added to every event |
 | `CacheDirectoryPath` | `string?` | `null` | Path for offline envelope caching |
 | `ShutdownTimeout` | `TimeSpan` | `2s` | Flush timeout on SDK shutdown |
-| `CaptureFailedRequests` | `bool` | `false` | Capture HTTP client error responses |
+| `CaptureFailedRequests` | `bool` | `true` | Capture HTTP client error responses |
 | `EnableLogs` | `bool` | `false` | Enable Sentry structured logging |
 | `StackTraceMode` | `StackTraceMode` | `Enhanced` | `Enhanced` or `Original` |
 

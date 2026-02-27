@@ -181,7 +181,7 @@ app.Run();
     "MaxRequestBodySize": "Always",
     "MinimumBreadcrumbLevel": "Debug",
     "MinimumEventLevel": "Warning",
-    "AttachStackTrace": true,
+    "AttachStacktrace": true,
     "Debug": true,
     "TracesSampleRate": 1.0,
     "Environment": "production",
