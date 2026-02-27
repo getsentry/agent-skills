@@ -1,13 +1,16 @@
 # Migrating to Sentry — Ruby SDK
 
 > Minimum SDK: `sentry-ruby` v5.0.0+ (Rails: also add `sentry-rails`)
-> Covers migrations from: AppSignal, Honeybadger
+> Covers migrations from: AppSignal, Honeybadger, Bugsnag, Rollbar, Airbrake
 
 ## Contents
 
 - [Step 1: Detect What's in the Codebase](#step-1-detect-whats-in-the-codebase)
 - [AppSignal → Sentry](#appsignal--sentry)
 - [Honeybadger → Sentry](#honeybadger--sentry)
+- [Bugsnag → Sentry](#bugsnag--sentry)
+- [Rollbar → Sentry](#rollbar--sentry)
+- [Airbrake → Sentry](#airbrake--sentry)
 - [Universal Migration Checklist](#universal-migration-checklist)
 - [Troubleshooting](#troubleshooting)
 
@@ -15,15 +18,18 @@
 
 ```bash
 # Find competitor gems
-grep -E '"appsignal"|"honeybadger"' Gemfile Gemfile.lock 2>/dev/null
+grep -iE '\bappsignal\b|\bhoneybadger\b|\bbugsnag\b|\brollbar\b|\bairbrake\b' Gemfile Gemfile.lock 2>/dev/null
 
 # Find call sites across the app
-grep -rn "Appsignal\.\|Honeybadger\." \
+grep -rn "Appsignal\.\|Honeybadger\.\|Bugsnag\.\|Rollbar\.\|Airbrake\." \
   app/ lib/ config/ --include="*.rb" | grep -v "_spec\|_test"
 
 # Find config files to remove after migration
 ls config/appsignal.yml \
-   config/honeybadger.yml .honeybadger.yml 2>/dev/null
+   config/honeybadger.yml .honeybadger.yml \
+   config/initializers/bugsnag.rb \
+   config/initializers/rollbar.rb \
+   config/initializers/airbrake.rb 2>/dev/null
 ```
 
 ---
@@ -118,6 +124,126 @@ grep -rn "Honeybadger\.\(notify\|context\|add_breadcrumb\|exception_filter\)" \
 
 ---
 
+## Bugsnag → Sentry
+
+**Gemfile:**
+```ruby
+# Remove:
+gem "bugsnag"
+
+# Add:
+gem "sentry-ruby"
+gem "sentry-rails"     # if Rails
+gem "sentry-sidekiq"   # if Sidekiq
+```
+
+**Delete:** `config/initializers/bugsnag.rb`
+
+### API mapping
+
+| Bugsnag | Sentry |
+|---------|--------|
+| `Bugsnag.notify(e)` | `Sentry.capture_exception(e)` |
+| `Bugsnag.notify(e) { \|event\| event.severity = "warning" }` | `Sentry.capture_exception(e, level: :warning)` |
+| `Bugsnag.notify(e) { \|event\| event.add_metadata(:ctx, hash) }` | `Sentry.with_scope { \|s\| s.set_context("ctx", hash); Sentry.capture_exception(e) }` |
+| `Bugsnag.notify(e) { \|event\| event.set_user(id, email, name) }` | `Sentry.set_user(id: id, email: email, username: name)` |
+| `Bugsnag.leave_breadcrumb(name, meta, type)` | `Sentry.add_breadcrumb(Sentry::Breadcrumb.new(message: name, data: meta, category: type))` |
+| `Bugsnag.add_metadata(:section, hash)` | `Sentry.set_context("section", hash)` |
+| `Bugsnag.configure { \|c\| c.discard_classes << "MyError" }` | `config.before_send = lambda { \|e, h\| h[:exception].is_a?(MyError) ? nil : e }` |
+| `event.ignore!` (in on_error callback) | Return `nil` from `config.before_send` |
+
+### Find call sites
+
+```bash
+grep -rn "Bugsnag\.\(notify\|leave_breadcrumb\|add_metadata\|clear_metadata\|start_session\)" \
+  app/ lib/ --include="*.rb"
+```
+
+---
+
+## Rollbar → Sentry
+
+**Gemfile:**
+```ruby
+# Remove:
+gem "rollbar"
+
+# Add:
+gem "sentry-ruby"
+gem "sentry-rails"     # if Rails
+gem "sentry-sidekiq"   # if Sidekiq
+```
+
+**Delete:** `config/initializers/rollbar.rb`
+
+### API mapping
+
+| Rollbar | Sentry |
+|---------|--------|
+| `Rollbar.error(e)` | `Sentry.capture_exception(e)` |
+| `Rollbar.warning(msg)` | `Sentry.capture_message(msg, level: :warning)` |
+| `Rollbar.info(msg, extra)` | `Sentry.with_scope { \|s\| s.set_context("extra", extra); Sentry.capture_message(msg, level: :info) }` |
+| `Rollbar.critical(e)` | `Sentry.capture_exception(e, level: :fatal)` |
+| `Rollbar.debug(msg)` | `Sentry.capture_message(msg, level: :debug)` |
+| `Rollbar.log(level, e)` | `Sentry.capture_exception(e, level: { "critical" => :fatal }.fetch(level, level.to_sym))` |
+| `Rollbar.scoped(person: p) { }` | `Sentry.with_scope { \|s\| s.set_user(p); ... }` |
+| `Rollbar.scope!(person: p)` | `Sentry.set_user(p)` |
+| `Rollbar.silenced { }` | `# remove — no Sentry equivalent needed` |
+
+Rollbar uses `'warning'` level; Sentry uses `:warning`. Rollbar uses `'critical'`; map to Sentry's `:fatal`.
+
+### Find call sites
+
+```bash
+grep -rn "Rollbar\.\(error\|warning\|warn\|info\|debug\|critical\|log\|scoped\|scope\)" \
+  app/ lib/ --include="*.rb"
+```
+
+---
+
+## Airbrake → Sentry
+
+**Gemfile:**
+```ruby
+# Remove:
+gem "airbrake"
+gem "airbrake-ruby"    # if present separately
+
+# Add:
+gem "sentry-ruby"
+gem "sentry-rails"     # if Rails
+gem "sentry-sidekiq"   # if Sidekiq
+```
+
+**Delete:** `config/initializers/airbrake.rb`
+
+Also check for and remove: `require 'airbrake/capistrano'` in `Capfile`, `require 'airbrake/rake'` in `Rakefile`, and any Sidekiq/DelayedJob/Resque middleware references.
+
+### API mapping
+
+| Airbrake | Sentry |
+|----------|--------|
+| `Airbrake.notify(e)` | `Sentry.capture_exception(e)` |
+| `Airbrake.notify(e, params)` | `Sentry.with_scope { \|s\| s.set_context("params", params); Sentry.capture_exception(e) }` |
+| `Airbrake.notify_sync(e)` | `Sentry.capture_exception(e)` (Sentry handles delivery asynchronously) |
+| `Airbrake.notify("message")` | `Sentry.capture_message("message")` |
+| `Airbrake.merge_context(hash)` | `Sentry.set_context("app", hash)` |
+| `Airbrake.add_filter { \|n\| n.ignore! if ... }` | `config.before_send = lambda { \|e, _h\| ... ? nil : e }` |
+| `Airbrake.add_filter(MyFilter)` | `config.before_send = lambda { \|e, _h\| ... }` |
+| `notice[:context][:user_id] = id` | `Sentry.set_user(id: id)` |
+| `Airbrake.notify_deploy(info)` | Use Sentry release tracking via `SENTRY_RELEASE` env var |
+| `Airbrake.notify_request(...)` | Automatic via `sentry-rails` tracing |
+| `Airbrake.notify_query(...)` | Automatic via `sentry-rails` ActiveRecord spans |
+
+### Find call sites
+
+```bash
+grep -rn "Airbrake\.\(notify\|notify_sync\|merge_context\|add_filter\|notify_request\|notify_query\)" \
+  app/ lib/ --include="*.rb"
+```
+
+---
+
 ## Universal Migration Checklist
 
 Works for any tool not covered above:
@@ -140,7 +266,7 @@ grep -rn "\.\(set_gauge\|increment_counter\|record_metric\|gauge\|histogram\|tim
   app/ lib/ --include="*.rb" | grep -v "_spec\|_test"
 
 # Environment variables to update
-grep -rn "APPSIGNAL\|HONEYBADGER" \
+grep -rn "APPSIGNAL\|HONEYBADGER\|BUGSNAG\|ROLLBAR\|AIRBRAKE" \
   .env .env.* config/ --include="*.rb" --include="*.yml" 2>/dev/null
 ```
 
@@ -150,6 +276,9 @@ grep -rn "APPSIGNAL\|HONEYBADGER" \
 |------|-------------|--------|
 | AppSignal | `APPSIGNAL_PUSH_API_KEY` | `SENTRY_DSN` |
 | Honeybadger | `HONEYBADGER_API_KEY` | `SENTRY_DSN` |
+| Bugsnag | `BUGSNAG_API_KEY` | `SENTRY_DSN` |
+| Rollbar | `ROLLBAR_ACCESS_TOKEN` | `SENTRY_DSN` |
+| Airbrake | `AIRBRAKE_PROJECT_ID` + `AIRBRAKE_PROJECT_KEY` | `SENTRY_DSN` |
 
 ### Rollout strategy
 
@@ -163,7 +292,11 @@ module ErrorCapture
       scope.set_context("extra", context) unless context.empty?
       Sentry.capture_exception(exception)
     end
-    OldTool.notify(exception) rescue nil  # replace OldTool with actual constant
+    begin
+      OldTool.notify(exception)  # replace OldTool with actual constant
+    rescue => e
+      Sentry.logger.warn("OldTool capture failed: %{message}", message: e.message)
+    end
   end
 end
 ```

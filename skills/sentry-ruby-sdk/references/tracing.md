@@ -9,8 +9,9 @@
 - [Custom Instrumentation](#custom-instrumentation)
 - [Distributed Tracing](#distributed-tracing)
 - [`before_send_transaction` hook](#before_send_transaction-hook)
-- [OpenTelemetry Bridge](#opentelemetry-bridge)
+- [OpenTelemetry — OTLP Integration](#opentelemetry--otlp-integration)
 - [Framework Auto-Instrumentation Summary](#framework-auto-instrumentation-summary)
+- [Request Queue Time](#request-queue-time)
 - [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
 
@@ -22,6 +23,7 @@
 | `traces_sampler` | Lambda | `nil` | Custom per-transaction sampling; overrides `traces_sample_rate` |
 | `trace_propagation_targets` | Array | `[/.*/]` | URLs to inject `sentry-trace` + `baggage` headers into |
 | `propagate_traces` | Boolean | `true` | Propagate trace headers on outbound Net::HTTP requests |
+| `capture_queue_time` | Boolean | `true` | Record request queue time from `X-Request-Start` header (v6.4.0+) |
 
 ```ruby
 Sentry.init do |config|
@@ -179,27 +181,69 @@ config.before_send_transaction = lambda do |event, _hint|
 end
 ```
 
-## OpenTelemetry Bridge
+## OpenTelemetry — OTLP Integration
 
-If your app already uses OpenTelemetry, use `sentry-opentelemetry` to route OTel spans into Sentry:
+> Minimum SDK: `sentry-ruby` v6.4.0+ with `sentry-opentelemetry` v6.4.0+
+
+If the project already uses OpenTelemetry for tracing or logging, **use the OTLP integration instead of Sentry's native tracing**. Sentry ingests OTel spans directly via its OTLP endpoint — no span conversion, no dual instrumentation.
+
+**When to use this path:** OTel tracing gems (`opentelemetry-sdk`, `opentelemetry-instrumentation-*`) detected in the Gemfile, or `OpenTelemetry::SDK.configure` found in source.
+
+**When NOT to use this path:** No OpenTelemetry in the project — use Sentry's native `traces_sample_rate` instead.
+
+**Logging:** OTLP replaces Sentry native *tracing* only. If the project does not use OTel for logging (`opentelemetry-logs-sdk` not in Gemfile), still set `config.enable_logs = true` for Sentry structured logging — this is the common case.
+
+### Setup
 
 ```ruby
-# Gemfile
+# Gemfile — add alongside existing opentelemetry gems:
 gem "sentry-opentelemetry"
+gem "opentelemetry-exporter-otlp"  # required for OTLP export
 ```
 
 ```ruby
+# config/initializers/sentry.rb
 Sentry.init do |config|
   config.dsn = ENV["SENTRY_DSN"]
-  config.traces_sample_rate = 1.0
-end
+  config.send_default_pii = true
+  config.otlp.enabled = true
+  config.enable_logs = true  # keep Sentry native logging unless OTel logs SDK is also present
 
-# In your OTel setup:
-require "sentry-opentelemetry"
-Sentry.init_otel_provider
+  # Do NOT set traces_sample_rate — tracing is handled by OTel
+  # Errors, Logs, Crons, and Metrics are still captured natively by Sentry
+  # and automatically linked to the active OTel trace
+end
 ```
 
-Sentry becomes a Span Exporter and Propagator — existing OTel instrumentation flows through without changes.
+```ruby
+# config/initializers/opentelemetry.rb — keep your existing OTel setup:
+OpenTelemetry::SDK.configure do |c|
+  c.use_all  # or specific instrumentations
+  # Sentry auto-adds its OTLP exporter and propagator —
+  # no manual SpanProcessor or Propagator wiring needed
+end
+```
+
+### How it works
+
+- Sentry derives an OTLP endpoint from your DSN and registers a `BatchSpanProcessor` with the existing `TracerProvider` — your other exporters (Jaeger, Zipkin, Collector) continue working
+- A propagator injects `sentry-trace` + `baggage` headers for distributed tracing with other Sentry-instrumented services
+- Errors captured via `Sentry.capture_exception` are automatically linked to the active OTel trace/span via shared `trace_id`
+
+### OTLP configuration options
+
+| Option | Default | Purpose |
+|--------|---------|---------|
+| `config.otlp.enabled` | `false` | Master switch |
+| `config.otlp.setup_otlp_traces_exporter` | `true` | Auto-configure exporter; set `false` if you send to your own Collector |
+| `config.otlp.setup_propagator` | `true` | Auto-configure propagator; set `false` if you manage propagation yourself |
+
+### Important
+
+**Do not combine OTLP with native Sentry tracing.** When `config.otlp.enabled = true`:
+- Do **not** set `traces_sample_rate` or `traces_sampler`
+- Do **not** set `config.instrumenter = :otel` (that is the legacy SpanProcessor approach)
+- Do **not** call `Sentry.with_child_span` or `Sentry.start_transaction` — use OTel's `tracer.in_span` instead
 
 ## Framework Auto-Instrumentation Summary
 
@@ -215,6 +259,40 @@ Sentry becomes a Span Exporter and Propagator — existing OTel instrumentation 
 | Net::HTTP | `sentry-ruby` | Outbound HTTP → spans + header propagation |
 | Redis | `sentry-ruby` | Redis commands → spans (needs `:redis_logger`) |
 | GraphQL | `sentry-ruby` | Queries → transactions (enable with `enabled_patches`) |
+
+## Request Queue Time
+
+> Minimum SDK: `sentry-ruby` v6.4.0+. Enabled by default (`capture_queue_time = true`).
+
+Sentry automatically reads the `X-Request-Start` header and records how long the request waited in the server queue before a worker thread picked it up. The value is stored as `http.server.request.time_in_queue` (milliseconds) on the transaction.
+
+When running behind Puma, the SDK subtracts `puma.request_body_wait` (time Puma spent receiving the request body from a slow client) to isolate actual queue time from upload time.
+
+### Proxy configuration required
+
+Your reverse proxy must set the header. Without it, no queue time is recorded.
+
+**Nginx:**
+```nginx
+proxy_set_header X-Request-Start "t=${msec}";
+```
+
+**Heroku:** Sets `X-Request-Start` automatically — no configuration needed.
+
+**HAProxy:**
+```
+http-request set-header X-Request-Start t=%[date()]%[date_us()]
+```
+
+### Disable
+
+```ruby
+config.capture_queue_time = false
+```
+
+### Why this matters
+
+High queue time means Puma workers are saturated — requests are waiting for a free thread. This is a key indicator for scaling decisions. Sentry surfaces it in the transaction waterfall so you can distinguish "the app is slow" from "the app was waiting for a worker."
 
 ## Best Practices
 

@@ -127,6 +127,8 @@ Thread.new do
 end
 ```
 
+> **Production note:** In forking servers (Puma, Unicorn), start the polling thread in `on_worker_boot` / `after_fork` — threads don't survive `fork()`. Consider using a Sidekiq periodic job instead of a bare thread for better reliability and error visibility.
+
 **Use both together** for complete Sidekiq visibility: the middleware captures per-job detail, the poller captures queue health over time.
 
 ## Detecting Existing Metric Patterns
