@@ -63,6 +63,29 @@ Spin off **parallel research tasks** (using the `claude` tool with `outputFile`)
 
 Read `${SKILL_ROOT}/references/research-playbook.md` for the detailed research execution plan, including prompt templates and file naming conventions.
 
+### Research the Sentry Wizard
+
+Before diving into feature research, check whether the Sentry wizard CLI supports this framework:
+
+```bash
+# Check the SDK's docs landing page for wizard instructions
+# Visit: https://docs.sentry.io/platforms/<platform>/
+# Look for: "npx @sentry/wizard@latest -i <integration>"
+```
+
+If a wizard integration exists:
+1. Document the exact wizard command and `-i` flag
+2. Document what the wizard creates/modifies (files, config, build plugins)
+3. Note that the wizard handles **authentication interactively** — login, org/project selection, and auth token creation/download all happen automatically
+4. Note whether the wizard sets up **source map upload** — this is critical for frontend SDKs
+5. This will become "Option 1: Wizard (Recommended)" in Phase 3 of the generated skill
+
+> **Why this matters:** The wizard handles the entire auth flow (login, org/project selection,
+> auth token) and source map upload configuration automatically. Without source maps,
+> production stack traces show minified code — making Sentry nearly useless for frontend
+> debugging. And without the auth token, source maps can't be uploaded at all. The wizard
+> is the most reliable way to get both right in a single step.
+
 ### Research Batching
 
 Batch research tasks by topic area. Run them in parallel where possible:
@@ -133,8 +156,12 @@ license: Apache-2.0
 [opinionated feature matrix with "always / when detected / optional" logic]
 
 ## Phase 3: Guide
+### Option 1: Wizard (Recommended)   ← if wizard exists for this framework
+[wizard command, what it creates/modifies table, skip-to-verification note]
+### Option 2: Manual Setup            ← always include
 ### Install
 ### Quick Start — Recommended Init
+### Source Maps Setup                  ← required for frontend/mobile SDKs
 ### Framework Middleware (if applicable)
 ### For Each Agreed Feature
 [reference dispatch table: feature → ${SKILL_ROOT}/references/<feature>.md]
@@ -155,11 +182,13 @@ license: Apache-2.0
 ### Key Principles for the Main SKILL.md
 
 1. **Keep it lean** — deep details go in references, not here
-2. **Detection commands must be real** — test them against actual projects
-3. **Recommendation logic must be opinionated** — "always", "when X detected", not "maybe consider"
-4. **Quick Start config should enable the most features** with sensible defaults
-5. **Framework middleware table** — exact import paths, middleware calls, and quirks
-6. **Cross-link aggressively** — if Go backend, suggest frontend. If Svelte frontend, suggest backend.
+2. **Wizard-first for framework SDKs** — if the Sentry wizard supports this framework, present it as "Option 1: Wizard (Recommended)" before any manual setup. The wizard handles the full auth flow (login, org/project selection, auth token creation), source map upload, build tool plugins, and framework-specific wiring — all in one interactive step. See the [philosophy doc](../../docs/sdk-skill-philosophy.md) for the full pattern.
+3. **Source maps are non-negotiable for frontend/mobile** — the manual setup path must include source map upload configuration (build tool plugin + env vars). Without source maps, production stack traces are unreadable minified code.
+4. **Detection commands must be real** — test them against actual projects
+5. **Recommendation logic must be opinionated** — "always", "when X detected", not "maybe consider"
+6. **Quick Start config should enable the most features** with sensible defaults
+7. **Framework middleware table** — exact import paths, middleware calls, and quirks
+8. **Cross-link aggressively** — if Go backend, suggest frontend. If Svelte frontend, suggest backend.
 
 ---
 
@@ -211,6 +240,8 @@ Key points:
 | Metrics | Counter/gauge/distribution APIs, units, attributes, best practices for cardinality |
 | Crons | Check-in API, monitor config, schedule types, heartbeat patterns |
 | Session Replay | Replay integration, sample rates, privacy masking, canvas/network recording |
+
+> **Note for frontend/mobile SDKs:** Source map upload configuration belongs in the main SKILL.md (Phase 3: Guide), not in a reference file. It's part of the core setup flow — every frontend production deployment needs it. Cover the build tool plugin, the required env vars (`SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`), and add `.env` to `.gitignore`.
 
 ---
 
@@ -281,6 +312,8 @@ Before declaring the skill complete:
 - [ ] Research files verified (real content, correct APIs, >100 lines each)
 - [ ] Main SKILL.md under 500 lines
 - [ ] Main SKILL.md implements all 4 wizard phases
+- [ ] Wizard CLI checked — if supported, presented as "Option 1: Wizard (Recommended)" with auth flow + source map benefits described
+- [ ] Source map / debug symbol upload covered in manual setup path (frontend/mobile SDKs)
 - [ ] Reference file for each supported feature pillar
 - [ ] APIs verified against SDK source code
 - [ ] Review pass completed, findings addressed

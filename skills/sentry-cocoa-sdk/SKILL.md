@@ -91,7 +91,7 @@ Propose: *"I recommend Error Monitoring + Tracing + Profiling. Want me to also a
 
 ### Install
 
-**Option 1 — Sentry Wizard (recommended):** Installs SDK, updates AppDelegate, adds debug symbol upload build phases, and handles auth token config.
+**Option 1 — Sentry Wizard (recommended):** Walks you through login, org/project selection, and auth token setup interactively. Then installs the SDK, updates AppDelegate, adds dSYM/debug symbol upload build phases, and configures everything automatically.
 
 ```bash
 brew install getsentry/tools/sentry-wizard && sentry-wizard -i ios

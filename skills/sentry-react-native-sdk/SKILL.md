@@ -115,7 +115,7 @@ Propose: *"For your [Expo managed / bare RN] app, I recommend setting up Error M
 
 ### Path A: Wizard CLI (Recommended for all project types)
 
-Run the wizard — it handles install, native config, source map upload, and initial `Sentry.init()`:
+Run the wizard — it walks you through login, org/project selection, and auth token setup interactively. It then handles installation, native config, source map upload, and initial `Sentry.init()`:
 
 ```bash
 npx @sentry/wizard@latest -i reactNative

@@ -96,6 +96,70 @@ Recommendation logic:
 
 ### Phase 3: Guide
 
+#### Wizard-First for Framework SDKs
+
+Many Sentry SDKs ship with a CLI wizard (`npx @sentry/wizard@latest -i <integration>`) that scaffolds the entire setup in one command. **When a wizard integration exists for the target framework, the skill must present it as the primary recommended path — before any manual instructions.**
+
+Why this matters:
+- The wizard walks through **authentication interactively** — it opens the browser for login, lets the user select their Sentry org and project, and creates/downloads the auth token automatically. No manual token creation or copy-pasting from the Sentry dashboard.
+- The wizard configures **source map upload** automatically — without source maps, production stack traces show minified garbage. This is the single most common setup mistake in frontend projects.
+- The wizard handles framework-specific wiring (hook files, config plugins, build tool plugins) that's easy to get wrong manually.
+- The wizard creates a test page/component for immediate verification.
+
+**Pattern for skills with wizard support:**
+
+```markdown
+### Option 1: Wizard (Recommended)
+
+\`\`\`bash
+npx @sentry/wizard@latest -i <framework>
+\`\`\`
+
+The wizard walks you through login, org/project selection, and auth token
+setup interactively. It then handles installation, SDK initialization,
+source map upload configuration, and creates a test page for verification.
+Skip to [Verification](#verification) after running it.
+
+### Option 2: Manual Setup
+
+[Full manual instructions follow here...]
+```
+
+**When to include a wizard option:**
+- The SDK docs page shows a wizard command for the framework
+- During research (Phase 2), verify wizard support by checking `https://docs.sentry.io/platforms/<platform>/` for wizard instructions
+
+**Known wizard integrations** (verify during research — this list may be outdated):
+
+| Wizard `-i` flag | Framework |
+|-----------------|-----------|
+| `nextjs` | Next.js |
+| `sveltekit` | SvelteKit |
+| `remix` | Remix |
+| `nuxt` | Nuxt |
+| `reactNative` | React Native / Expo |
+| `angular` | Angular |
+| `vue` | Vue |
+| `flutter` | Flutter |
+| `apple` | iOS / macOS (Cocoa) |
+| `android` | Android |
+| `dotnet` | .NET |
+
+> **Important:** Even when the wizard is available, the skill must still include full manual setup instructions. The wizard may not cover all configuration options, and some users work in environments where interactive CLIs aren't practical (CI, Docker, restricted shells). The manual path is the fallback, not an afterthought — it must be complete.
+
+#### Source Maps: The Non-Negotiable for Frontend
+
+Source map upload is **critical** for any frontend or mobile SDK. Without it, error stack traces in Sentry show minified/bundled code that's unreadable.
+
+Every frontend/mobile SDK skill must:
+1. Present the wizard as the easiest path to get source maps working
+2. Include manual source map upload instructions for the manual setup path
+3. Cover the correct build tool plugin (`sentryVitePlugin`, `sentryWebpackPlugin`, `sentrySvelteKit`, etc.)
+4. Document the required environment variables (`SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`)
+5. Add source map troubleshooting entries to the troubleshooting table
+
+#### Feature Reference Loading
+
 Walk through each agreed feature, loading the relevant reference:
 
 ```markdown
@@ -259,6 +323,8 @@ Opinionated wizard that scans your project and guides you through complete Sentr
 ...
 
 ## Phase 3: Guide
+### Option 1: Wizard (Recommended)  ← if wizard exists for this framework
+### Option 2: Manual Setup
 ...
 
 ## Phase 4: Cross-Link
