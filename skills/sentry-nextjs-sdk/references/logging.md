@@ -13,13 +13,13 @@
 `enableLogs` must be set in **all three** Next.js runtime config files:
 
 ```typescript
-// instrumentation-client.ts
-// sentry.server.config.ts
-// sentry.edge.config.ts  ← all three need this
+// instrumentation-client.ts → use NEXT_PUBLIC_SENTRY_DSN
+// sentry.server.config.ts   → use SENTRY_DSN
+// sentry.edge.config.ts     → use SENTRY_DSN
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN, // use NEXT_PUBLIC_SENTRY_DSN in client config
   enableLogs: true, // Required — logging is disabled by default
 });
 ```
@@ -201,8 +201,9 @@ Sentry.withScope((scope) => {
 ### Pino (SDK ≥10.18.0)
 
 ```typescript
+// sentry.server.config.ts — Pino is a Node.js integration (server-side only)
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
   enableLogs: true,
   integrations: [Sentry.pinoIntegration()],
 });
