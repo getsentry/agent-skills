@@ -13,7 +13,7 @@
 `enableLogs` must be set in **all three** Next.js runtime config files:
 
 ```typescript
-// sentry.client.config.ts
+// instrumentation-client.ts
 // sentry.server.config.ts
 // sentry.edge.config.ts  ← all three need this
 import * as Sentry from "@sentry/nextjs";
@@ -263,7 +263,7 @@ These are added by the SDK to every log without any developer configuration:
 For consistency across all runtimes, enable logging in all three config files:
 
 ```typescript
-// sentry.client.config.ts
+// instrumentation-client.ts
 import * as Sentry from "@sentry/nextjs";
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -274,7 +274,7 @@ Sentry.init({
 // sentry.server.config.ts
 import * as Sentry from "@sentry/nextjs";
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
   enableLogs: true,
   integrations: [Sentry.pinoIntegration()], // or consoleLoggingIntegration
 });
@@ -282,7 +282,7 @@ Sentry.init({
 // sentry.edge.config.ts
 import * as Sentry from "@sentry/nextjs";
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
   enableLogs: true,
 });
 ```

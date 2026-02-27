@@ -48,7 +48,7 @@ Sentry AI Agents Monitoring automatically tracks:
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
 
   // Tracing MUST be enabled for AI monitoring
   tracesSampleRate: 1.0,
@@ -119,7 +119,7 @@ The integration is **auto-enabled** in the Node runtime. For the Edge runtime, a
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
   tracesSampleRate: 1.0,
   integrations: [
     Sentry.vercelAIIntegration({
@@ -136,7 +136,7 @@ Sentry.init({
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
   tracesSampleRate: 1.0,
   integrations: [
     Sentry.vercelAIIntegration(),
@@ -210,7 +210,7 @@ Sentry.vercelAIIntegration({ force: true })
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
   tracesSampleRate: 1.0,
   integrations: [
     Sentry.anthropicAIIntegration({
@@ -283,7 +283,7 @@ Both default to `true` only when `sendDefaultPii: true` is set:
 
 ```typescript
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
   sendDefaultPii: true, // ← enables input/output recording by default
   tracesSampleRate: 1.0,
 });
@@ -311,7 +311,7 @@ integrations: [
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
   tracesSampleRate: 1.0,
   integrations: [
     Sentry.openAIIntegration({ recordInputs: true, recordOutputs: true }),

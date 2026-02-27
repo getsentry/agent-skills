@@ -1,6 +1,6 @@
 ---
 name: sentry-nextjs-sdk
-description: Full Sentry SDK setup for Next.js. Use when asked to "add Sentry to Next.js", "install @sentry/nextjs", or configure error monitoring, tracing, session replay, logging, or profiling for Next.js applications. Supports Next.js 13+ with App Router and Pages Router.
+description: Full Sentry SDK setup for Next.js. Use when asked to "add Sentry to Next.js", "install @sentry/nextjs", or configure error monitoring, tracing, session replay, logging, profiling, AI monitoring, or crons for Next.js applications. Supports Next.js 13+ with App Router and Pages Router.
 license: Apache-2.0
 ---
 
@@ -79,6 +79,9 @@ Present a concrete recommendation based on what you found. Don't ask open-ended 
 **Optional (enhanced observability):**
 - ⚡ **Logging** — structured logs via `Sentry.logger.*`; recommend when `pino`/`winston` or log search is needed
 - ⚡ **Profiling** — continuous profiling; requires `Document-Policy: js-profiling` header
+- ⚡ **AI Monitoring** — OpenAI, Vercel AI SDK, Anthropic; recommend when AI/LLM calls detected
+- ⚡ **Crons** — detect missed/failed scheduled jobs; recommend when cron patterns detected
+- ⚡ **Metrics** — custom metrics via `Sentry.metrics.*`; recommend when custom KPIs or business metrics needed
 
 **Recommendation logic:**
 
@@ -89,6 +92,9 @@ Present a concrete recommendation based on what you found. Don't ask open-ended 
 | Session Replay | User-facing app, login flows, or checkout pages |
 | Logging | App uses structured logging or needs log-to-trace correlation |
 | Profiling | Performance-critical app; client sets `Document-Policy: js-profiling` |
+| AI Monitoring | App makes OpenAI, Vercel AI SDK, or Anthropic calls |
+| Crons | App has Vercel Cron jobs, scheduled API routes, or `node-cron` usage |
+| Metrics | App needs custom counters, gauges, or histograms via `Sentry.metrics.*` |
 
 Propose: *"I recommend setting up Error Monitoring + Tracing + Session Replay. Want me to also add Logging or Profiling?"*
 
@@ -359,6 +365,8 @@ Load the corresponding reference file and follow its steps:
 | Session Replay | `references/session-replay.md` | User-facing app; privacy masking, canvas recording, network capture |
 | Logging | `references/logging.md` | Structured logs, `Sentry.logger.*`, log-to-trace correlation |
 | Profiling | `references/profiling.md` | Continuous profiling, `Document-Policy` header, `nodeProfilingIntegration` |
+| AI Monitoring | `references/ai-monitoring.md` | App uses OpenAI, Vercel AI SDK, or Anthropic |
+| Crons | `references/crons.md` | Vercel Cron, scheduled API routes, `node-cron` |
 
 For each feature: read the reference file, follow its steps exactly, and verify before moving on.
 
@@ -456,7 +464,7 @@ If a backend is found, suggest the matching SDK skill:
 | Go (`go.mod`) | `sentry-go-sdk` |
 | Python (`requirements.txt`, `pyproject.toml`) | `sentry-python-sdk` |
 | Ruby (`Gemfile`) | `sentry-ruby-sdk` |
-| Java/Kotlin (`pom.xml`, `build.gradle`) | `sentry-java-sdk` |
+| Java/Kotlin (`pom.xml`, `build.gradle`) | See [docs.sentry.io/platforms/java/](https://docs.sentry.io/platforms/java/) |
 | Node.js (Express, Fastify, Hapi) | `@sentry/node` — see [docs.sentry.io/platforms/javascript/guides/express/](https://docs.sentry.io/platforms/javascript/guides/express/) |
 
 Connecting frontend and backend with the same DSN or linked projects enables **distributed tracing** — stack traces that span your browser, Next.js server, and backend API in a single trace view.

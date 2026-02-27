@@ -3,7 +3,7 @@
 > Minimum SDK: `@sentry/nextjs` ≥7.27.0+  
 > `replayCanvasIntegration()`: requires ≥7.98.0+
 
-> ⚠️ **Browser-only feature.** Add `replayIntegration()` **only** in `instrumentation-client.ts` (App Router) or `sentry.client.config.ts`. Never in `sentry.server.config.ts` or `sentry.edge.config.ts`.
+> ⚠️ **Browser-only feature.** Add `replayIntegration()` **only** in `instrumentation-client.ts`. Never in `sentry.server.config.ts` or `sentry.edge.config.ts`.
 
 ---
 
