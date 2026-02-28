@@ -16,6 +16,7 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-react-native-sdk` | Full Sentry setup wizard for React Native and Expo — error monitoring, tracing, profiling, session replay, logging, native crash symbolication | React Native, Expo managed/bare | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
 | `sentry-react-sdk` | Full Sentry setup wizard for React — error monitoring, tracing, session replay, profiling, logging | React 16+, React Router v5-v7, TanStack Router, Redux, Vite, webpack | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
 | `sentry-nextjs-sdk` | Full Sentry setup wizard for Next.js — error monitoring, tracing, profiling, logging, session replay, AI monitoring, crons | Next.js App Router + Pages Router, Vercel, `@sentry/nextjs` | [Next.js Guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/) |
+| `sentry-dotnet-sdk` | Full Sentry setup wizard for .NET — error monitoring, tracing, profiling, logging, crons | ASP.NET Core, MAUI, WPF, WinForms, Azure Functions, Blazor, gRPC | [.NET Guide](https://docs.sentry.io/platforms/dotnet/) |
 
 ### Setup Skills
 
@@ -315,6 +316,10 @@ Once installed, your AI assistant will automatically discover the skills. Simply
 | "Add Sentry to my Next.js app" | `sentry-nextjs-sdk` |
 | "Set up Sentry in Next.js App Router" | `sentry-nextjs-sdk` |
 | "Monitor AI/OpenAI calls in Next.js" | `sentry-nextjs-sdk` |
+| "Add Sentry to my .NET app" | `sentry-dotnet-sdk` |
+| "Set up Sentry in my ASP.NET Core project" | `sentry-dotnet-sdk` |
+| "Add Sentry to my MAUI/WPF/WinForms app" | `sentry-dotnet-sdk` |
+| "Monitor Azure Functions with Sentry" | `sentry-dotnet-sdk` |
 
 ### Setup
 
