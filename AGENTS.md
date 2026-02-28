@@ -103,31 +103,16 @@ Requirements before the skill can be used.
 
 ## Style Guidelines
 
-### Token Optimization
+### Comprehensive Over Concise
 
-Skills are loaded into agent context, consuming tokens. **Keep skills concise** - target 100-200 lines.
+Skills should be thorough and all-encompassing. Use `references/` directories to split deep-dive content into separate files loaded on demand — this keeps the main wizard lean while allowing references to go deep.
 
 | Do | Don't |
 |----|-------|
-| Tables for reference data | Long prose explanations |
-| Code snippets with minimal comments | Verbose code with extensive comments |
-| Bullet points | Paragraphs |
-| One example per pattern | Multiple redundant examples |
-
-**Example - Before (verbose):**
-```markdown
-To enable logging in JavaScript, you need to make sure you have the correct
-version of the Sentry SDK installed. The minimum version required is 9.41.0.
-Once you have confirmed the version, you can enable logging by adding the
-enableLogs flag to your Sentry.init() configuration...
-```
-
-**Example - After (concise):**
-```markdown
-| Platform | Min SDK | Enable Flag |
-|----------|---------|-------------|
-| JavaScript | 9.41.0+ | `enableLogs: true` |
-```
+| Tables for reference data | Long prose where a table works better |
+| Complete, working code examples | Incomplete snippets that need guesswork |
+| Deep-dive references for each feature | Superficial coverage that omits details |
+| Comprehensive troubleshooting | Leaving users to figure out edge cases |
 
 ### Phases for Workflows
 
@@ -207,6 +192,12 @@ Configure Sentry features in a project. Pattern:
 2. Check SDK version
 3. Add configuration
 4. Verify setup
+
+### SDK Skill Bundles
+
+Full SDK setup wizards that scan the project, make opinionated feature recommendations, and guide through setup of error monitoring, tracing, profiling, logging, and more. Each bundle is a directory with a main `SKILL.md` wizard and `references/` deep-dive files loaded conditionally.
+
+See **[docs/sdk-skill-philosophy.md](docs/sdk-skill-philosophy.md)** for the complete authoring guide: bundle architecture, wizard flow, reference file format, and naming conventions.
 
 ### Workflow Skills
 

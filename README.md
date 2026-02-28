@@ -4,6 +4,20 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 
 ## Available Skills
 
+### SDK Skills (Full Platform Bundles)
+
+| Skill | Description | Platforms | Docs |
+|-------|-------------|-----------|------|
+| `sentry-go-sdk` | Full Sentry setup wizard for Go — error monitoring, tracing, logging, metrics, crons | Go (net/http, Gin, Echo, Fiber) | [Go Guide](https://docs.sentry.io/platforms/go/) |
+| `sentry-python-sdk` | Full Sentry setup wizard for Python — error monitoring, tracing, profiling, logging, metrics, crons, AI monitoring | Python (Django, Flask, FastAPI, Celery, Starlette, AIOHTTP) | [Python Guide](https://docs.sentry.io/platforms/python/) |
+| `sentry-svelte-sdk` | Full Sentry setup wizard for Svelte/SvelteKit — error monitoring, tracing, session replay, logging | Svelte, SvelteKit | [SvelteKit Guide](https://docs.sentry.io/platforms/javascript/guides/sveltekit/) |
+| `sentry-ruby-sdk` | Full Sentry setup wizard for Ruby — error monitoring, tracing, logging, Sidekiq metrics + dashboard, migration from AppSignal/Honeybadger | Ruby, Rails, Sinatra, Rack, Sidekiq | [Ruby Guide](https://docs.sentry.io/platforms/ruby/) |
+| `sentry-cocoa-sdk` | Full Sentry setup wizard for Apple platforms — error monitoring, tracing, profiling, session replay, logging | iOS, macOS, tvOS, watchOS, visionOS (Swift, UIKit, SwiftUI) | [Apple Guide](https://docs.sentry.io/platforms/apple/) |
+| `sentry-react-native-sdk` | Full Sentry setup wizard for React Native and Expo — error monitoring, tracing, profiling, session replay, logging, native crash symbolication | React Native, Expo managed/bare | [React Native Guide](https://docs.sentry.io/platforms/react-native/) |
+| `sentry-react-sdk` | Full Sentry setup wizard for React — error monitoring, tracing, session replay, profiling, logging | React 16+, React Router v5-v7, TanStack Router, Redux, Vite, webpack | [React Guide](https://docs.sentry.io/platforms/javascript/guides/react/) |
+| `sentry-nextjs-sdk` | Full Sentry setup wizard for Next.js — error monitoring, tracing, profiling, logging, session replay, AI monitoring, crons | Next.js App Router + Pages Router, Vercel, `@sentry/nextjs` | [Next.js Guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/) |
+| `sentry-dotnet-sdk` | Full Sentry setup wizard for .NET — error monitoring, tracing, profiling, logging, crons | ASP.NET Core, MAUI, WPF, WinForms, Azure Functions, Blazor, gRPC | [.NET Guide](https://docs.sentry.io/platforms/dotnet/) |
+
 ### Setup Skills
 
 | Skill                        | Description                                       | Platforms                       | Docs                                                                                                             |
@@ -26,6 +40,12 @@ Official agent skills for integrating Sentry into your projects. These skills pr
 | `sentry-fix-issues` | Find and fix issues from Sentry using MCP | Sentry MCP | [Issues](https://docs.sentry.io/product/issues/) |
 | `sentry-pr-code-review` | Review a project's PRs to check for issues detected in code review by Seer Bug Prediction | GitHub CLI | [Seer](https://docs.sentry.io/product/ai-in-sentry/seer/) |
 | `sentry-create-alert` | Create Sentry alerts using the workflow engine API | `curl`, auth token | [Alerts](https://docs.sentry.io/product/alerts/) |
+
+### Authoring Skills
+
+| Skill | Description | Requirements |
+|-------|-------------|--------------|
+| `sentry-sdk-skill-creator` | Create a complete SDK skill bundle for any new platform — research, write, verify, and register | Web search, `claude` tool |
 
 ## Installation
 
@@ -81,7 +101,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .claude/skills/                # Project-level
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 
@@ -117,7 +137,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .codex/skills/                 # Project-level
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 
@@ -153,7 +173,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .github/skills/                # Project-level
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 
@@ -191,7 +211,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .cursor/skills/                # Project-level
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 
@@ -231,7 +251,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .claude/skills/                # Project-level (alternative)
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 
@@ -271,7 +291,7 @@ git clone https://github.com/getsentry/sentry-agent-skills.git /tmp/sentry-skill
 .claude/skills/                # Project-level (alternative)
 
 # Each skill:
-sentry-setup-tracing/
+sentry-fix-issues/
   SKILL.md
 ```
 
@@ -295,6 +315,38 @@ sentry-setup-tracing/
 ## Usage
 
 Once installed, your AI assistant will automatically discover the skills. Simply ask:
+
+### SDK Skills (Full Platform Bundles)
+
+| What to Say | Skill Used |
+|-------------|------------|
+| "Add Sentry to my Go app" | `sentry-go-sdk` |
+| "Set up Sentry in my Gin/Echo/Fiber project" | `sentry-go-sdk` |
+| "Add Sentry to my Python app" | `sentry-python-sdk` |
+| "Set up Sentry in my Django/Flask/FastAPI project" | `sentry-python-sdk` |
+| "Monitor my OpenAI/LangChain calls in Python" | `sentry-python-sdk` |
+| "Add Sentry to my SvelteKit app" | `sentry-svelte-sdk` |
+| "Set up Sentry in Svelte" | `sentry-svelte-sdk` |
+| "Add Sentry to my Ruby/Rails app" | `sentry-ruby-sdk` |
+| "Set up Sentry metrics for Puma/Sidekiq" | `sentry-ruby-sdk` |
+| "Migrate from AppSignal to Sentry" | `sentry-ruby-sdk` |
+| "Replace Honeybadger with Sentry" | `sentry-ruby-sdk` |
+| "Add Sentry to my iOS app" | `sentry-cocoa-sdk` |
+| "Set up Sentry in my Swift/SwiftUI project" | `sentry-cocoa-sdk` |
+| "Add Sentry to my macOS app" | `sentry-cocoa-sdk` |
+| "Add Sentry to my React Native app" | `sentry-react-native-sdk` |
+| "Set up Sentry in Expo" | `sentry-react-native-sdk` |
+| "Configure session replay for React Native" | `sentry-react-native-sdk` |
+| "Add Sentry to my React app" | `sentry-react-sdk` |
+| "Set up error boundaries in React" | `sentry-react-sdk` |
+| "Configure session replay for React" | `sentry-react-sdk` |
+| "Add Sentry to my Next.js app" | `sentry-nextjs-sdk` |
+| "Set up Sentry in Next.js App Router" | `sentry-nextjs-sdk` |
+| "Monitor AI/OpenAI calls in Next.js" | `sentry-nextjs-sdk` |
+| "Add Sentry to my .NET app" | `sentry-dotnet-sdk` |
+| "Set up Sentry in my ASP.NET Core project" | `sentry-dotnet-sdk` |
+| "Add Sentry to my MAUI/WPF/WinForms app" | `sentry-dotnet-sdk` |
+| "Monitor Azure Functions with Sentry" | `sentry-dotnet-sdk` |
 
 ### Setup
 
@@ -349,6 +401,17 @@ description: Description of what this skill does and when to use it
 Instructions for the AI assistant...
 ```
 
+**SDK skill bundles** use a `references/` directory for feature-specific deep dives:
+
+```
+sentry-go-sdk/
+  SKILL.md           # Main wizard
+  references/
+    error-monitoring.md
+    tracing.md
+    ...
+```
+
 ---
 
 ## Contributing
@@ -358,9 +421,10 @@ Contributions are welcome! Please ensure any new skills:
 1. Follow the [Agent Skills specification](https://agentskills.io/specification)
 2. Have a valid `name` (lowercase letters, numbers, hyphens, 1-64 chars, no consecutive hyphens, must not start or end with hyphen)
 3. Include a clear `description` (1-1024 chars)
-4. **Keep skills concise** - use tables over prose, avoid obvious information
-5. Include an "Invoke This Skill When" section with trigger phrases
+4. Include an "Invoke This Skill When" section with trigger phrases
 6. Verify technical details against [Sentry docs](https://docs.sentry.io/)
+
+For full-platform SDK skills (covering all Sentry features for one language/framework), see [docs/sdk-skill-philosophy.md](docs/sdk-skill-philosophy.md) for the bundle architecture pattern.
 
 ### Style Guidelines
 
@@ -368,7 +432,7 @@ Contributions are welcome! Please ensure any new skills:
 - Use phases/steps for multi-stage workflows
 - Include version requirements where applicable
 - Add troubleshooting tables for common issues
-- Target ~100-200 lines per skill to minimize token usage
+- SDK skill bundles should be comprehensive — use `references/` directories for deep-dive content loaded on demand
 
 ---
 
