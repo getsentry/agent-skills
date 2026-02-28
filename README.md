@@ -1,3 +1,16 @@
+# ⚠️ This repository has been superseded
+
+All skills have been moved to **[getsentry/sentry-for-ai](https://github.com/getsentry/sentry-for-ai)**, the official Sentry plugin for AI coding assistants. That repo is now the single source of truth for all Sentry agent skills, MCP server config, slash commands, and plugin metadata.
+
+**Please use [getsentry/sentry-for-ai](https://github.com/getsentry/sentry-for-ai) for all new installations and contributions.**
+
+This repository is archived and will no longer receive updates.
+
+---
+
+<details>
+<summary>Legacy README (for reference)</summary>
+
 # Sentry Agent Skills
 
 Official agent skills for integrating Sentry into your projects. These skills provide AI coding assistants with the knowledge to set up Sentry, debug production issues, and leverage Sentry's full observability platform.
@@ -439,3 +452,5 @@ For full-platform SDK skills (covering all Sentry features for one language/fram
 ## License
 
 Apache-2.0
+
+</details>
