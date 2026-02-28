@@ -333,6 +333,6 @@ Opinionated wizard that scans your project and guides you through complete Sentr
 
 ## See Also
 
-- [AGENTS.md](../AGENTS.md) — General skill authoring guidelines and style rules
+- [AGENTS.md](../../../AGENTS.md) — General skill authoring guidelines and style rules
 - [Agent Skills Specification](https://agentskills.io/specification)
 - [Sentry Documentation](https://docs.sentry.io/)

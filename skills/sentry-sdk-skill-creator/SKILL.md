@@ -15,7 +15,7 @@ Produce a complete, research-backed SDK skill bundle — a main wizard SKILL.md 
 - Building a new `sentry-<platform>-sdk` skill bundle
 - Porting the SDK skill pattern to a new Sentry SDK
 
-> Read `${SKILL_ROOT}/../../docs/sdk-skill-philosophy.md` first — it defines the bundle architecture, wizard flow, and design principles this skill implements.
+> Read `${SKILL_ROOT}/references/philosophy.md` first — it defines the bundle architecture, wizard flow, and design principles this skill implements.
 
 ---
 
@@ -182,7 +182,7 @@ license: Apache-2.0
 ### Key Principles for the Main SKILL.md
 
 1. **Keep it lean** — deep details go in references, not here
-2. **Wizard-first for framework SDKs** — if the Sentry wizard supports this framework, present it as "Option 1: Wizard (Recommended)" before any manual setup. The wizard handles the full auth flow (login, org/project selection, auth token creation), source map upload, build tool plugins, and framework-specific wiring — all in one interactive step. See the [philosophy doc](../../docs/sdk-skill-philosophy.md) for the full pattern.
+2. **Wizard-first for framework SDKs** — if the Sentry wizard supports this framework, present it as "Option 1: Wizard (Recommended)" before any manual setup. The wizard handles the full auth flow (login, org/project selection, auth token creation), source map upload, build tool plugins, and framework-specific wiring — all in one interactive step. See `${SKILL_ROOT}/references/philosophy.md` for the full pattern.
 3. **Source maps are non-negotiable for frontend/mobile** — the manual setup path must include source map upload configuration (build tool plugin + env vars). Without source maps, production stack traces are unreadable minified code.
 4. **Detection commands must be real** — test them against actual projects
 5. **Recommendation logic must be opinionated** — "always", "when X detected", not "maybe consider"
@@ -295,11 +295,10 @@ After the skill passes review:
 ### Commit Strategy
 
 Each major piece gets its own commit:
-1. `docs: add sdk-skill-philosophy reference` (if new)
-2. `feat(<platform>-sdk): add sentry-<platform>-sdk main SKILL.md wizard`
-3. `feat(<platform>-sdk): add reference deep-dives for all feature pillars`
-4. `docs(readme): add sentry-<platform>-sdk to available skills`
-5. `fix(skills): address review findings` (if any)
+1. `feat(<platform>-sdk): add sentry-<platform>-sdk main SKILL.md wizard`
+2. `feat(<platform>-sdk): add reference deep-dives for all feature pillars`
+3. `docs(readme): add sentry-<platform>-sdk to available skills`
+4. `fix(skills): address review findings` (if any)
 
 ---
 

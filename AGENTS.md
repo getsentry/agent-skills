@@ -197,7 +197,7 @@ Configure Sentry features in a project. Pattern:
 
 Full SDK setup wizards that scan the project, make opinionated feature recommendations, and guide through setup of error monitoring, tracing, profiling, logging, and more. Each bundle is a directory with a main `SKILL.md` wizard and `references/` deep-dive files loaded conditionally.
 
-See **[docs/sdk-skill-philosophy.md](docs/sdk-skill-philosophy.md)** for the complete authoring guide: bundle architecture, wizard flow, reference file format, and naming conventions.
+See **[skills/sentry-sdk-skill-creator/references/philosophy.md](skills/sentry-sdk-skill-creator/references/philosophy.md)** for the complete authoring guide: bundle architecture, wizard flow, reference file format, and naming conventions.
 
 ### Workflow Skills
 

@@ -424,7 +424,7 @@ Contributions are welcome! Please ensure any new skills:
 4. Include an "Invoke This Skill When" section with trigger phrases
 6. Verify technical details against [Sentry docs](https://docs.sentry.io/)
 
-For full-platform SDK skills (covering all Sentry features for one language/framework), see [docs/sdk-skill-philosophy.md](docs/sdk-skill-philosophy.md) for the bundle architecture pattern.
+For full-platform SDK skills (covering all Sentry features for one language/framework), see [skills/sentry-sdk-skill-creator/references/philosophy.md](skills/sentry-sdk-skill-creator/references/philosophy.md) for the bundle architecture pattern.
 
 ### Style Guidelines
 
